@@ -1,0 +1,5 @@
+-cp src
+-main Enthral
+-js bin/enthral.js
+-D js-unflatten
+-D js-es 6
