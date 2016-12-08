@@ -1,4 +1,10 @@
 {
+    // The number of spaces a tab is equal to. This setting is overriden based on the file contents when `editor.detectIndentation` is on.
+    "editor.tabSize": 4,
+
+    // Insert spaces when pressing Tab. This setting is overriden based on the file contents when `editor.detectIndentation` is on.
+    "editor.insertSpaces": true,
+
     // These are configurations used for haxe completion.
     //
     // Each configuration is an array of arguments that will be passed to the Haxe completion server,

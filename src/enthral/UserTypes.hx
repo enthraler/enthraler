@@ -1,28 +1,28 @@
 package enthral;
 
 typedef User = {
-    id:String,
-    name:String,
-    avatarId:Null<String>
+	id:String,
+	name:String,
+	avatarId:Null<String>
 };
 
 typedef Designer = {
-    >User,
-    designerUrl:String
+	>User,
+	designerUrl:String
 }
 
 typedef Author = {
-    >User,
-    authorUrl:String
+	>User,
+	authorUrl:String
 };
 
 typedef Publisher = {
-    >User,
-    publisherUrl:String
+	>User,
+	publisherUrl:String
 };
 
 typedef Group = {
-    name:String,
-    publishers:Array<Publisher>,
-    audience:Array<User>
+	name:String,
+	publishers:Array<Publisher>,
+	audience:Array<User>
 }
