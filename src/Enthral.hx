@@ -1,28 +1,24 @@
-import enthral.Action;
-import enthral.UserTypes;
-import enthral.Dispatcher;
-import enthral.Component;
-import js.html.Element;
 import js.Browser;
+import enthral.Component;
+import SystemJs;
 
 class Enthral {
 	static function main() {
-		trace('Hello');
 		var cont = Browser.document.getElementById('container');
-		var comp = new MyComponent({name: 'Jason'});
-		comp.setupView(cont);
-	}
-}
-
-class MyComponent implements StaticComponent<{name:String}> {
-	public var authorData:{name:String};
-	public var meta:ComponentMeta;
-
-	public function new(authorData) {
-		this.authorData = authorData;
+		var authorData = {name: 'Jason'};
+		SystemJs.importJs('component.js').then(function (componentCls:Dynamic) {
+			var component = newComponent(componentCls, authorData);
+			component.setupView(cont);
+		});
 	}
 
-	public function setupView(container:Element) {
-		container.innerHTML = 'Hello ${authorData.name}';
+	/**
+		Treat a dynamic value as a component class and instantiate it with author data.
+
+		We need this because Haxe does not want to accept `new dynamicValue()` as valid syntax.
+	**/
+	static function newComponent<AuthorData>(cls:Dynamic, authorData:AuthorData):StaticComponent<AuthorData> {
+		// TODO: check for errors, and probably check that it is in fact a component as well.
+		return untyped __js__('new cls(authorData)');
 	}
 }
