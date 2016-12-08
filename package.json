@@ -1,0 +1,12 @@
+{
+  "name": "enthralus",
+  "version": "0.1.0",
+  "description": "A Javascript client library for rendering Enthral interactive components inside your document.",
+  "main": "dist/index.js",
+  "repository": "https://github.com/enthral/enthral.git",
+  "author": "Jason O'Neil <jason.oneil@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "systemjs": "^0.19.41"
+  }
+}
