@@ -1,8 +1,10 @@
+package examplecomponents;
+
 import enthral.Component;
 import js.html.Element;
 
-@:expose
-class MyComponent implements StaticComponent<{name:String}> {
+@:expose("HelloComponent")
+class Hello implements StaticComponent<{name:String}> {
 	public var authorData:{name:String};
 	public var meta:ComponentMeta;
 

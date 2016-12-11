@@ -12,6 +12,6 @@
     // such as -cp, -lib, target output settings and defines.
     "haxe.displayConfigurations": [
         ["enthal.hxml"], // if a hxml file is safe to use, we can just pass it as argument
-        ["component.hxml"]
+        ["components.hxml"]
     ]
 }
