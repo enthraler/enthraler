@@ -7,20 +7,30 @@ import SystemJs;
 class Enthral {
 	static function main() {
 		var enthral = new Enthral();
-		var cont = Browser.document.getElementById('container');
-		enthral.transformElement(cont);
+		enthral.setupComponents();
 	}
 
 	public function new() {}
 
-	public function transformElement(elm:Element) {
+	public function setupComponents(?container:Element) {
+		if (container == null) {
+			container = Browser.document.body;
+		}
+
+		var embeds = container.getElementsByClassName('enthral-embed');
+		for (elm in embeds) {
+			setupComponent(elm);
+		}
+	}
+
+	public function setupComponent(elm:Element) {
 		var script = elm.attributes.getNamedItem('data-enthral-script').value;
 		var props = elm.attributes.getNamedItem('data-enthral-props').value;
 		var data = haxe.Json.parse(props);
-		return createEmbed(script, data, elm);
+		return instantiateComponent(script, data, elm);
 	}
 
-	public function createEmbed<T>(componentScript:String, componentData:T, container:Element):Promise<StaticComponent<T>> {
+	public function instantiateComponent<T>(componentScript:String, componentData:T, container:Element):Promise<StaticComponent<T>> {
 		return SystemJs.importJs(componentScript).then(function (componentCls:Module) {
 			var component:StaticComponent<T> = componentCls.instantiate(componentData);
 			component.setupView(container);
