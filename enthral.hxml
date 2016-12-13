@@ -2,3 +2,4 @@
 -main Enthral
 -js bin/enthral.js
 -D js-unflatten
+-cmd npm run webpack

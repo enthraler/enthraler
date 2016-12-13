@@ -6,7 +6,14 @@
   "repository": "https://github.com/enthral/enthral.git",
   "author": "Jason O'Neil <jason.oneil@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "webpack": "webpack webpack.config.js"
+  },
   "dependencies": {
+    "prop-types": "^0.2.0",
     "systemjs": "^0.19.41"
+  },
+  "devDependencies": {
+    "webpack": "^1.14.0"
   }
 }

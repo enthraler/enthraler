@@ -21,6 +21,7 @@ abstract Module(Dynamic) from Dynamic {
 /**
 	API: https://github.com/systemjs/systemjs/blob/master/docs/system-api.md
 **/
+@:jsRequire('systemjs/dist/system.src.js')
 @:native('SystemJS')
 extern class SystemJs {
 	public static function amdDefine():Void;
