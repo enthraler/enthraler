@@ -1,4 +1,5 @@
 -cp src
+-cp src/externs
 -main Enthral
 -js bin/enthral.js
 -D js-unflatten
