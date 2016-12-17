@@ -1,4 +1,5 @@
 import js.Promise;
+import js.Error;
 
 typedef SystemJsConfig = {
 	?baseURL:String
@@ -14,7 +15,11 @@ abstract Module(Dynamic) from Dynamic {
 	}
 
 	static function inst(loadedModule:Class<Dynamic>, arg1, arg2, arg3, arg4, arg5) {
-		return untyped __js__('new loadedModule(arg1, arg2, arg3, arg4, arg5)');
+		try {
+			return untyped __js__('new loadedModule(arg1, arg2, arg3, arg4, arg5)');
+		} catch (e:Dynamic) {
+			throw new Error('Failed to instantiate module loaded through SystemJS $loadedModule: $e');
+		}
 	}
 }
 
