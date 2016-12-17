@@ -4,7 +4,7 @@ module.exports = {
     entry: "./bin/enthral.js",
     output: {
         path: __dirname + "/bin",
-        filename: "bundle.js"
+        filename: "enthral.bundle.js"
     },
     module: {
         noParse: [

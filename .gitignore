@@ -1,4 +1,4 @@
 .haxelib/
 node_modules/
 bin/*.js
-bin/components/*.js
+components/
