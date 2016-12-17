@@ -13,8 +13,8 @@ abstract Module(Dynamic) from Dynamic {
 		return inst(this, arg1, arg2, arg3, arg4, arg5);
 	}
 
-	static function inst(mod:Class<Dynamic>, arg1, arg2, arg3, arg4, arg5) {
-		return untyped __js__('new mod(arg1, arg2, arg3, arg4, arg5)');
+	static function inst(loadedModule:Class<Dynamic>, arg1, arg2, arg3, arg4, arg5) {
+		return untyped __js__('new loadedModule(arg1, arg2, arg3, arg4, arg5)');
 	}
 }
 
