@@ -2,6 +2,7 @@ import js.Browser;
 import js.Promise;
 import js.html.Element;
 import enthral.Component;
+import enthral.PropTypes;
 import SystemJs;
 
 class Enthral {
@@ -38,6 +39,10 @@ class Enthral {
 			var componentCls:Module = arr[0];
 			var componentData:T = arr[1];
 			var dependencies = (componentCls:Dynamic).enthralLoadedDependencies;
+			var schema = (componentCls:Dynamic).enthralPropTypes;
+			if (schema != null) {
+				PropTypes.validate(schema, componentData, componentDataUrl);
+			}
 			var component:StaticComponent<T> = componentCls.instantiate(componentData, dependencies);
 			component.setupView(container);
 			return component;
