@@ -10,7 +10,6 @@
     "webpack": "webpack webpack.config.js"
   },
   "dependencies": {
-    "prop-types": "^0.2.0",
     "systemjs": "^0.19.41"
   },
   "devDependencies": {
