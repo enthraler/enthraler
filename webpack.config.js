@@ -1,10 +1,13 @@
 module.exports = {
     // configuration
     // context: __dirname + "/bin",
-    entry: "./bin/enthral.js",
+    entry: {
+        enthral: "./bin/enthral.js",
+        polyfills: "./polyfills/polyfills.js"
+    },
     output: {
         path: __dirname + "/bin",
-        filename: "enthral.bundle.js"
+        filename: "[name].bundle.js"
     },
     module: {
         noParse: [

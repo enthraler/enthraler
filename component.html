@@ -1,0 +1,64 @@
+<html>
+<head>
+</head>
+<body>
+
+<style>
+	div {
+		padding: 10px;
+		background: red;
+		font-size: 25px;
+		text-transform: uppercase;
+		color: white;
+	}
+</style>
+
+<div>
+	<p>I'm outside the element (big/white)</p>
+	<div id="container"></div>
+	<p>I'm outside the element (big/white)</p>
+</div>
+
+<template id="myTemplate">
+	<style>
+		:host {
+			all: initial; /* 1st rule so subsequent properties are reset. */
+			display: block;
+			background: white;
+		}
+		p {
+			text-transform: lowercase;
+			text-decoration: underline;
+		}
+	</style>
+	<p>my-element: all CSS properties are reset to their
+		initial value using <code>all: initial</code>.</p>
+	<slot></slot>
+</template>
+
+<script type="text/javascript">
+(function () {
+	function browserSupportsAllFeatures() {
+		return window.Promise && window.customElements && HTMLElement.prototype.attachShadow;
+	}
+	function loadScript(src, done) {
+		var js = document.createElement('script');
+		js.src = src;
+		js.onload = function() {if (done) {done();}}
+		js.onerror = function() {throw new js.Error('Failed to load script ' + src);}
+		document.head.appendChild(js);
+	}
+	function main() {
+		loadScript('bin/enthral.bundle.js');
+	}
+	if (browserSupportsAllFeatures()) {
+		// Browsers that support all features run `main()` immediately.
+		main();
+	} else {
+		// All other browsers loads polyfills and then run `main()`.
+		loadScript('/bin/polyfills.bundle.js', main);
+	}
+})();
+</script>
+</body>
+</html>
