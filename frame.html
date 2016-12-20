@@ -1,0 +1,45 @@
+<html>
+<head>
+	<title>EnthralUs Embedded Content</title>
+	<style type="text/css">
+		html, body {
+			height: 100%;
+			width: 100%;
+		}
+		body {
+			margin: 0;
+		}
+	</style>
+</head>
+<body>
+	<div id="container"></div>
+	<noscript>
+		<h1>We can't display this content</h1>
+		<p>There is content embedded here that cannot be displayed because Javascript is disabled.</p>
+	</noscript>
+	<script type="text/javascript">
+	(function () {
+		function browserSupportsAllFeatures() {
+			return window.Promise;
+		}
+		function loadScript(src, done) {
+			var js = document.createElement('script');
+			js.src = src;
+			js.onload = function() {if (done) {done();}}
+			js.onerror = function() {throw new js.Error('Failed to load script ' + src);}
+			document.head.appendChild(js);
+		}
+		function main() {
+			loadScript('bin/enthral.bundle.js');
+		}
+		if (browserSupportsAllFeatures()) {
+			// Browsers that support all features run `main()` immediately.
+			main();
+		} else {
+			// All other browsers loads polyfills and then run `main()`.
+			loadScript('bin/polyfills.bundle.js', main);
+		}
+	})();
+	</script>
+</body>
+</html>

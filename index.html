@@ -1,37 +1,13 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Enthral Test</title>
-    </head>
-    <body>
-        <h1>Render here</h1>
-        <section class="enthral-embed" data-enthral-script="components/templates/plainjs/hello.js" data-enthral-props="bin/data/hello-jason.json"></section>
-        <section class="enthral-embed" data-enthral-script="components/templates/haxe-webpack/dist/hello.js" data-enthral-props="bin/data/hello-anna.json"></section>
-        <section class="enthral-embed" data-enthral-script="components/examples/linechart/lineChart.js" data-enthral-props="components/examples/linechart/economy-data/data.json"></section>
-        <section class="enthral-embed" data-enthral-script="components/examples/linechart/lineChart.js" data-enthral-props="components/examples/linechart/bug-data/data.json"></section>
-        <script type="text/javascript">
-        (function () {
-            function browserSupportsAllFeatures() {
-                return window.Promise;
-            }
-            function loadScript(src, done) {
-                var js = document.createElement('script');
-                js.src = src;
-                js.onload = function() {if (done) {done();}}
-                js.onerror = function() {throw new js.Error('Failed to load script ' + src);}
-                document.head.appendChild(js);
-            }
-            function main() {
-                loadScript('bin/enthral.bundle.js');
-            }
-            if (browserSupportsAllFeatures()) {
-                // Browsers that support all features run `main()` immediately.
-                main();
-            } else {
-                // All other browsers loads polyfills and then run `main()`.
-                loadScript('bin/polyfills.bundle.js', main);
-            }
-        })();
-        </script>
-    </body>
+	<head>
+		<title>Enthral Test</title>
+	</head>
+	<body>
+		<h1>Render here</h1>
+		<iframe src="frame.html#?script=components/templates/plainjs/hello.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; height: 100px;"></iframe>
+		<iframe src="frame.html#?script=components/templates/haxe-webpack/dist/hello.js&props=bin/data/hello-anna.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; height: 100px;"></iframe>
+		<iframe src="frame.html#?script=components/examples/linechart/lineChart.js&props=components/examples/linechart/economy-data/data.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; height: 500px;"></iframe>
+		<iframe src="frame.html#?script=components/examples/linechart/lineChart.js&props=components/examples/linechart/bug-data/data.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; height: 500px;"></iframe>
+	</body>
 </html>

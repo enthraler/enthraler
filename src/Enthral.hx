@@ -7,28 +7,24 @@ import SystemJs;
 
 class Enthral {
 	static function main() {
+		var params = getParamsFromLocation();
 		var enthral = new Enthral();
-		enthral.setupComponents();
+		var container = Browser.document.getElementById('container');
+		enthral.instantiateComponent(params['script'], params['props'], container);
+	}
+
+	static function getParamsFromLocation() {
+		var hash = Browser.location.hash;
+		var paramStrings = hash.substr(hash.indexOf('?') + 1).split('&');
+		var params = new Map();
+		for (str in paramStrings) {
+			var parts = str.split('=');
+			params[parts[0]] = parts[1];
+		}
+		return params;
 	}
 
 	public function new() {}
-
-	public function setupComponents(?container:Element) {
-		if (container == null) {
-			container = Browser.document.body;
-		}
-
-		var embeds = container.getElementsByClassName('enthral-embed');
-		for (elm in embeds) {
-			setupComponent(elm);
-		}
-	}
-
-	public function setupComponent(elm:Element) {
-		var script = elm.attributes.getNamedItem('data-enthral-script').value;
-		var props = elm.attributes.getNamedItem('data-enthral-props').value;
-		return instantiateComponent(script, props, elm);
-	}
 
 	public function instantiateComponent<T>(componentScriptUrl:String, componentDataUrl:String, container:Element):Promise<StaticComponent<T>> {
 		var scriptPromise = SystemJs.importJs(componentScriptUrl).then(loadModuleDependencies);
