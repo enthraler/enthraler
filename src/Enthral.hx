@@ -1,14 +1,31 @@
 import js.Browser;
 import js.Promise;
-import js.html.Element;
+import js.html.*;
 import enthral.Component;
 import enthral.PropTypes;
 import SystemJs;
 
+@:build(enthral.CustomElementMacro.build('my-element'))
+class MyComponent extends Element {
+	function connectedCallback() untyped {
+		this.attachShadow({ mode: 'open' });
+		var myElementTemplate = Browser.document.getElementById('myTemplate');
+		var templateNode = document.importNode(myElementTemplate.content, true);
+		this.shadowRoot.appendChild(templateNode);
+		ShadyCSS.applyStyle(this);
+	}
+}
+
 class Enthral {
 	static function main() {
-		var enthral = new Enthral();
-		enthral.setupComponents();
+		var myElementTemplate:TemplateElement = cast Browser.document.getElementById('myTemplate');
+		trace(myElementTemplate.content);
+		untyped ShadyCSS.prepareTemplate(myElementTemplate, 'my-element');
+
+		Browser.document.getElementById('container').innerHTML = '<my-element>Light DOM content is also affected.</my-element>';
+
+		// var enthral = new Enthral();
+		// enthral.setupComponents();
 	}
 
 	public function new() {}
