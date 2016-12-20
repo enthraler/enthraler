@@ -7,6 +7,31 @@
         <h1>Render here</h1>
         <section class="enthral-embed" data-enthral-script="components/templates/plainjs/hello.js" data-enthral-props="bin/data/hello-jason.json"></section>
         <section class="enthral-embed" data-enthral-script="components/templates/haxe-webpack/dist/hello.js" data-enthral-props="bin/data/hello-anna.json"></section>
-        <script src="bin/enthral.bundle.js"></script>
+        <section class="enthral-embed" data-enthral-script="components/examples/linechart/lineChart.js" data-enthral-props="components/examples/linechart/economy-data/data.json"></section>
+        <section class="enthral-embed" data-enthral-script="components/examples/linechart/lineChart.js" data-enthral-props="components/examples/linechart/bug-data/data.json"></section>
+        <script type="text/javascript">
+        (function () {
+            function browserSupportsAllFeatures() {
+                return window.Promise;
+            }
+            function loadScript(src, done) {
+                var js = document.createElement('script');
+                js.src = src;
+                js.onload = function() {if (done) {done();}}
+                js.onerror = function() {throw new js.Error('Failed to load script ' + src);}
+                document.head.appendChild(js);
+            }
+            function main() {
+                loadScript('bin/enthral.bundle.js');
+            }
+            if (browserSupportsAllFeatures()) {
+                // Browsers that support all features run `main()` immediately.
+                main();
+            } else {
+                // All other browsers loads polyfills and then run `main()`.
+                loadScript('bin/polyfills.bundle.js', main);
+            }
+        })();
+        </script>
     </body>
 </html>
