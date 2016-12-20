@@ -20,7 +20,7 @@
 	<script type="text/javascript">
 	(function () {
 		function browserSupportsAllFeatures() {
-			return window.Promise;
+			return window.Promise && window.fetch;
 		}
 		function loadScript(src, done) {
 			var js = document.createElement('script');

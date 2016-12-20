@@ -10,7 +10,9 @@
     "webpack": "webpack webpack.config.js"
   },
   "dependencies": {
-    "systemjs": "^0.19.41"
+    "promise-polyfill": "^6.0.2",
+    "systemjs": "^0.19.41",
+    "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
     "webpack": "^1.14.0"
