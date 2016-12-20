@@ -1,7 +1,7 @@
 {
     "version": "0.1.0",
     "command": "haxe",
-    "args": ["enthral.hxml"],
+    "args": ["enthralFrame.hxml"],
     "problemMatcher": {
         "owner": "haxe",
         "pattern": {
