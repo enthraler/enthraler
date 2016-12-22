@@ -1,0 +1,3 @@
+-cp src
+-main EnthralHost
+-js bin/enthralHost.js
