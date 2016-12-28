@@ -9,7 +9,28 @@ import SystemJs;
 using haxe.io.Path;
 
 class Enthral {
-	public function new() {}
+	public function new() {
+		SystemJs.config({
+			map: {
+				'd3.v3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js',
+				'd3.v4': 'https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min.js',
+				'c3': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js',
+				'c3.css': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css'
+			},
+			packages: {
+				'c3': {
+					map: {
+						d3: 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'
+					}
+				}
+			},
+			meta: {
+				'*.css': {
+					loader: 'node_modules/systemjs-plugin-css/css.js'
+				}
+			}
+		});
+	}
 
 	public function instantiateComponent<T>(componentScriptUrl:String, componentDataUrl:String, container:Element):Promise<StaticComponent<T>> {
 		var scriptPromise = SystemJs.importJs(componentScriptUrl).then(loadModuleDependencies),

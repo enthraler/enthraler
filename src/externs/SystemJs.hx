@@ -1,8 +1,26 @@
 import js.Promise;
-import js.Error;
+
+typedef SystemJsMapConfig = Dynamic<String>;
+
+typedef SystemJsMetaConfig = Dynamic<{
+	?loader:String,
+	?format:String,
+	?deps:Array<String>,
+	?scriptLoad:Bool,
+}>;
 
 typedef SystemJsConfig = {
-	?baseURL:String
+	?baseURL:String,
+	?map:SystemJsMapConfig,
+	?meta:SystemJsMetaConfig,
+	?packages:Dynamic<{
+		?main:String,
+		?format:String,
+		?defaultExtension:String,
+		?map:SystemJsMapConfig,
+		?meta:SystemJsMetaConfig
+	}>,
+	?bundles:Dynamic<Array<String>>
 };
 
 abstract Module(Dynamic) from Dynamic {

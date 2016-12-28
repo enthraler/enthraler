@@ -1195,6 +1195,10 @@ supports-color@^3.1.0:
   dependencies:
     has-flag "^1.0.0"
 
+systemjs-plugin-css@^0.1.32:
+  version "0.1.32"
+  resolved "https://registry.yarnpkg.com/systemjs-plugin-css/-/systemjs-plugin-css-0.1.32.tgz#db25d51e82b3d9289d294780f9cf82fe6955a8ac"
+
 systemjs@^0.19.41:
   version "0.19.41"
   resolved "https://registry.yarnpkg.com/systemjs/-/systemjs-0.19.41.tgz#835d2c0f10bf403b551fedc875f84bb44a02c4eb"
