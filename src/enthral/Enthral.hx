@@ -30,6 +30,10 @@ class Enthral {
 				}
 			}
 		});
+		SystemJs.setObject('enthral', {
+			"SystemJS": SystemJs,
+			"PropTypes": enthral.PropTypes
+		});
 	}
 
 	public function instantiateComponent<T>(componentScriptUrl:String, componentDataUrl:String, container:Element):Promise<StaticComponent<T>> {

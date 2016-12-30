@@ -67,6 +67,8 @@ extern class SystemJs {
 
 	public static function newModule(jsObject:Dynamic):Module;
 
+	public static function normalizeSync(name:String):String;
+
 	@:overload(function (dependencies:Array<String>, executingRequire:Bool, declare:Dynamic->Void):Void {})
 	public static function register(name:String, dependencies:Array<String>, declare:Dynamic->Void):Void;
 
@@ -76,4 +78,8 @@ extern class SystemJs {
 	public static function set(moduleName:String, module:Module):Void;
 
 	public static function _nodeRequire():Void;
+
+	public static inline function setObject(moduleName:String, module:Dynamic):Void {
+		SystemJs.set(SystemJs.normalizeSync(moduleName), SystemJs.newModule(module));
+	}
 }
