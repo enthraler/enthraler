@@ -58,14 +58,13 @@ class Enthral {
 	}
 
 	function mountComponent<T>(componentCls:Module, componentData:T, container:Element):StaticComponent<T> {
-		var dependencies = (componentCls:Dynamic).enthralLoadedDependencies,
-			schema = (componentCls:Dynamic).enthralPropTypes,
+		var schema = (componentCls:Dynamic).enthralPropTypes,
 			enthralData = (componentData:Dynamic).enthral;
 		if (schema != null) {
 			PropTypes.validate(schema, componentData, enthralData.dataUrl);
 		}
 
-		var component:StaticComponent<T> = componentCls.instantiate(componentData, dependencies);
+		var component:StaticComponent<T> = componentCls.instantiate(componentData);
 		component.setupView(container);
 		return component;
 	}
