@@ -6,6 +6,7 @@ typedef SystemJsMetaConfig = Dynamic<{
 	?loader:String,
 	?format:String,
 	?deps:Array<String>,
+	?globals:Dynamic<String>,
 	?scriptLoad:Bool,
 }>;
 
