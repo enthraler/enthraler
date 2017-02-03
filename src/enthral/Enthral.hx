@@ -24,12 +24,20 @@ class Enthral {
 				'd3/v3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js',
 				'd3/v4': 'https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min.js',
 				'c3/v0': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js',
-				'c3/v0/c3.css': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css'
+				'c3/v0/c3.css': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css',
+				'react/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.min.js',
+				'react-dom/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min.js',
+				'react-with-addons/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-with-addons.min.js'
 			},
 			packages: {
 				'c3/v0': {
 					map: {
 						d3: 'd3/v3'
+					}
+				},
+				'react-dom/v15': {
+					map: {
+						react: 'react/v15'
 					}
 				}
 			},
