@@ -1,117 +1,83 @@
 package enthral;
 
+import js.html.Element;
 import enthral.UserTypes;
 import enthral.Dispatcher;
 import enthral.HelperTypes;
-import js.html.Element;
 
 typedef ComponentMeta = {
 	template:{
 		name:String,
 		url:Url,
+		path:Url,
 		version:SemverString
 	},
 	content:{
 		name:String,
 		url:Url,
+		path:Url,
 		version:SemverString,
 		author:Author
 	},
-	instance:{
-		groupToken:String,
+	?instance:{
 		publisher:Publisher
 	}
 };
 
-/**
-A component that renders author data but has no user interactions that modify the state of the component.
-**/
-interface StaticComponent<AuthorData> {
-	/** (Injected). **/
-	var meta:ComponentMeta;
+typedef Component<AuthorData, UserState, GroupState> = {
+	/**
+		The container HTML Element, you should render the component inside this element.
 
-	/** (Injected). The data the author has populated this template with. **/
-	var authorData:AuthorData;
+		Injected: This will be set by Enthral immediately after the components constructor has completed.
+	**/
+	var container:Element;
 
 	/**
-	This function is called once all author data has been injected and we are ready to render our the component.
+		Metadata about the component.
 
-	It should add itself as a child of the container element, without affecting the container in any way.
-	You can assume that the container is already empty and is already attached to the DOM.
-
-	This function should render *something* synchronously, even if asynchronous calls are required to populate the view completely.
-	If the view will change height as additional data is loaded, we encourage you to set an approximate height during this call to avoid too many layout reflows as various components change height over time.
-
-	@param container The container element the view should render in.
+		Injected: This will be set by Enthral immediately after the components constructor has completed.
 	**/
-	function setupView(container:Element):Void;
+	@:optional var meta:ComponentMeta;
+
+	/**
+		A dispatcher used to trigger actions.
+
+		This can be used to trigger user actions that will be saved to the server.
+
+		Injected: This will be set by Enthral immediately after the components constructor has completed.
+	**/
+	@:optional var dispatcher:Dispatcher;
+
+	/**
+		Render the component using the author's data and the current state.
+
+		This function is called as soon as authorData is ready.
+		It should render the component into the container element given in the constructor.
+
+		If either the authorData or the states are updated, `render()` will be called again with the updated data.
+
+		@param authorData The properties used to configure the display of the component.
+		@param userState The current user state. This will be null unless `processUserAction` exists and actions have been called to set a group state.
+		@param groupState The current group state. This will be null unless `processGroupAction` exists and actions have been called to set a group state.
+	**/
+	function render(authorData:AuthorData, ?userState:Null<UserState>, ?groupState:Null<GroupState>):Void;
+
+	/**
+		Process an action and update the user state accordingly.
+
+		@param previousState The previous userState before the action occured. This may be null if no user state existed.
+		@param action The action that has been triggered.
+		@return A new user state. Please return a new object, rather than updating and returning the `previousState` object. If the state should not be updated, return the `previousState` object.
+	**/
+	@:optional function processUserAction(previousState:Null<UserState>, action:Action):UserState;
+
+	/**
+		Process an action and update the group state accordingly.
+
+		@param previousState The previous groupState before the action occured. This may be null if no group state existed.
+		@param action The action that has been triggered.
+		@return A new group state. Please return a new object, rather than updating and returning the `previousState` object. If the state should not be updated, return the `previousState` object.
+	**/
+	@:optional function processGroupAction(previousState:Null<GroupState>, action:Action):GroupState;
 }
 
-/**
-A component that renders author data and allows local interaction and state, but does not persist any state after a page refresh or share any state with the network.
-**/
-interface LocalComponent<AuthorData, LocalState> extends StaticComponent<AuthorData> {
-	/** (Injected). A dispatcher for triggering actions. **/
-	var dispatch:Dispatcher;
-
-	/**
-	A callback that is called whenever new state is received.
-	Use this to update or re-render your component.
-	**/
-	function receiveLocalState(state:LocalState):Void;
-
-	/**
-	Taking the old local state, and receiving an action, return the new local state.
-
-	This is similar to a 'reducer' in Redux, except we're not too precious about immutable state.
-	You're welcome to be precious about it if you want though!
-	**/
-	function processLocalAction(state:LocalState, action:Action):LocalState;
-}
-
-
-/**
-A component that renders author data and allows private state to be saved for each user.
-**/
-interface UserComponent<AuthorData, UserState> extends StaticComponent<AuthorData> {
-	/**
-	A callback that is called whenever new state is received.
-	Use this to update or re-render your component.
-	**/
-	function receiveUserState(state:{local:UserState, user:UserState}):Void;
-
-	/**
-	Taking the old user state, and receiving an action, return the new user state.
-
-	This is similar to a 'reducer' in Redux, except we're not too precious about immutable state.
-	You're welcome to be precious about it if you want though!
-	**/
-	function processUserAction(state:UserState, action:Action):UserState;
-}
-
-
-/**
-A component that renders author data and allows shared state to be saved between users in the group.
-**/
-interface GroupComponent<AuthorData, UserState> extends StaticComponent<AuthorData> {
-	/**
-	A callback that is called whenever new state is received.
-	Use this to update or re-render your component.
-	**/
-	function receiveUserState(state:{local:UserState, user:UserState}):Void;
-
-	/**
-	Taking the old user state, and receiving an action, return the new user state.
-
-	This is similar to a 'reducer' in Redux, except we're not too precious about immutable state.
-	You're welcome to be precious about it if you want though!
-	**/
-	function processUserAction(state:UserState, action:Action):UserState;
-}
-
-/**
-**/
-interface Component<AuthorData, LocalState, UserState, GroupState>
-	extends LocalComponent<AuthorData, LocalState>
-	extends UserComponent<AuthorData, UserState>
-	extends GroupComponent<AuthorData, GroupState> {}

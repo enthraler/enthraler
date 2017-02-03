@@ -9,7 +9,13 @@ import SystemJs;
 using haxe.io.Path;
 
 class Enthral {
-	public function new() {
+
+	static var systemJsInitComplete = false;
+	static function systemJsInit() {
+		if (systemJsInitComplete) {
+			return;
+		}
+
 		SystemJs.config({
 			map: {
 				'jquery/v1': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js',
@@ -37,10 +43,44 @@ class Enthral {
 			"SystemJS": SystemJs,
 			"PropTypes": enthral.PropTypes
 		});
+
+		systemJsInitComplete = true;
 	}
 
-	public function instantiateComponent<T>(componentScriptUrl:String, componentDataUrl:String, container:Element):Promise<StaticComponent<T>> {
-		var scriptPromise = SystemJs.importJs(componentScriptUrl),
+	public function new() {
+		systemJsInit();
+	}
+
+	public function instantiateComponent<AuthorData,UserState,GroupState>(componentScriptUrl:String, componentDataUrl:String, container:Element):Promise<Component<AuthorData,UserState,GroupState>> {
+		var componentClassPromise = SystemJs.importJs(componentScriptUrl),
+			componentMeta:ComponentMeta = {
+				template:{
+					name: null,
+					url: componentScriptUrl,
+					path: componentScriptUrl.directory().addTrailingSlash(),
+					version: null
+				},
+				content:{
+					name: null,
+					url: componentDataUrl,
+					path: componentDataUrl.directory().addTrailingSlash(),
+					version: null,
+					author: null
+				},
+				instance:{
+					publisher: null
+				}
+			},
+			componentPromise = componentClassPromise.then(function (componentCls:Module) {
+				var config = {
+					container: container,
+					meta: componentMeta
+					// TODO: detect if the dispatcher is needed, and inject it if so.
+					// I think avoiding adding it unless it is explicitly needed might be smart.
+				};
+				var component:Component<AuthorData, UserState, GroupState> = componentCls.instantiate(config);
+				return component;
+			}),
 			dataPromise = Browser.window.fetch(componentDataUrl).then(function (resp:Response) {
 				return resp.json().then(function (data) {
 					data.enthral = {
@@ -52,20 +92,17 @@ class Enthral {
 					return data;
 				});
 			});
-		return Promise.all([scriptPromise, dataPromise]).then(function (arr:Array<Dynamic>) {
-			return mountComponent(arr[0], arr[1], container);
+		return Promise.all([componentClassPromise, componentPromise, dataPromise]).then(function (arr:Array<Dynamic>) {
+			var componentCls:Dynamic = arr[0],
+				component:Component<AuthorData, UserState, GroupState> = arr[1],
+				authorData:AuthorData = arr[2],
+				schema = componentCls.enthralPropTypes,
+				enthralData = (authorData:Dynamic).enthral;
+			if (schema != null) {
+				PropTypes.validate(schema, authorData, enthralData.dataUrl);
+			}
+			component.render(authorData, null, null);
+			return component;
 		});
-	}
-
-	function mountComponent<T>(componentCls:Module, componentData:T, container:Element):StaticComponent<T> {
-		var schema = (componentCls:Dynamic).enthralPropTypes,
-			enthralData = (componentData:Dynamic).enthral;
-		if (schema != null) {
-			PropTypes.validate(schema, componentData, enthralData.dataUrl);
-		}
-
-		var component:StaticComponent<T> = componentCls.instantiate(componentData);
-		component.setupView(container);
-		return component;
 	}
 }
