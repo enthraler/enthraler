@@ -17,6 +17,7 @@
 		<h1>We can't display this content</h1>
 		<p>There is content embedded here that cannot be displayed because Javascript is disabled.</p>
 	</noscript>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.min.js"></script>
 	<script type="text/javascript">
 	(function () {
 		function browserSupportsAllFeatures() {
@@ -30,7 +31,7 @@
 			document.head.appendChild(js);
 		}
 		function main() {
-			loadScript('bin/enthral.bundle.js');
+			loadScript('bin/enthral.js');
 		}
 		if (browserSupportsAllFeatures()) {
 			// Browsers that support all features run `main()` immediately.
