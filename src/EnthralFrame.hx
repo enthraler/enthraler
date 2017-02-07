@@ -38,12 +38,10 @@ class EnthralFrame {
 					'type': 'register',
 					'url': window.location.hash
 				};
-				trace('Connected to host:', host);
 				// TODO: use the host origin.
 				host.postMessage(reply, '*');
 			} else {
-				// Check the origin!
-				trace('Is origin correct?', origin);
+				// TODO: Check the origin!
 			}
 		});
 	}
