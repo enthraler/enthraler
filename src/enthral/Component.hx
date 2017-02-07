@@ -7,20 +7,20 @@ import enthral.HelperTypes;
 
 typedef ComponentMeta = {
 	template:{
-		name:String,
 		url:Url,
 		path:Url,
-		version:SemverString
+		?name:String,
+		?version:SemverString
 	},
 	content:{
-		name:String,
 		url:Url,
 		path:Url,
-		version:SemverString,
-		author:Author
+		?name:String,
+		?version:SemverString,
+		?author:Author
 	},
 	?instance:{
-		publisher:Publisher
+		?publisher:Publisher
 	}
 };
 

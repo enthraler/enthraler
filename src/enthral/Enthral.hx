@@ -5,6 +5,7 @@ import js.Promise;
 import js.html.*;
 import enthral.Component;
 import RequireJs;
+using haxe.io.Path;
 
 class Enthral {
 
@@ -59,11 +60,11 @@ class Enthral {
 		return Promise.all([componentClassPromise, dataPromise]).then(function (arr:Array<Dynamic>) {
 			var componentCls:Module = arr[0],
 				authorData:AuthorData = arr[1],
+				componentMeta = buildComponentMeta(componentScriptUrl, componentDataUrl),
 				schema = (componentCls:Dynamic).enthralPropTypes;
 			var config = {
 				container: container,
-				// TODO: decide if we will support adding metadata.
-				// meta: componentMeta
+				meta: componentMeta
 				// TODO: detect if the dispatcher is needed, and inject it if so.
 				// I think avoiding adding it unless it is explicitly needed might be smart.
 			};
@@ -74,5 +75,18 @@ class Enthral {
 			component.render(authorData, null, null);
 			return component;
 		});
+	}
+
+	function buildComponentMeta(componentScriptUrl:String, componentDataUrl:String):ComponentMeta {
+		return {
+			template: {
+				url: componentScriptUrl,
+				path: componentScriptUrl.directory().addTrailingSlash(),
+			},
+			content: {
+				url: componentDataUrl,
+				path: componentDataUrl.directory().addTrailingSlash()
+			}
+		};
 	}
 }
