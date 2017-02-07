@@ -22,14 +22,17 @@ class Enthral {
 				// 'jquery/v3': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min',
 				'd3/v3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min',
 				'd3/v4': 'https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min',
-				'c3/v0': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min',
-				'c3/v0/c3.css': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css',
+				'c3': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min',
+				'c3/styles': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min',
 				'react/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.min',
 				'react-dom/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min',
 				'react-with-addons/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-with-addons.min'
 			},
 			map: {
-				'c3/v0': {
+				'*': {
+					'css': 'https://cdnjs.cloudflare.com/ajax/libs/require-css/0.1.8/css.min.js'
+				},
+				'c3': {
 					'd3': 'd3/v3'
 				},
 				'react-dom/v15': {
