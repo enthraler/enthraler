@@ -26,8 +26,7 @@ class Enthral {
 				'c3': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min',
 				'c3/styles': 'https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min',
 				'react/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.min',
-				'react-dom/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min',
-				'react-with-addons/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-with-addons.min'
+				'react-dom/v15': 'https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min'
 			},
 			map: {
 				'*': {
