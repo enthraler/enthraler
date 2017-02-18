@@ -2,13 +2,22 @@
 <html>
 	<head>
 		<title>Enthral Test</title>
+		<style type="text/css">
+			.enthral-embed {
+				border: 1px solid slategrey;
+			}
+		</style>
 	</head>
 	<body>
 		<h1>Render here</h1>
-		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/templates/plainjs/hello.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; height: 100px;"></iframe>
-		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/templates/haxe-webpack/dist/hello.js&props=bin/data/hello-anna.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; height: 100px;"></iframe>
-		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/examples/linechart/lineChart.js&props=components/examples/linechart/economy-data/data.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; height: 500px;"></iframe>
-		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/examples/linechart/lineChart.js&props=components/examples/linechart/bug-data/data.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; height: 500px;"></iframe>
+		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/templates/amd/hello.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 100px;"></iframe>
+		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/templates/webpack/bin/hello.bundle.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 100px;"></iframe>
+		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/templates/webpack-react/bin/hello.bundle.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 100px;"></iframe>
+		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/templates/haxe/dist/hello.js&props=bin/data/hello-anna.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 100px;"></iframe>
+		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3Pie.enthral.js&props=components/examples/c3/gender/gender.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 500px; max-width: 100%; height: 400px;"></iframe>
+		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3.enthral.js&props=components/examples/c3/economy-data/data.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
+		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3.enthral.js&props=components/examples/c3/bug-data/bugscore.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
+		<iframe class="enthral-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3.enthral.js&props=components/examples/c3/bug-data/comparisons.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
 		<script src="bin/enthralHost.js"></script>
 	</body>
 </html>
