@@ -67,23 +67,29 @@ class HaxeComponentBuilder {
 		};
 		var i = 0;
 		for (meta in cb.target.meta.extract(':enthralerDependency')) {
-			if (meta.params == null || meta.params.length < 2) {
-				Context.warning('@:enthralerDependency metadata should have 2 parameters, for example: @:enthralerDependency("jquery", js.jquery.JQuery)', meta.pos);
+			if (meta.params == null || meta.params.length < 1) {
+				Context.warning('@:enthralerDependency metadata should have 1 or 2 parameters, for example: @:enthralerDependency("jquery", js.jquery.JQuery)', meta.pos);
 				continue;
 			}
-			var dependencyString = meta.params[0],
-				externPath = meta.params[1],
-				externTypeName = getFullTypeNameFromExternPath(externPath),
-				externIdentName = externTypeName.replace('.', '_'),
-				depIdent = macro $i{externIdentName};
+			deps.list.push(meta.params[0]);
 
-			changeNativeNameForExtern(externTypeName, externIdentName, externPath.pos);
+			if (meta.params.length == 1) {
+				// We are loading the dependency, but do not need to link it to an extern.
+				deps.identifiers.push(macro _);
+			} else {
+				// We need to link the dependency to an extern.
+				var externPath = meta.params[1],
+					externTypeName = getFullTypeNameFromExternPath(externPath),
+					externIdentName = externTypeName.replace('.', '_'),
+					depIdent = macro $i{externIdentName};
 
-			deps.list.push(dependencyString);
-			deps.identifiers.push(depIdent);
-			deps.setters.push(
-				macro js.Lib.global.$externIdentName = $depIdent
-			);
+				changeNativeNameForExtern(externTypeName, externIdentName, externPath.pos);
+
+				deps.identifiers.push(depIdent);
+				deps.setters.push(
+					macro js.Lib.global.$externIdentName = $depIdent
+				);
+			}
 		}
 		return deps;
 	}
