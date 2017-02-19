@@ -9,13 +9,9 @@ using haxe.io.Path;
 
 class Enthral {
 
-	static var requireJsInitComplete = false;
-	static function requireJsInit() {
-		if (requireJsInitComplete) {
-			return;
-		}
-
+	static function requireJsInit(baseUrl:String) {
 		RequireJs.config({
+			baseUrl: baseUrl,
 			paths: {
 				'jquery': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min',
 				// 'jquery/v1': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min',
@@ -44,22 +40,20 @@ class Enthral {
 		RequireJs.namedDefine('enthral', [], {
 			PropTypes: enthral.PropTypes
 		});
-
-		requireJsInitComplete = true;
 	}
 
-	public function new() {
-		requireJsInit();
-	}
+	public function new() {}
 
 	public function instantiateComponent<AuthorData,UserState,GroupState>(componentScriptUrl:String, componentDataUrl:String, container:Element):Promise<Component<AuthorData,UserState,GroupState>> {
+		var componentMeta = buildComponentMeta(componentScriptUrl, componentDataUrl);
+		requireJsInit(componentMeta.template.path);
+
 		var componentClassPromise = RequireJs.requireSingleModule(componentScriptUrl),
 			dataPromise = Browser.window.fetch(componentDataUrl).then(function (r) return r.json());
 
 		return Promise.all([componentClassPromise, dataPromise]).then(function (arr:Array<Dynamic>) {
 			var componentCls:Module = arr[0],
 				authorData:AuthorData = arr[1],
-				componentMeta = buildComponentMeta(componentScriptUrl, componentDataUrl),
 				schema = (componentCls:Dynamic).enthralPropTypes;
 			var config = {
 				container: container,
