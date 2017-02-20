@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title>Enthraler Test</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css"></link>
 		<style type="text/css">
 			.enthraler-embed {
 				border: 1px solid slategrey;
@@ -9,15 +10,43 @@
 		</style>
 	</head>
 	<body>
-		<h1>Render here</h1>
-		<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/templates/amd/hello.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 150px;"></iframe>
-		<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/templates/webpack/bin/hello.bundle.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 150px;"></iframe>
-		<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/templates/webpack-react/bin/hello.bundle.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 150px;"></iframe>
-		<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/templates/haxe/dist/hello.js&props=bin/data/hello-anna.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 150px;"></iframe>
-		<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3Pie.enthraler.js&props=components/examples/c3/gender/gender.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 500px; max-width: 100%; height: 400px;"></iframe>
-		<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3.enthraler.js&props=components/examples/c3/economy-data/data.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
-		<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3.enthraler.js&props=components/examples/c3/bug-data/bugscore.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
-		<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3.enthraler.js&props=components/examples/c3/bug-data/comparisons.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
+		<div class="container">
+			<h1>Enthraler</h1>
+			<h3>Hello World Examples</h3>
+			<div class="row">
+				<div class="col-md-3">
+					<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/templates/amd/hello.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 150px;"></iframe>
+				</div>
+				<div class="col-md-3">
+					<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/templates/webpack/bin/hello.bundle.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 150px;"></iframe>
+				</div>
+				<div class="col-md-3">
+					<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/templates/webpack-react/bin/hello.bundle.js&props=bin/data/hello-jason.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 150px;"></iframe>
+				</div>
+				<div class="col-md-3">
+					<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/templates/haxe/dist/hello.js&props=bin/data/hello-anna.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 400px; max-width: 100%; height: 150px;"></iframe>
+				</div>
+			</div>
+			<h3>Sample Components</h3>
+			<div class="row">
+				<div class="col-md-6">
+					<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3Pie.enthraler.js&props=components/examples/c3/gender/gender.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
+				</div>
+				<div class="col-md-6">
+					<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3.enthraler.js&props=components/examples/c3/economy-data/data.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
+				</div>
+				<div class="col-md-6">
+					<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3.enthraler.js&props=components/examples/c3/bug-data/bugscore.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
+				</div>
+				<div class="col-md-6">
+					<iframe class="enthraler-embed" src="http://localhost:2000/frame.html#?script=components/examples/c3/c3.enthraler.js&props=components/examples/c3/bug-data/comparisons.json" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
+				</div>
+			</div>
+		</div>
+
+
+
+
 		<script src="bin/enthralerHost.js"></script>
 	</body>
 </html>
