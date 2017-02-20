@@ -2,7 +2,7 @@ import js.Browser.window;
 import js.Browser.document;
 import js.html.*;
 
-class EnthralHost {
+class EnthralerHost {
 	static function main() {
 		if (document.readyState != 'loading') {
 			init();
@@ -17,7 +17,7 @@ class EnthralHost {
 	}
 
 	static function initAllFrames() {
-		var frames = document.querySelectorAll('iframe.enthral-embed');
+		var frames = document.querySelectorAll('iframe.enthraler-embed');
 		for (elm in frames) {
 			var iframe:IFrameElement = cast elm;
 			// We don't have a way to check if an iFrame on a 3rd party domain is loaded already.

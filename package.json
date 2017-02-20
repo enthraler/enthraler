@@ -1,9 +1,9 @@
 {
-  "name": "enthralus",
+  "name": "enthraler",
   "version": "0.1.0",
-  "description": "A Javascript client library for rendering Enthral interactive components inside your document.",
+  "description": "A Javascript client library for rendering Enthralers (interactive components) inside your document.",
   "main": "dist/index.js",
-  "repository": "https://github.com/enthral/enthral.git",
+  "repository": "https://github.com/enthraler/enthraler.git",
   "author": "Jason O'Neil <jason.oneil@gmail.com>",
   "license": "MIT",
   "scripts": {

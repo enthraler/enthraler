@@ -1,4 +1,4 @@
-package enthral.macro;
+package enthraler.macro;
 
 import haxe.macro.Expr;
 import haxe.macro.Context;

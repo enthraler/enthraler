@@ -1,5 +1,6 @@
-Enthral: capture the fascinated attention of.
+Enthraler: capture the fascinated attention of.
 
+Enthraler: an interactive component you add to your page that enthrals your audience.
 
 
 ---
@@ -73,10 +74,10 @@ To render:
 
 ```
 var moodleConnection = new Moodle(groupToken, userToken);
-var enthralHost = new EnthralHost().connectTo(moodleConnection);
-enthralHost.render('template:version', 'content:version', '#my-container', 'instance-id-01');
-enthralHost.render('usa-map:2.1.0', '538prediction:1.0.0', '#embed-election', 'instance-id-02');
-enthralHost.render('annotationGallery:2.1.0', 'naziPropaganda:1.0.0', '#embed-posters', 'instance-id-03');
+var enthralerHost = new EnthralerHost().connectTo(moodleConnection);
+enthralerHost.render('template:version', 'content:version', '#my-container', 'instance-id-01');
+enthralerHost.render('usa-map:2.1.0', '538prediction:1.0.0', '#embed-election', 'instance-id-02');
+enthralerHost.render('annotationGallery:2.1.0', 'naziPropaganda:1.0.0', '#embed-posters', 'instance-id-03');
 ```
 
 To create a component:

@@ -1,9 +1,9 @@
-package enthral;
+package enthraler;
 
 import js.html.Element;
-import enthral.UserTypes;
-import enthral.Dispatcher;
-import enthral.HelperTypes;
+import enthraler.UserTypes;
+import enthraler.Dispatcher;
+import enthraler.HelperTypes;
 
 typedef ComponentMeta = {
 	template:{
@@ -28,14 +28,14 @@ typedef Component<AuthorData, UserState, GroupState> = {
 	/**
 		The container HTML Element, you should render the component inside this element.
 
-		Injected: This will be set by Enthral immediately after the components constructor has completed.
+		Injected: This will be set by Enthraler immediately after the components constructor has completed.
 	**/
 	var container:Element;
 
 	/**
 		Metadata about the component.
 
-		Injected: This will be set by Enthral immediately after the components constructor has completed.
+		Injected: This will be set by Enthraler immediately after the components constructor has completed.
 	**/
 	@:optional var meta:ComponentMeta;
 
@@ -44,7 +44,7 @@ typedef Component<AuthorData, UserState, GroupState> = {
 
 		This can be used to trigger user actions that will be saved to the server.
 
-		Injected: This will be set by Enthral immediately after the components constructor has completed.
+		Injected: This will be set by Enthraler immediately after the components constructor has completed.
 	**/
 	@:optional var dispatcher:Dispatcher;
 

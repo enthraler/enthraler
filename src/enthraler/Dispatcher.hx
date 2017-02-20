@@ -1,6 +1,6 @@
-package enthral;
+package enthraler;
 
-import enthral.Action;
+import enthraler.Action;
 
 interface Dispatcher {
 	function user(action:Action):Void;

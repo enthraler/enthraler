@@ -1,9 +1,9 @@
 import js.Browser.document;
 import js.Browser.window;
 import js.html.*;
-import enthral.Enthral;
+import enthraler.Enthraler;
 
-class EnthralFrame {
+class EnthralerFrame {
 	public static function main() {
 		var params = getParamsFromLocation();
 		addMessageListener();
@@ -11,9 +11,9 @@ class EnthralFrame {
 	}
 
 	static function loadEnthralEmbed(params:Map<String,String>) {
-		var enthral = new Enthral();
+		var enthraler = new Enthraler();
 		var container = document.getElementById('container');
-		enthral.instantiateComponent(params['script'], params['props'], container);
+		enthraler.instantiateComponent(params['script'], params['props'], container);
 	}
 
 	static function getParamsFromLocation() {

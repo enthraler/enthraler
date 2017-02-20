@@ -1,13 +1,13 @@
-package enthral;
+package enthraler;
 
 import js.Browser;
 import js.Promise;
 import js.html.*;
-import enthral.Component;
+import enthraler.Component;
 import RequireJs;
 using haxe.io.Path;
 
-class Enthral {
+class Enthraler {
 
 	static function requireJsInit(baseUrl:String) {
 		RequireJs.config({
@@ -38,7 +38,7 @@ class Enthral {
 		});
 
 		RequireJs.namedDefine('enthral', [], {
-			PropTypes: enthral.PropTypes
+			PropTypes: enthraler.PropTypes
 		});
 	}
 
@@ -54,7 +54,7 @@ class Enthral {
 		return Promise.all([componentClassPromise, dataPromise]).then(function (arr:Array<Dynamic>) {
 			var componentCls:Module = arr[0],
 				authorData:AuthorData = arr[1],
-				schema = (componentCls:Dynamic).enthralPropTypes;
+				schema = (componentCls:Dynamic).enthralerPropTypes;
 			var config = {
 				container: container,
 				meta: componentMeta

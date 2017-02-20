@@ -1,4 +1,4 @@
-package enthral;
+package enthraler;
 
 typedef Url = String;
 typedef SemverString = String;

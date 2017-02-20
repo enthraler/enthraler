@@ -1,4 +1,0 @@
--cp src
--cp src/externs
--main EnthralFrame
--js bin/enthral.js

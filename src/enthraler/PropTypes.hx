@@ -1,4 +1,4 @@
-package enthral;
+package enthraler;
 
 import js.Browser;
 import js.Error;
