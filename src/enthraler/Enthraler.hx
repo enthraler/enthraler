@@ -3,11 +3,37 @@ package enthraler;
 import js.Browser;
 import js.Promise;
 import js.html.*;
-import enthraler.Component;
+import enthraler.EnthralerTemplate;
 import RequireJs;
 using haxe.io.Path;
 
 class Enthraler {
+
+	public static function instantiateComponent<AuthorData,UserState,GroupState>(templateUrl:String, dataUrl:String, container:Element):Promise<EnthralerTemplate<AuthorData,UserState,GroupState>> {
+		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl);
+		requireJsInit(componentMeta.template.path);
+
+		var componentClassPromise = RequireJs.requireSingleModule(templateUrl),
+			dataPromise = Browser.window.fetch(dataUrl).then(function (r) return r.json());
+
+		return Promise.all([componentClassPromise, dataPromise]).then(function (arr:Array<Dynamic>) {
+			var componentCls:Module = arr[0],
+				authorData:AuthorData = arr[1],
+				schema = (componentCls:Dynamic).enthralerPropTypes;
+			var config = {
+				container: container,
+				meta: componentMeta
+				// TODO: detect if the dispatcher is needed, and inject it if so.
+				// I think avoiding adding it unless it is explicitly needed might be smart.
+			};
+			var component:EnthralerTemplate<AuthorData, UserState, GroupState> = componentCls.instantiate(config);
+			if (schema != null) {
+				PropTypes.validate(schema, authorData, dataUrl);
+			}
+			component.render(authorData, null, null);
+			return component;
+		});
+	}
 
 	static function requireJsInit(baseUrl:String) {
 		RequireJs.config({
@@ -37,48 +63,20 @@ class Enthraler {
 			}
 		});
 
-		RequireJs.namedDefine('enthral', [], {
+		RequireJs.namedDefine('enthraler', [], {
 			PropTypes: enthraler.PropTypes
 		});
 	}
 
-	public function new() {}
-
-	public function instantiateComponent<AuthorData,UserState,GroupState>(componentScriptUrl:String, componentDataUrl:String, container:Element):Promise<Component<AuthorData,UserState,GroupState>> {
-		var componentMeta = buildComponentMeta(componentScriptUrl, componentDataUrl);
-		requireJsInit(componentMeta.template.path);
-
-		var componentClassPromise = RequireJs.requireSingleModule(componentScriptUrl),
-			dataPromise = Browser.window.fetch(componentDataUrl).then(function (r) return r.json());
-
-		return Promise.all([componentClassPromise, dataPromise]).then(function (arr:Array<Dynamic>) {
-			var componentCls:Module = arr[0],
-				authorData:AuthorData = arr[1],
-				schema = (componentCls:Dynamic).enthralerPropTypes;
-			var config = {
-				container: container,
-				meta: componentMeta
-				// TODO: detect if the dispatcher is needed, and inject it if so.
-				// I think avoiding adding it unless it is explicitly needed might be smart.
-			};
-			var component:Component<AuthorData, UserState, GroupState> = componentCls.instantiate(config);
-			if (schema != null) {
-				PropTypes.validate(schema, authorData, componentDataUrl);
-			}
-			component.render(authorData, null, null);
-			return component;
-		});
-	}
-
-	function buildComponentMeta(componentScriptUrl:String, componentDataUrl:String):ComponentMeta {
+	static function buildEnthralerMeta(templateUrl:String, dataUrl:String):EnthralerMeta {
 		return {
 			template: {
-				url: componentScriptUrl,
-				path: componentScriptUrl.directory().addTrailingSlash(),
+				url: templateUrl,
+				path: templateUrl.directory().addTrailingSlash(),
 			},
 			content: {
-				url: componentDataUrl,
-				path: componentDataUrl.directory().addTrailingSlash()
+				url: dataUrl,
+				path: dataUrl.directory().addTrailingSlash()
 			}
 		};
 	}

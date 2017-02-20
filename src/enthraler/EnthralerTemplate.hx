@@ -5,7 +5,7 @@ import enthraler.UserTypes;
 import enthraler.Dispatcher;
 import enthraler.HelperTypes;
 
-typedef ComponentMeta = {
+typedef EnthralerMeta = {
 	template:{
 		url:Url,
 		path:Url,
@@ -24,7 +24,7 @@ typedef ComponentMeta = {
 	}
 };
 
-typedef Component<AuthorData, UserState, GroupState> = {
+typedef EnthralerTemplate<AuthorData, UserState, GroupState> = {
 	/**
 		The container HTML Element, you should render the component inside this element.
 
@@ -37,7 +37,7 @@ typedef Component<AuthorData, UserState, GroupState> = {
 
 		Injected: This will be set by Enthraler immediately after the components constructor has completed.
 	**/
-	@:optional var meta:ComponentMeta;
+	@:optional var meta:EnthralerMeta;
 
 	/**
 		A dispatcher used to trigger actions.

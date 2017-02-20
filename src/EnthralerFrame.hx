@@ -7,13 +7,7 @@ class EnthralerFrame {
 	public static function main() {
 		var params = getParamsFromLocation();
 		addMessageListener();
-		loadEnthralEmbed(params);
-	}
-
-	static function loadEnthralEmbed(params:Map<String,String>) {
-		var enthraler = new Enthraler();
-		var container = document.getElementById('container');
-		enthraler.instantiateComponent(params['script'], params['props'], container);
+		loadEnthralerEmbed(params);
 	}
 
 	static function getParamsFromLocation() {
@@ -44,5 +38,10 @@ class EnthralerFrame {
 				// TODO: Check the origin!
 			}
 		});
+	}
+
+	static function loadEnthralerEmbed(params:Map<String,String>) {
+		var container = document.getElementById('container');
+		Enthraler.instantiateComponent(params['script'], params['props'], container);
 	}
 }

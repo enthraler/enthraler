@@ -5,7 +5,7 @@ import haxe.macro.Context;
 using tink.MacroApi;
 using StringTools;
 
-class HaxeComponentBuilder {
+class HaxeEnthralerTemplateBuilder {
 	public static function build() {
 		return ClassBuilder.run([
 			addKeepMetadata,
@@ -14,7 +14,7 @@ class HaxeComponentBuilder {
 	}
 
 	/**
-	Add metadata required to keep the component from being DCE'd.
+	Add metadata required to keep the enthraler template from being DCE'd.
 
 	Note: @:keepSub on the interface is not sufficient because we need `@:keepInit` to avoid DCE, and that needs to be applied to each class, not just the interface.
 	**/
