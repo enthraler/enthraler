@@ -9,7 +9,7 @@ using haxe.io.Path;
 
 class Enthraler {
 
-	public static function instantiateComponent<AuthorData,UserState,GroupState>(templateUrl:String, dataUrl:String, container:Element):Promise<EnthralerTemplate<AuthorData,UserState,GroupState>> {
+	public static function loadComponent<AuthorData,UserState,GroupState>(templateUrl:String, dataUrl:String, container:Element):Promise<EnthralerTemplate<AuthorData,UserState,GroupState>> {
 		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl);
 		requireJsInit(componentMeta.template.path);
 

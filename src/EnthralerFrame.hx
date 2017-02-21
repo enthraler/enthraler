@@ -7,7 +7,7 @@ class EnthralerFrame {
 	public static function main() {
 		var params = getParamsFromLocation();
 		addMessageListener();
-		loadEnthralerEmbed(params);
+		loadEnthralerComponent(params);
 	}
 
 	static function getParamsFromLocation() {
@@ -40,8 +40,8 @@ class EnthralerFrame {
 		});
 	}
 
-	static function loadEnthralerEmbed(params:Map<String,String>) {
+	static function loadEnthralerComponent(params:Map<String,String>) {
 		var container = document.getElementById('container');
-		Enthraler.instantiateComponent(params['script'], params['props'], container);
+		Enthraler.loadComponent(params['script'], params['props'], container);
 	}
 }
