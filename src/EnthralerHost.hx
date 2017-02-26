@@ -13,37 +13,30 @@ class EnthralerHost {
 
 	static function init() {
 		addMessageListener();
-		initAllFrames();
-	}
-
-	static function initAllFrames() {
-		var frames = document.querySelectorAll('iframe.enthraler-embed');
-		for (elm in frames) {
-			var iframe:IFrameElement = cast elm;
-			// We don't have a way to check if an iFrame on a 3rd party domain is loaded already.
-			// To be safe, we send a message immediately, as well as on a 'load' event.
-			initFrame(iframe);
-			iframe.addEventListener('load', function (e) {
-				initFrame(iframe);
-			});
-		}
-	}
-
-	static function initFrame(iframe:IFrameElement) {
-		var message = {
-			type: 'init',
-			greeting: 'Hello Embed, I am Host!'
-		};
-		// TODO: specify an origin based on iframe.src, rather than using a wildcard.
-		iframe.contentWindow.postMessage(message, '*');
 	}
 
 	static function addMessageListener() {
 		window.addEventListener('message', function (e:MessageEvent) {
-			var frame:Window = e.source;
-			var message = e.data;
-			var origin = e.origin;
-			trace('Received message from frame', frame, message);
+			var frameWindow:Window = e.source,
+				message = e.data,
+				data = haxe.Json.parse(message),
+				allFrames = document.querySelectorAll('iframe.enthraler-embed'),
+				currentFrame:IFrameElement = null;
+			for (elm in allFrames) {
+				var iframe:IFrameElement = cast elm;
+				if (iframe.contentWindow == frameWindow) {
+					currentFrame = iframe;
+				}
+			}
+
+			switch data.context {
+				case "iframe.resize":
+					if (currentFrame != null) {
+						currentFrame.style.height = data.height + 'px';
+					}
+				default:
+					trace('Received message from frame', frameWindow, data);
+			}
 		});
 	}
 }

@@ -4,13 +4,15 @@ import js.Browser;
 import js.Promise;
 import js.html.*;
 import enthraler.EnthralerTemplate;
+import enthraler.EnthralerEnvironment;
 import RequireJs;
 using haxe.io.Path;
 
 class Enthraler {
 
 	public static function loadComponent<AuthorData,UserState,GroupState>(templateUrl:String, dataUrl:String, container:Element):Promise<EnthralerTemplate<AuthorData,UserState,GroupState>> {
-		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl);
+		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl),
+			environment = new EnthralerEnvironment();
 		requireJsInit(componentMeta.template.path);
 
 		var componentClassPromise = RequireJs.requireSingleModule(templateUrl),
@@ -22,7 +24,8 @@ class Enthraler {
 				schema = (componentCls:Dynamic).enthralerPropTypes;
 			var config = {
 				container: container,
-				meta: componentMeta
+				meta: componentMeta,
+				environment: environment
 				// TODO: detect if the dispatcher is needed, and inject it if so.
 				// I think avoiding adding it unless it is explicitly needed might be smart.
 			};

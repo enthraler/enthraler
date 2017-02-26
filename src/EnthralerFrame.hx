@@ -1,12 +1,11 @@
 import js.Browser.document;
 import js.Browser.window;
 import js.html.*;
-import enthraler.Enthraler;
+import enthraler.*;
 
 class EnthralerFrame {
 	public static function main() {
 		var params = getParamsFromLocation();
-		addMessageListener();
 		loadEnthralerComponent(params);
 	}
 
@@ -19,25 +18,6 @@ class EnthralerFrame {
 			params[parts[0]] = parts[1];
 		}
 		return params;
-	}
-
-	static function addMessageListener() {
-		window.addEventListener('message', function (e:MessageEvent) {
-			var host:Window = e.source;
-			var message = e.data;
-			var origin = e.origin;
-
-			if (message.type == 'init') {
-				var reply = {
-					'type': 'register',
-					'url': window.location.hash
-				};
-				// TODO: use the host origin.
-				host.postMessage(reply, '*');
-			} else {
-				// TODO: Check the origin!
-			}
-		});
 	}
 
 	static function loadEnthralerComponent(params:Map<String,String>) {
