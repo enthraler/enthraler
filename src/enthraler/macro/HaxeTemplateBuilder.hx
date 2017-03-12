@@ -5,6 +5,9 @@ import haxe.macro.Context;
 using tink.MacroApi;
 using StringTools;
 
+/**
+This class provides a build macro used by `HaxeTemplate`.
+**/
 class HaxeTemplateBuilder {
 	public static function build() {
 		return ClassBuilder.run([

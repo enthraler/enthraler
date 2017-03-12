@@ -2,6 +2,13 @@ import js.Browser.window;
 import js.Browser.document;
 import js.html.*;
 
+/**
+The entry point for a JS file that runs on the main document page, and can communicate with individual Enthraler Iframes on the page.
+
+It uses `window.addEventListener('message', ...)` to listen fo messages from the Enthraler Iframes and process the messages accordingly.
+
+This is used to implement functionality such as automatic height changes.
+**/
 class EnthralerHost {
 	static function main() {
 		if (document.readyState != 'loading') {

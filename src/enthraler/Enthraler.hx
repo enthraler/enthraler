@@ -9,8 +9,15 @@ import enthraler.Meta;
 import RequireJs;
 using haxe.io.Path;
 
+/**
+This class allows you to load a new Enthraler component.
+**/
 class Enthraler {
 
+	/**
+	Load an Enthraler component based on the given `Template` (`templateUrl`) and author data `dataUrl`.
+	Render the new Enthraler component into the specified `container` element.
+	**/
 	public static function loadComponent<AuthorData,UserState,GroupState>(templateUrl:String, dataUrl:String, container:Element):Promise<Template<AuthorData,UserState,GroupState>> {
 		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl),
 			environment = new Environment(container, componentMeta);

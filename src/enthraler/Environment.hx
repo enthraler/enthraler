@@ -4,15 +4,18 @@ import js.html.Element;
 import js.Browser.*;
 import haxe.Json;
 
+/**
+The Environment class is the main object an Enthraler template uses to interact with the surrounding page.
+**/
 class Environment {
 
 	/**
-	The container that the enthraler should render into.
+	The container that the Enthraler should render into.
 	**/
 	public var container(default, null):Element;
 
 	/**
-	The metadata for the current enthraler being displayed.
+	The metadata for the current Enthraler being displayed.
 	**/
 	public var meta(default, null):Meta;
 
@@ -25,7 +28,7 @@ class Environment {
 	Send a request to the parent environment to change the height.
 
 	This works by sending an `iframe.resize` message to the parent window.
-	This message is recognised and handled correctly by an Enthral Host or by the Embedly plugin, which is used by sites such as Medium.
+	This message is recognised and handled correctly by an Enthraler Host or by the Embedly plugin (which is used by sites such as Medium).
 
 	@param requestedHeight The height you would like the iframe to be, in pixels. If not supplied, the `scrollHeight` of the HTML element, plus 1 pixel, will be used.
 	**/
@@ -48,18 +51,18 @@ class Environment {
 	}
 
 	/**
-		(Not implemented yet).
-		Dispatch an action that is relevant to the specific user viewing this Enthraler.
+	(Not implemented yet).
+	Dispatch an action that is relevant to the specific user viewing this Enthraler.
 
-		TODO: implement this function.
+	TODO: implement this function.
 	**/
 	public function dispatchUserAction(action:Action):Void {}
 
 	/**
-		(Not implemented yet).
-		Dispatch an action that is relevant to the whole group of users viewing this Enthraler.
+	(Not implemented yet).
+	Dispatch an action that is relevant to the whole group of users viewing this Enthraler.
 
-		TODO: implement this function.
+	TODO: implement this function.
 	**/
 	public function dispatchGroupAction(action:Action):Void {}
 }
