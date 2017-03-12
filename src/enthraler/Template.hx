@@ -24,7 +24,7 @@ typedef EnthralerMeta = {
 	}
 };
 
-typedef EnthralerTemplate<AuthorData, UserState, GroupState> = {
+typedef Template<AuthorData, UserState, GroupState> = {
 	/**
 		The container HTML Element, you should render the component inside this element.
 

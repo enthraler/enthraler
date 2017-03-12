@@ -5,7 +5,7 @@ import haxe.macro.Context;
 using tink.MacroApi;
 using StringTools;
 
-class HaxeEnthralerTemplateBuilder {
+class HaxeTemplateBuilder {
 	public static function build() {
 		return ClassBuilder.run([
 			addKeepMetadata,

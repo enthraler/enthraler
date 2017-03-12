@@ -3,7 +3,7 @@ package enthraler;
 import js.Browser.*;
 import haxe.Json;
 
-class EnthralerEnvironment {
+class Environment {
 
 	public function new() {
 
