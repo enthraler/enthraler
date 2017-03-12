@@ -1,12 +1,24 @@
 package enthraler;
 
+import js.html.Element;
 import js.Browser.*;
 import haxe.Json;
 
 class Environment {
 
-	public function new() {
+	/**
+	The container that the enthraler should render into.
+	**/
+	public var container(default, null):Element;
 
+	/**
+	The metadata for the current enthraler being displayed.
+	**/
+	public var meta(default, null):Meta;
+
+	public function new(container, meta) {
+		this.container = container;
+		this.meta = meta;
 	}
 
 	/**
@@ -34,4 +46,20 @@ class Environment {
 			height: requestedHeight
 		}), '*');
 	}
+
+	/**
+		(Not implemented yet).
+		Dispatch an action that is relevant to the specific user viewing this Enthraler.
+
+		TODO: implement this function.
+	**/
+	public function dispatchUserAction(action:Action):Void {}
+
+	/**
+		(Not implemented yet).
+		Dispatch an action that is relevant to the whole group of users viewing this Enthraler.
+
+		TODO: implement this function.
+	**/
+	public function dispatchGroupAction(action:Action):Void {}
 }

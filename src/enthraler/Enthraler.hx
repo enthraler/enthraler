@@ -5,6 +5,7 @@ import js.Promise;
 import js.html.*;
 import enthraler.Template;
 import enthraler.Environment;
+import enthraler.Meta;
 import RequireJs;
 using haxe.io.Path;
 
@@ -12,7 +13,7 @@ class Enthraler {
 
 	public static function loadComponent<AuthorData,UserState,GroupState>(templateUrl:String, dataUrl:String, container:Element):Promise<Template<AuthorData,UserState,GroupState>> {
 		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl),
-			environment = new Environment();
+			environment = new Environment(container, componentMeta);
 		requireJsInit(componentMeta.template.path);
 
 		var componentClassPromise = RequireJs.requireSingleModule(templateUrl),
@@ -22,14 +23,7 @@ class Enthraler {
 			var componentCls:Module = arr[0],
 				authorData:AuthorData = arr[1],
 				schema = (componentCls:Dynamic).enthralerPropTypes;
-			var config = {
-				container: container,
-				meta: componentMeta,
-				environment: environment
-				// TODO: detect if the dispatcher is needed, and inject it if so.
-				// I think avoiding adding it unless it is explicitly needed might be smart.
-			};
-			var component:Template<AuthorData, UserState, GroupState> = componentCls.instantiate(config);
+			var component:Template<AuthorData, UserState, GroupState> = componentCls.instantiate(environment);
 			if (schema != null) {
 				PropTypes.validate(schema, authorData, dataUrl);
 			}
@@ -71,7 +65,7 @@ class Enthraler {
 		});
 	}
 
-	static function buildEnthralerMeta(templateUrl:String, dataUrl:String):EnthralerMeta {
+	static function buildEnthralerMeta(templateUrl:String, dataUrl:String):Meta {
 		return {
 			template: {
 				url: templateUrl,
