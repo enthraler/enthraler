@@ -1,52 +1,17 @@
 package enthraler;
 
-import js.html.Element;
-import enthraler.UserTypes;
-import enthraler.Dispatcher;
-import enthraler.HelperTypes;
-
-typedef EnthralerMeta = {
-	template:{
-		url:Url,
-		path:Url,
-		?name:String,
-		?version:SemverString
-	},
-	content:{
-		url:Url,
-		path:Url,
-		?name:String,
-		?version:SemverString,
-		?author:Author
-	},
-	?instance:{
-		?publisher:Publisher
-	}
-};
-
 typedef Template<AuthorData, UserState, GroupState> = {
-	/**
-		The container HTML Element, you should render the component inside this element.
 
-		Injected: This will be set by Enthraler immediately after the components constructor has completed.
-	**/
-	var container:Element;
+	#if xml
+		/**
+		The constructor (or `new()` function) for your Enthraler Template.
 
-	/**
-		Metadata about the component.
-
-		Injected: This will be set by Enthraler immediately after the components constructor has completed.
-	**/
-	@:optional var meta:EnthralerMeta;
-
-	/**
-		A dispatcher used to trigger actions.
-
-		This can be used to trigger user actions that will be saved to the server.
-
-		Injected: This will be set by Enthraler immediately after the components constructor has completed.
-	**/
-	@:optional var dispatcher:Dispatcher;
+		It will accept one argument, the `Environment`, which includes the container it should render inside, functions to dispatch actions, metadata etc.
+		**/
+		// Note: Haxe 3.4 no longer allows us to add a `new()` function specification to a typedef.
+		// We are rendering it here only in XML (API document generation) mode, and using the name "constructor" as a workaround.
+		function constructor(environment:Environment):Void;
+	#end
 
 	/**
 		Render the component using the author's data and the current state.
