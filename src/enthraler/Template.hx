@@ -5,9 +5,13 @@ The type specification for an Enthraler Template.
 
 A template should have a `new()` function (constructor) and a `render()` method.
 
-If using persistant state, it should have `processUserAction()` and `processGroupAction()` functions as required.
+(For feature_shared_state): If using persistant state, it should have `processUserAction()` and `processGroupAction()` functions as required.
 **/
+#if feature_shared_state
 typedef Template<AuthorData, UserState, GroupState> = {
+#else
+typedef Template<AuthorData> = {
+#end
 
 	#if xml
 		/**
@@ -29,11 +33,16 @@ typedef Template<AuthorData, UserState, GroupState> = {
 	If either the authorData or the states are updated, `render()` will be called again with the updated data.
 
 	@param authorData The properties used to configure the display of the component.
-	@param userState The current user state. This will only be set if `processUserAction` exists and actions have been called to set a group state.
-	@param groupState The current group state. This will only be set if `processGroupAction` exists and actions have been called to set a group state.
+	@param userState (For feature_shared_state): The current user state. This will only be set if `processUserAction` exists and actions have been called to set a group state.
+	@param groupState (For feature_shared_state): The current group state. This will only be set if `processGroupAction` exists and actions have been called to set a group state.
 	**/
+	#if feature_shared_state
 	function render(authorData:AuthorData, ?userState:Null<UserState>, ?groupState:Null<GroupState>):Void;
+	#else
+	function render(authorData:AuthorData):Void;
+	#end
 
+	#if feature_shared_state
 	/**
 	Process an action and update the user state accordingly.
 
@@ -51,5 +60,6 @@ typedef Template<AuthorData, UserState, GroupState> = {
 	@return A new group state. Please return a new object, rather than updating and returning the `previousState` object. If the state should not be updated, return the `previousState` object.
 	**/
 	@:optional function processGroupAction(previousState:Null<GroupState>, action:Action):GroupState;
+	#end
 }
 

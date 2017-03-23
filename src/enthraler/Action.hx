@@ -1,5 +1,6 @@
 package enthraler;
 
+#if feature_shared_state
 /**
 An Action object describes an action an end-user has taken while interacting with an Enthraler.
 
@@ -20,3 +21,4 @@ Actions are a plain JS object, and always have a "type" property to differentiat
 typedef Action = {
 	type:String
 }
+#end

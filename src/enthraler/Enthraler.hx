@@ -18,9 +18,14 @@ class Enthraler {
 	Load an Enthraler component based on the given `Template` (`templateUrl`) and author data `dataUrl`.
 	Render the new Enthraler component into the specified `container` element.
 	**/
+	#if feature_shared_state
 	public static function loadComponent<AuthorData,UserState,GroupState>(templateUrl:String, dataUrl:String, container:Element):Promise<Template<AuthorData,UserState,GroupState>> {
+	#else
+	public static function loadComponent<AuthorData>(templateUrl:String, dataUrl:String, container:Element):Promise<Template<AuthorData>> {
+	#end
 		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl),
 			environment = new Environment(container, componentMeta);
+
 		requireJsInit(componentMeta.template.path);
 
 		var componentClassPromise = RequireJs.requireSingleModule(templateUrl),
@@ -30,11 +35,18 @@ class Enthraler {
 			var componentCls:Module = arr[0],
 				authorData:AuthorData = arr[1],
 				schema = (componentCls:Dynamic).enthralerPropTypes;
-			var component:Template<AuthorData, UserState, GroupState> = componentCls.instantiate(environment);
+
 			if (schema != null) {
 				PropTypes.validate(schema, authorData, dataUrl);
 			}
+
+			#if feature_shared_state
+			var component:Template<AuthorData, UserState, GroupState> = componentCls.instantiate(environment);
 			component.render(authorData, null, null);
+			#else
+			var component:Template<AuthorData> = componentCls.instantiate(environment);
+			component.render(authorData);
+			#end
 			return component;
 		});
 	}

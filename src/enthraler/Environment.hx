@@ -50,6 +50,7 @@ class Environment {
 		}), '*');
 	}
 
+	#if feature_shared_state
 	/**
 	(Not implemented yet).
 	Dispatch an action that is relevant to the specific user viewing this Enthraler.
@@ -65,4 +66,5 @@ class Environment {
 	TODO: implement this function.
 	**/
 	public function dispatchGroupAction(action:Action):Void {}
+	#end
 }
