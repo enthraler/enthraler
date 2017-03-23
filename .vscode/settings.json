@@ -12,7 +12,8 @@
     // such as -cp, -lib, target output settings and defines.
     "haxe.displayConfigurations": [
         ["enthralerFrame.hxml"],
-        ["enthralerHost.hxml"]
+        ["enthralerHost.hxml"],
+        ["apiDocs.hxml"]
     ],
 
     // Automatic formatting of Javascript.

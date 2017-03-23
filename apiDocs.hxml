@@ -1,0 +1,8 @@
+-cp src
+-cp src/externs
+-cp doc/
+-js doc/ApiDocs.js
+-xml doc/ApiDocs.xml
+-cmd haxelib run dox -i doc/ApiDocs.xml -o doc/pages --toplevel-package enthraler
+-cmd rm doc/ApiDocs.js
+ApiDocs
