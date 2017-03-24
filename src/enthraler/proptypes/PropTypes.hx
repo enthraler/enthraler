@@ -18,7 +18,7 @@ A `PropType` can either be given as a full `PropTypeDescription` or a `SimplePro
 Haxe will treat either a `SimplePropTypeName` or `PropTypeDescription` the same.
 If the value is a simple prop type name, then it will treat it as if the object is
 **/
-abstract PropType(Dynamic) from SimplePropTypeName from PropTypeDescription to PropTypeDescription {
+abstract PropType(Dynamic) from SimplePropTypeName from PropTypeDescription {
 
 	/**
 	Get the original value, however it was passed in.
@@ -30,6 +30,7 @@ abstract PropType(Dynamic) from SimplePropTypeName from PropTypeDescription to P
 	/**
 	Get the value as a `PropTypeDescription`, transforming a `SimplePropTypeName` into a description if necessary.
 	**/
+	@:to
 	public function getDescription():PropTypeDescription {
 		if (isString(this)) {
 			return {
