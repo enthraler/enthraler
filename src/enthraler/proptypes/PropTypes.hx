@@ -68,12 +68,7 @@ abstract PropType(Dynamic) from SimplePropTypeName from PropTypeDescription to P
 	}
 
 	static inline function isString(value:Dynamic):Bool {
-		#if js
-			// No need to drag in the entire Haxe reflection library to test if this is a String.
-			return untyped __typeof__(value) == 'string';
-		#else
-			return Type.typeof(value).match(ValueType.TClass(String));
-		#end
+		return Std.is(value, String);
 	}
 }
 
