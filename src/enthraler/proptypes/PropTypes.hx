@@ -1,6 +1,7 @@
 package enthraler.proptypes;
 
 import haxe.extern.EitherType;
+import enthraler.proptypes.Validators;
 
 /**
 PropTypes definte the type of data that an Enthraler Template expects to be given as it's "author data".
@@ -73,6 +74,54 @@ abstract PropType(Dynamic) from SimplePropTypeName from PropTypeDescription {
 				};
 				PTShape(shape, optional);
 			case any: PTAny(optional);
+		}
+	}
+
+	/**
+	Get a `ValidatorFunction` for this PropType.
+
+	This will be compatible with React PropTypes.
+	**/
+	public function getValidatorFn():ValidatorFunction {
+		return getReactPropTypeFromEnum(getEnum());
+	}
+
+	static function getReactPropTypeFromEnum(pt:PropTypeEnum) {
+		inline function wrap(check:ValidatorFunction, isOptional:Null<Bool>) {
+			return isOptional ? check : Validators.required(check);
+		}
+
+		return switch pt {
+			case PTArray(optional):
+				wrap(Validators.array, optional);
+			case PTBool(optional):
+				wrap(Validators.bool, optional);
+			case PTNumber(optional):
+				wrap(Validators.number, optional);
+			case PTInteger(optional):
+				wrap(Validators.integer, optional);
+			case PTObject(optional):
+				wrap(Validators.object, optional);
+			case PTString(optional):
+				wrap(Validators.string, optional);
+			case PTOneOf(values, optional):
+				wrap(Validators.oneOf(values), optional);
+			case PTOneOfType(types, optional):
+				var subTypes = [for (t in types) getReactPropTypeFromEnum(t)];
+				wrap(Validators.oneOfType(subTypes), optional);
+			case PTArrayOf(subType, optional):
+				wrap(Validators.arrayOf(getReactPropTypeFromEnum(subType)), optional);
+			case PTObjectOf(subType, optional):
+				wrap(Validators.objectOf(getReactPropTypeFromEnum(subType)), optional);
+			case PTShape(shapeObj, optional):
+				var validatorShape:Dynamic<ValidatorFunction> = {};
+				for (fieldName in Reflect.fields(shapeObj)) {
+					var pt:PropTypeEnum = Reflect.field(shapeObj, fieldName);
+					Reflect.setField(validatorShape, fieldName, getReactPropTypeFromEnum(pt));
+				}
+				wrap(Validators.shape(validatorShape), optional);
+			case PTAny(optional):
+				wrap(Validators.any, optional);
 		}
 	}
 
