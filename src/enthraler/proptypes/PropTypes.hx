@@ -57,8 +57,8 @@ abstract PropType(Dynamic) from SimplePropTypeName from PropTypeDescription {
 		return switch description.type {
 			case array: PTArray(optional);
 			case bool: PTBool(optional);
-			case func: PTFunc(optional);
 			case number: PTNumber(optional);
+			case integer: PTInteger(optional);
 			case object: PTObject(optional);
 			case string: PTString(optional);
 			case oneOf: PTOneOf(description.values, optional);
@@ -122,23 +122,23 @@ typedef PropTypeDescription = {
 /**
 Some types do not require any extra information.
 
-If your field is one of the types `array`, `bool`, `func`, `number`, `object`, `string` or `any`, you can just use a simple string rather than a full `PropTypeDescription`.
+If your field is one of the types `array`, `bool`, `number`, `integer`, `object`, `string` or `any`, you can just use a simple string rather than a full `PropTypeDescription`.
 
 If you use the above types SimplePropTypeName, it is assumed the field is required.
-If you would like to use an optional field, you can use `?array`, `?bool`, `?func`, `?number`, `?object`, `?string` or `?any` instead.
+If you would like to use an optional field, you can use `?array`, `?bool`, `?number`, `?integer`, `?object`, `?string` or `?any` instead.
 **/
 @:enum abstract SimplePropTypeName(String) from String {
 	var array = "array";
 	var bool = "bool";
-	var func = "func";
 	var number = "number";
+	var integer = "integer";
 	var object = "object";
 	var string = "string";
 	var any = "any";
 	var optionalArray = "?array";
 	var optionalBool = "?bool";
-	var optionalFunc = "?func";
 	var optionalNumber = "?number";
+	var optionalInteger = "?integer";
 	var optionalObject = "?object";
 	var optionalString = "?string";
 	var optionalAny = "?any";
@@ -152,8 +152,8 @@ Note: because we only support types that can be represented in JSON, we do not h
 @:enum abstract PropTypeName(String) from String {
 	var array = "array";
 	var bool = "bool";
-	var func = "func";
 	var number = "number";
+	var integer = "integer";
 	var object = "object";
 	var string = "string";
 	var oneOf = "oneOf";
@@ -172,8 +172,8 @@ A Haxe enum representation of a `PropType`.
 enum PropTypeEnum {
 	PTArray(optional:Bool);
 	PTBool(optional:Bool);
-	PTFunc(optional:Bool);
 	PTNumber(optional:Bool);
+	PTInteger(optional:Bool);
 	PTObject(optional:Bool);
 	PTString(optional:Bool);
 	PTOneOf(values:Array<Dynamic>, optional:Bool);
