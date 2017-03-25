@@ -1,5 +1,6 @@
 package enthraler.proptypes;
 
+import enthraler.proptypes.PropTypes;
 import js.Error;
 import Type;
 
@@ -23,6 +24,48 @@ typedef ValidatorFunction = Dynamic->String->String->String->Null<Error>;
 A collection of basic `ValidatorFunction`s that match all the common cases for Enthraler PropTypes.
 **/
 class Validators {
+
+	/**
+	Take a PropTypeEnum and return a valid ValidatorFunction.
+	**/
+	public static function getValidatorFnFromPropType(pt:PropTypeEnum) {
+		inline function wrap(check:ValidatorFunction, isOptional:Null<Bool>) {
+			return isOptional ? check : Validators.required(check);
+		}
+
+		return switch pt {
+			case PTArray(optional):
+				wrap(Validators.array, optional);
+			case PTBool(optional):
+				wrap(Validators.bool, optional);
+			case PTNumber(optional):
+				wrap(Validators.number, optional);
+			case PTInteger(optional):
+				wrap(Validators.integer, optional);
+			case PTObject(optional):
+				wrap(Validators.object, optional);
+			case PTString(optional):
+				wrap(Validators.string, optional);
+			case PTOneOf(values, optional):
+				wrap(Validators.oneOf(values), optional);
+			case PTOneOfType(types, optional):
+				var subTypes = [for (t in types) getValidatorFnFromPropType(t)];
+				wrap(Validators.oneOfType(subTypes), optional);
+			case PTArrayOf(subType, optional):
+				wrap(Validators.arrayOf(getValidatorFnFromPropType(subType)), optional);
+			case PTObjectOf(subType, optional):
+				wrap(Validators.objectOf(getValidatorFnFromPropType(subType)), optional);
+			case PTShape(shapeObj, optional):
+				var validatorShape:Dynamic<ValidatorFunction> = {};
+				for (fieldName in Reflect.fields(shapeObj)) {
+					var pt:PropTypeEnum = Reflect.field(shapeObj, fieldName);
+					Reflect.setField(validatorShape, fieldName, getValidatorFnFromPropType(pt));
+				}
+				wrap(Validators.shape(validatorShape), optional);
+			case PTAny(optional):
+				wrap(Validators.any, optional);
+		}
+	}
 
 	/** Wrap any other validator with a "required" check to ensure it is present. **/
 	public static function required(check:ValidatorFunction) {
