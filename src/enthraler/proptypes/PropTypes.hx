@@ -33,8 +33,15 @@ abstract PropType(Dynamic) from SimplePropTypeName from PropTypeDescription {
 	@:to
 	public function getDescription():PropTypeDescription {
 		if (isString(this)) {
+			var type:String = this,
+				optional = false;
+			if (type.substr(0, 1) == "?") {
+				optional = true;
+				type = type.substr(1);
+			}
 			return {
-				type: this
+				type: type,
+				optional: optional
 			};
 		}
 		return this;
@@ -45,26 +52,27 @@ abstract PropType(Dynamic) from SimplePropTypeName from PropTypeDescription {
 	This is mostly for internal use.
 	**/
 	public function getEnum():PropTypeEnum {
-		var description = getDescription();
+		var description = getDescription(),
+			optional = description.optional == true;
 		return switch description.type {
-			case array: PTArray;
-			case bool: PTBool;
-			case func: PTFunc;
-			case number: PTNumber;
-			case object: PTObject;
-			case string: PTString;
-			case oneOf: PTOneOf(description.values);
-			case oneOfType: PTOneOfType(description.subTypes.map(function (s) return s.getEnum()));
-			case arrayOf: PTArrayOf(description.subType.getEnum());
-			case objectOf: PTObjectOf(description.subType.getEnum());
+			case array: PTArray(optional);
+			case bool: PTBool(optional);
+			case func: PTFunc(optional);
+			case number: PTNumber(optional);
+			case object: PTObject(optional);
+			case string: PTString(optional);
+			case oneOf: PTOneOf(description.values, optional);
+			case oneOfType: PTOneOfType(description.subTypes.map(function (s) return s.getEnum()), optional);
+			case arrayOf: PTArrayOf(description.subType.getEnum(), optional);
+			case objectOf: PTObjectOf(description.subType.getEnum(), optional);
 			case shape:
 				var shape:Dynamic<PropTypeEnum> = {};
 				for (field in Reflect.fields(description.shape)) {
 					var subType:PropType = Reflect.field(description.shape, field);
 					Reflect.setField(shape, field, subType.getEnum());
 				};
-				PTShape(shape);
-			case any: PTAny;
+				PTShape(shape, optional);
+			case any: PTAny(optional);
 		}
 	}
 
@@ -116,8 +124,8 @@ Some types do not require any extra information.
 
 If your field is one of the types `array`, `bool`, `func`, `number`, `object`, `string` or `any`, you can just use a simple string rather than a full `PropTypeDescription`.
 
-If you use a SimplePropTypeName, it is assumed the field is required.
-You will need to do a `PropTypeDescription` with the `optional: true` field if the field is optional.
+If you use the above types SimplePropTypeName, it is assumed the field is required.
+If you would like to use an optional field, you can use `?array`, `?bool`, `?func`, `?number`, `?object`, `?string` or `?any` instead.
 **/
 @:enum abstract SimplePropTypeName(String) from String {
 	var array = "array";
@@ -127,6 +135,13 @@ You will need to do a `PropTypeDescription` with the `optional: true` field if t
 	var object = "object";
 	var string = "string";
 	var any = "any";
+	var optionalArray = "?array";
+	var optionalBool = "?bool";
+	var optionalFunc = "?func";
+	var optionalNumber = "?number";
+	var optionalObject = "?object";
+	var optionalString = "?string";
+	var optionalAny = "?any";
 }
 
 /**
@@ -155,16 +170,16 @@ Internal use only.
 A Haxe enum representation of a `PropType`.
 **/
 enum PropTypeEnum {
-	PTArray;
-	PTBool;
-	PTFunc;
-	PTNumber;
-	PTObject;
-	PTString;
-	PTOneOf(values:Array<Dynamic>);
-	PTOneOfType(types:Array<PropTypeEnum>);
-	PTArrayOf(subType:PropTypeEnum);
-	PTObjectOf(subType:PropTypeEnum);
-	PTShape(shape:Dynamic<PropTypeEnum>);
-	PTAny;
+	PTArray(optional:Bool);
+	PTBool(optional:Bool);
+	PTFunc(optional:Bool);
+	PTNumber(optional:Bool);
+	PTObject(optional:Bool);
+	PTString(optional:Bool);
+	PTOneOf(values:Array<Dynamic>, optional:Bool);
+	PTOneOfType(types:Array<PropTypeEnum>, optional:Bool);
+	PTArrayOf(subType:PropTypeEnum, optional:Bool);
+	PTObjectOf(subType:PropTypeEnum, optional:Bool);
+	PTShape(shape:Dynamic<PropTypeEnum>, optional:Bool);
+	PTAny(optional:Bool);
 }
