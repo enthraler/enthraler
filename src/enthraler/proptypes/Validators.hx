@@ -32,16 +32,20 @@ class Validators {
 	@param schema The PropTypes to validate against. eg `{ name: "string" }`
 	@param obj The object you are validating. eg `{ name: 'Jason' }`
 	@param descriptiveName The name of the enthraler template you are validating for, to be used in warning messages.
+	@return Returns null if no errors were encountered, or an array of errors otherwise.
 	**/
-	public static function validate(schema:PropTypes, obj:Dynamic, descriptiveName:String):Void {
+	public static function validate(schema:PropTypes, obj:Dynamic, descriptiveName:String):Null<Array<Error>> {
+		var errors = [];
 		for (fieldName in schema.keys()) {
 			var propType = schema[fieldName],
 				propValidator = propType.getValidatorFn();
 			var error = propValidator(obj, fieldName, descriptiveName, 'property');
 			if (error != null) {
+				errors.push(error);
 				Browser.console.warn(error);
 			}
 		}
+		return errors.length > 0 ? errors : null;
 	}
 
 	/**
