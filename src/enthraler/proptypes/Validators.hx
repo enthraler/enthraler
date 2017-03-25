@@ -1,6 +1,7 @@
 package enthraler.proptypes;
 
 import enthraler.proptypes.PropTypes;
+import js.Browser;
 import js.Error;
 import Type;
 
@@ -24,6 +25,24 @@ typedef ValidatorFunction = Dynamic->String->String->String->Null<Error>;
 A collection of basic `ValidatorFunction`s that match all the common cases for Enthraler PropTypes.
 **/
 class Validators {
+
+	/**
+	Validate an object against a `PropTypes` schema, logging any errors through `Browser.console.warn`.
+
+	@param schema The PropTypes to validate against. eg `{ name: "string" }`
+	@param obj The object you are validating. eg `{ name: 'Jason' }`
+	@param descriptiveName The name of the enthraler template you are validating for, to be used in warning messages.
+	**/
+	public static function validate(schema:PropTypes, obj:Dynamic, descriptiveName:String):Void {
+		for (fieldName in schema.keys()) {
+			var propType = schema[fieldName],
+				propValidator = propType.getValidatorFn();
+			var error = propValidator(obj, fieldName, descriptiveName, 'property');
+			if (error != null) {
+				Browser.console.warn(error);
+			}
+		}
+	}
 
 	/**
 	Take a PropTypeEnum and return a valid ValidatorFunction.

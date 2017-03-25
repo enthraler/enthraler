@@ -11,7 +11,16 @@ The PropTypes themselves are also stored in JSON rather than being JS validation
 
 The main JSON object should be an object containing all of the expected fields, with the value being the desired `PropType`.
 **/
-typedef PropTypes = Dynamic<PropType>;
+abstract PropTypes(Dynamic<PropType>) from Dynamic<PropType> {
+	public function keys() {
+		return Reflect.fields(this);
+	}
+
+	@:arrayAccess
+	public function get(key:String):PropType {
+		return Reflect.field(this, key);
+	}
+}
 
 /**
 A `PropType` can either be given as a full `PropTypeDescription` or a `SimplePropTypeName` if the field is optional and no extra data is required.
