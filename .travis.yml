@@ -67,7 +67,8 @@ install:
   - haxelib list
 
 script:
-  - haxe test.hxml           && haxe phantomjs/run.hxml bin/HelloWorld.js
+  - haxe test.hxml
+  #           && haxe phantomjs/run.hxml bin/HelloWorld.js
   - haxe apiDocs.hxml
   - haxe enthralerFrame.hxml
   - haxe enthralerHost.hxml
