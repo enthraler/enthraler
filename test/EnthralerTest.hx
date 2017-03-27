@@ -15,11 +15,14 @@ class EnthralerTest extends buddy.SingleSuite {
 			myString: "Jason",
 			myFloat: 3.14,
 			myInt: 99,
+			myIntegerFloat: 3.0,
 			myZeroValue: 0,
 			myEmptyString: "",
 			myArrayOfInts: [1,2,3],
 			myArrayOfStrings: ["a", "b", "c"],
 			myMixedArray: (["a", 1]:Array<Dynamic>),
+			myObject: {name: "Jason"},
+			myInstance: this
 		};
 
 		function testValidator(validator:ValidatorFunction, fields:Map<String,Bool>, ?p:PosInfos) {
@@ -63,17 +66,74 @@ class EnthralerTest extends buddy.SingleSuite {
 					'myNanValue' => true,
 					'myFloat' => true,
 					'myInt' => true,
+					'myIntegerFloat' => true,
 					'myZeroValue' => true,
 					'myEmptyString' => false,
 					'myString' => false,
-					'myArrayOfInts' => true,
+					'myArrayOfInts' => false,
 					'myTrueValue' => false
 				]);
 			});
-			it("should have a function that validates an integer");
-			it("should have a function that validates an object");
-			it("should have a function that validates an string");
-			it("should have a function that validates any value");
+			it("should have a function that validates an integer", {
+				testValidator(Validators.integer, [
+					'myNullValue' => true,
+					'myInfinityValue' => false,
+					'myNanValue' => false,
+					'myFloat' => false,
+					'myInt' => true,
+					'myIntegerFloat' => true,
+					'myZeroValue' => true,
+					'myEmptyString' => false,
+					'myString' => false,
+					'myArrayOfInts' => false,
+					'myTrueValue' => false
+				]);
+			});
+			it("should have a function that validates an object", {
+				testValidator(Validators.object, [
+					'myNullValue' => true,
+					'myObject' => true,
+					'myInstance' => true,
+					'myFloat' => false,
+					'myInt' => false,
+					'myString' => false,
+					'myArrayOfInts' => false,
+					'myTrueValue' => false
+				]);
+			});
+			it("should have a function that validates an string", {
+				testValidator(Validators.string, [
+					'myNullValue' => true,
+					'myEmptyString' => true,
+					'myString' => true,
+					'myFloat' => false,
+					'myInt' => false,
+					'myArrayOfInts' => false,
+					'myTrueValue' => false,
+					'myObject' => false
+				]);
+			});
+			it("should have a function that validates any value", {
+				testValidator(Validators.any, [
+					'myNullValue' => true,
+					'myEmptyString' => true,
+					'myString' => true,
+					'myFloat' => true,
+					'myInt' => true,
+					'myArrayOfInts' => true,
+					'myTrueValue' => true,
+					'myObject' => true
+				]);
+			});
+			it("should have a function that validates the `oneOf` type");
+			it("should have a function that validates the `oneOfType` type");
+			it("should have a function that validates the `objectOf` type");
+			it("should have a function that validates the `arrayOf` type");
+			it("should have a function that validates the `shape` type");
+			it("should have a function that makes any other type required");
+
+			describe("validate()", {});
+			describe("getValidatorFnFromPropType()", {});
 		});
 	}
 }
