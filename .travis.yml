@@ -62,9 +62,7 @@ install:
   #  fi
   #- haxelib install hxjava
   #- haxelib install hxcs
-  - yes | haxelib install apiDocs.hxml
-  - yes | haxelib install enthralerFrame.hxml
-  - yes | haxelib install enthralerHost.hxml
+  - yes | haxelib install all
   - yes | haxelib install dox
   - haxelib list
 
