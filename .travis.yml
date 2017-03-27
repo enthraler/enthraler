@@ -40,17 +40,17 @@ addons:
 
 install:
   # os-specific config
-  #- if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-  #    export DISPLAY=:99.0;
-  #    export AUDIODEV=null;
-  #  elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-  #    brew uninstall --force brew-cask;
-  #    brew update;
-  #    brew install mono;
-  #    brew install phantomjs;
-  #    brew install python3;
-  #  fi
-  ## Install haxelibs
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+      export DISPLAY=:99.0;
+      export AUDIODEV=null;
+    elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+      brew uninstall --force brew-cask;
+      brew update;
+      brew install phantomjs;
+      #brew install mono;
+      #brew install python3;
+    fi
+  # Install haxelibs
   #- if [ "${TRAVIS_HAXE_VERSION}" = "development" ]; then
   #    haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git;
   #    pushd $(haxelib path hxcpp | head -1);
@@ -69,12 +69,11 @@ install:
   - haxelib list
 
 script:
+  - haxe test.hxml           && haxe phantomjs/run.hxml bin/HelloWorld.js
   - haxe apiDocs.hxml
   - haxe enthralerFrame.hxml
   - haxe enthralerHost.hxml
   #- haxe build-neko.hxml         && neko bin/HelloWorld.n
-  #- haxe build-js.hxml           && node bin/HelloWorld.js
-  #                               && haxe phantomjs/run.hxml bin/HelloWorld.js
   #- haxe build-java.hxml         && java -jar bin/HelloWorld.jar
   #- haxe build-php.hxml          && php bin/index.php
   #- haxe build-cs.hxml           && mono bin/bin/HelloWorld.exe

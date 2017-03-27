@@ -13,7 +13,8 @@
     "haxe.displayConfigurations": [
         ["enthralerFrame.hxml"],
         ["enthralerHost.hxml"],
-        ["apiDocs.hxml"]
+        ["apiDocs.hxml"],
+        ["test.hxml"]
     ],
 
     // Automatic formatting of Javascript.
