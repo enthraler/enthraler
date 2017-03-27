@@ -15,42 +15,42 @@ haxe:
   - "3.4.0"
   - development
 
-matrix:
-  # Allow Haxe development to fail.
-  #allow_failures:
-    #- haxe: development
+#matrix:
+#  # Allow Haxe development to fail.
+#  allow_failures:
+#    - haxe: development
 
-addons:
-  # This is the preferred way to install apt packages.
-  # However, it only allow some but not all packages.
-  # Alternatively, we can use `sudo apt-get install ...` in the `install:` section.
-  # http://docs.travis-ci.com/user/apt/#Adding-APT-Packages
-  apt:
-    packages:
-      ## C++ (for rebuilding hxcpp)
-      #- gcc-multilib
-      #- g++-multilib
-      ## Python
-      #- python3
-      # PHP
-      #- php5-cli
-      ## C#
-      #- mono-devel
-      #- mono-mcs
+#addons:
+#  # This is the preferred way to install apt packages.
+#  # However, it only allow some but not all packages.
+#  # Alternatively, we can use `sudo apt-get install ...` in the `install:` section.
+#  # http://docs.travis-ci.com/user/apt/#Adding-APT-Packages
+#  apt:
+#    packages:
+#      # C++ (for rebuilding hxcpp)
+#      - gcc-multilib
+#      - g++-multilib
+#      # Python
+#      - python3
+#      # PHP
+#      - php5-cli
+#      # C#
+#      - mono-devel
+#      - mono-mcs
 
 install:
-  # os-specific config
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      export DISPLAY=:99.0;
-      export AUDIODEV=null;
-    elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-      brew uninstall --force brew-cask;
-      brew update;
-      brew install phantomjs;
-      #brew install mono;
-      #brew install python3;
-    fi
-  # Install haxelibs
+  ## os-specific config
+  #- if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+  #    export DISPLAY=:99.0;
+  #    export AUDIODEV=null;
+  #  elif [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+  #    brew uninstall --force brew-cask;
+  #    brew update;
+  #    brew install phantomjs;
+  #    #brew install mono;
+  #    #brew install python3;
+  #  fi
+  ## Install haxelibs
   #- if [ "${TRAVIS_HAXE_VERSION}" = "development" ]; then
   #    haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git;
   #    pushd $(haxelib path hxcpp | head -1);
