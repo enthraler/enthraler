@@ -117,11 +117,16 @@ class Validators {
 	/** A validator that matches any value. **/
 	public static var any(default, never):ValidatorFunction = typeCheck.bind(TUnknown);
 
-	/** Expect a value to be one of this pre-defined set of values. **/
+	/**
+	Expect a value to be one of this pre-defined set of values.
+
+	Please note if using objects or arrays here, strict equality is used.
+	This means that when using `oneOf()` in PropTypes that are validating JSON, you should stick to primitive types like Strings, Booleans and Numbers.
+	**/
 	public static function oneOf(allowedValues:Array<Dynamic>):ValidatorFunction {
 		return function (props:Dynamic, propName:String, descriptiveName:String, location:String):Null<Error> {
 			var value = Reflect.field(props, propName);
-			if (allowedValues.indexOf(value) == -1) {
+			if (value !=null && allowedValues.indexOf(value) == -1) {
 				var errorMsg = 'Invalid $location `$propName` had value `$value` supplied to `$descriptiveName`, but expected one of `$allowedValues`';
 				return new Error(errorMsg);
 			}
@@ -171,6 +176,11 @@ class Validators {
 	/** Expect a value to be an object where every property matches the given type. **/
 	public static function objectOf(type:ValidatorFunction):ValidatorFunction {
 		return function (props:Dynamic, propName:String, descriptiveName:String, location:String) {
+			var error = typeCheck(TObject, props, propName, descriptiveName, location);
+			if (error != null) {
+				return error;
+			}
+
 			var valueObj = Reflect.field(props, propName),
 				fields = Reflect.fields(valueObj);
 			for (field in fields) {
