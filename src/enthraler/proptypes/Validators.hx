@@ -27,14 +27,14 @@ A collection of basic `ValidatorFunction`s that match all the common cases for E
 class Validators {
 
 	/**
-	Validate an object against a `PropTypes` schema, logging any errors through `Browser.console.warn`.
+	Validate an object against a `PropTypes` schema, returning any errors that were encountered.
 
 	@param schema The PropTypes to validate against. eg `{ name: "string" }`
 	@param obj The object you are validating. eg `{ name: 'Jason' }`
 	@param descriptiveName The name of the enthraler template you are validating for, to be used in warning messages.
 	@return Returns null if no errors were encountered, or an array of errors otherwise.
 	**/
-	public static function validate(schema:PropTypes, obj:Dynamic, descriptiveName:String):Null<Array<Error>> {
+	public static function validate(schema:PropTypes, obj:Dynamic<Dynamic>, descriptiveName:String):Null<Array<Error>> {
 		var errors = [];
 		for (fieldName in schema.keys()) {
 			var propType = schema[fieldName],
@@ -42,7 +42,6 @@ class Validators {
 			var error = propValidator(obj, fieldName, descriptiveName, 'property');
 			if (error != null) {
 				errors.push(error);
-				Browser.console.warn(error);
 			}
 		}
 		return errors.length > 0 ? errors : null;
