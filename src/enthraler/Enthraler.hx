@@ -33,12 +33,7 @@ class Enthraler {
 
 		return Promise.all([componentClassPromise, dataPromise]).then(function (arr:Array<Dynamic>) {
 			var componentCls:Module = arr[0],
-				authorData:AuthorData = arr[1],
-				schema = (componentCls:Dynamic).enthralerPropTypes;
-
-			if (schema != null) {
-				PropTypes.validate(schema, authorData, dataUrl);
-			}
+				authorData:AuthorData = arr[1];
 
 			#if feature_shared_state
 			var component:Template<AuthorData, UserState, GroupState> = componentCls.instantiate(environment);
@@ -80,7 +75,8 @@ class Enthraler {
 		});
 
 		RequireJs.namedDefine('enthraler', [], {
-			PropTypes: enthraler.PropTypes
+			Validators: enthraler.proptypes.Validators,
+			PropTypes: enthraler.proptypes.PropTypes
 		});
 	}
 
