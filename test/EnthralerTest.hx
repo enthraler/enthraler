@@ -41,7 +41,7 @@ class EnthralerTest extends buddy.SingleSuite {
 			}
 		}
 
-		describe("Using Validators", {
+		describe("Using the basic validator functions", {
 			it("should have a function that validates an array", {
 				testValidator(Validators.array, [
 					'myNullValue' => true,
@@ -232,7 +232,20 @@ class EnthralerTest extends buddy.SingleSuite {
 				]);
 			});
 
-			it("should have a function that makes any other type required");
+			it("should have a function that makes any other type required", {
+				testValidator(Validators.string, [
+					'myNullValue' => true,
+					'nonExistantString' => true,
+					'myEmptyString' => true,
+					'myString' => true
+				]);
+				testValidator(Validators.required(Validators.string), [
+					'myNullValue' => false,
+					'nonExistantString' => false,
+					'myEmptyString' => true,
+					'myString' => true
+				]);
+			});
 
 		});
 

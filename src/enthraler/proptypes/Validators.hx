@@ -112,7 +112,10 @@ class Validators {
 	public static var integer(default, never):ValidatorFunction = typeCheck.bind(TInt);
 	/** Validate that the value is an object (either a plain anonymous object, or a class instance). **/
 	public static var object(default, never):ValidatorFunction = typeCheck.bind(TObject);
-	/** Validate that the value is a string. **/
+	/**
+	Validate that the value is a string.
+	Please note that an empty string `""` is still considered a valid string.
+	**/
 	public static var string(default, never):ValidatorFunction = typeCheck.bind(TClass(String));
 	/** A validator that matches any value. **/
 	public static var any(default, never):ValidatorFunction = typeCheck.bind(TUnknown);
