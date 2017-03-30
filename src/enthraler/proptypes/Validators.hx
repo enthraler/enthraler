@@ -34,7 +34,7 @@ class Validators {
 	@param descriptiveName The name of the enthraler template you are validating for, to be used in warning messages.
 	@return Returns null if no errors were encountered, or an array of errors otherwise.
 	**/
-	public static function validate(schema:PropTypes, obj:Dynamic<Dynamic>, descriptiveName:String):Null<Array<Error>> {
+	public static function validate(schema:PropTypes, obj:Dynamic, descriptiveName:String):Null<Array<Error>> {
 		var errors = [];
 		for (fieldName in schema.keys()) {
 			var propType = schema[fieldName],
