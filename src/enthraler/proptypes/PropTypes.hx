@@ -146,7 +146,7 @@ If your field is one of the types `array`, `bool`, `number`, `integer`, `object`
 If you use the above types SimplePropTypeName, it is assumed the field is required.
 If you would like to use an optional field, you can use `?array`, `?bool`, `?number`, `?integer`, `?object`, `?string` or `?any` instead.
 **/
-@:enum abstract SimplePropTypeName(String) from String {
+@:enum abstract SimplePropTypeName(String) {
 	var array = "array";
 	var bool = "bool";
 	var number = "number";
@@ -161,6 +161,18 @@ If you would like to use an optional field, you can use `?array`, `?bool`, `?num
 	var optionalObject = "?object";
 	var optionalString = "?string";
 	var optionalAny = "?any";
+
+	function new(str:String) {
+		this = str;
+	}
+
+	@:from static function fromString(str:String):SimplePropTypeName {
+		var allValidNames = ["array", "bool", "number", "integer", "object", "string", "any", "?array", "?bool", "?number", "?integer", "?object", "?string", "?any"];
+		if (allValidNames.indexOf(str) == -1) {
+			throw 'The type string `$str` is not a valid value. Valid values are $allValidNames';
+		}
+		return new SimplePropTypeName(str);
+	}
 }
 
 /**
