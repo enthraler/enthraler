@@ -1,6 +1,7 @@
 using buddy.Should;
 
 import enthraler.proptypes.Validators;
+import enthraler.proptypes.PropTypes;
 import haxe.PosInfos;
 import js.Error;
 
@@ -249,7 +250,235 @@ class EnthralerTest extends buddy.SingleSuite {
 
 		});
 
-		describe("validate()", {});
-		describe("getValidatorFnFromPropType()", {});
+		describe("Using a simple string as a PropType", {
+			it('Should only accept valid strings for SimplePropTypeName', {
+				(function () {
+					var pt:SimplePropTypeName = 'Not a valid type';
+				}).should.throwAnything();
+
+				(function () {
+					var schema:Dynamic = {
+						'name': 'Not a valid type'
+					};
+					var propTypes:PropTypes = schema;
+					propTypes.get('name').getDescription();
+				}).should.throwAnything();
+			});
+
+			it('Should transform it into a description', {
+				var simple:SimplePropTypeName = '?string';
+				var pt:PropType = simple;
+				pt.getDescription().optional.should.be(true);
+				pt.getDescription().type.should.be('string');
+			});
+
+			it('Should pick up on required properties', {
+				var simple:SimplePropTypeName = 'integer';
+				var pt:PropType = simple;
+				pt.getDescription().optional.should.be(false);
+				pt.getDescription().type.should.be('integer');
+			});
+		});
+
+		describe("using Validators.validate()", {
+			it('should validate based on simple prop type names', {
+				var schema:PropTypes = {
+					name: "string",
+					age: "?integer"
+				};
+
+				it('should validate a correct object', {
+					Validators.validate(schema, {
+						name: "Jason",
+						age: 29
+					}, 'test validate()').should.be(null);
+				});
+
+				it('should validate even with missing fields', {
+					Validators.validate(schema, {
+						name: "Jason"
+					}, 'test validate()').should.be(null);
+				});
+
+				it('should object if a field is the wrong type', {
+					Validators.validate(schema, {
+						name: 29,
+						age: "Jason"
+					}, 'test validate()').length.should.be(2);
+				});
+
+				it('should error if required fields are not present', {
+					Validators.validate(schema, {}, 'test validate()').length.should.be(2);
+				});
+			});
+
+			it('should validate based on property descriptions', {
+				var schema:PropTypes = {
+					names: {
+						type: "arrayOf",
+						optional: false,
+						subType: ("string":SimplePropTypeName)
+					},
+					ages: {
+						type: "objectOf",
+						optional: true,
+						subType: ("?integer":SimplePropTypeName)
+					},
+					city: {
+						type: "oneOf",
+						values: ["Perth", "Melbourne", "Sydney", "San Francisco"]
+					},
+					favourite: {
+						type: "oneOfType",
+						subTypes: (["string", "integer"]:Array<SimplePropTypeName>)
+					},
+					address: ({
+						type: "shape",
+						shape: {
+							number: ("integer":SimplePropTypeName),
+							streetName: ("string":SimplePropTypeName),
+							streetType: {
+								type: "oneOf",
+								values: ["St", "Rd", "Ave"]
+							}
+						}
+					}:PropTypeDescription)
+				};
+
+				var fullObject = {
+					names: ["Jason", "Anna"],
+					ages: {
+						"Jason": 29,
+						"Anna": 27
+					},
+					city: "Melbourne",
+					favourite: 3,
+					address: {
+						number: 512,
+						streetName: "Morley",
+						streetType: "St"
+					}
+				};
+				Validators.validate(schema, fullObject, 'test validate()').should.be(null);
+
+				var missingBitsButValid = {
+					names: [],
+					city: "Perth",
+					favourite: "",
+					address: {
+						number: 512,
+						streetName: "Morley",
+						streetType: "St"
+					}
+				};
+				Validators.validate(schema, missingBitsButValid, 'test validate()').should.be(null);
+
+				var invalidName = {
+					names: "Jason",
+					ages: {
+						"Jason": 29,
+						"Anna": 27
+					},
+					city: "Melbourne",
+					favourite: 3,
+					address: {
+						number: 512,
+						streetName: "Morley",
+						streetType: "St"
+					}
+				};
+				Validators.validate(schema, invalidName, 'test validate()').length.should.be(1);
+
+				var wrongAges = {
+					names: ["Jason", "Anna"],
+					ages: {
+						"Jason": 29,
+						"Anna": "twenty-seven"
+					},
+					city: "Melbourne",
+					favourite: 3,
+					address: {
+						number: 512,
+						streetName: "Morley",
+						streetType: "St"
+					}
+				};
+				Validators.validate(schema, wrongAges, 'test validate()').length.should.be(1);
+
+				var wrongCity = {
+					names: ["Jason", "Anna"],
+					ages: {
+						"Jason": 29,
+						"Anna": 27
+					},
+					city: "Adelaide",
+					favourite: 3,
+					address: {
+						number: 512,
+						streetName: "Morley",
+						streetType: "St"
+					}
+				};
+				Validators.validate(schema, wrongCity, 'test validate()').length.should.be(1);
+
+				var wrongFavourite = {
+					names: ["Jason", "Anna"],
+					ages: {
+						"Jason": 29,
+						"Anna": 27
+					},
+					city: "Melbourne",
+					favourite: 3.14,
+					address: {
+						number: 512,
+						streetName: "Morley",
+						streetType: "St"
+					}
+				};
+				Validators.validate(schema, wrongFavourite, 'test validate()').length.should.be(1);
+
+				var addressWrong = {
+					names: ["Jason", "Anna"],
+					ages: {
+						"Jason": 29,
+						"Anna": 27
+					},
+					city: "Melbourne",
+					favourite: 3,
+					address: {
+						streetName: "Morley",
+						streetType: []
+					}
+				};
+				Validators.validate(schema, addressWrong, 'test validate()').length.should.be(1);
+
+				var addressWrong2 = {
+					names: ["Jason", "Anna"],
+					ages: {
+						"Jason": 29,
+						"Anna": 27
+					},
+					city: "Melbourne",
+					favourite: 3,
+					address: {
+						number: 512,
+						streetName: "Morley",
+						streetType: []
+					}
+				};
+				Validators.validate(schema, addressWrong2, 'test validate()').length.should.be(1);
+
+				var fieldMissing = {
+					names: ["Jason", "Anna"],
+					ages: {
+						"Jason": 29,
+						"Anna": 27
+					},
+					city: "Melbourne",
+					favourite: 3
+				};
+				Validators.validate(schema, fieldMissing, 'test validate()').length.should.be(1);
+			});
+		});
 	}
 }
