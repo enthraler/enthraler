@@ -301,14 +301,20 @@ class EnthralerTest extends buddy.SingleSuite {
 				});
 
 				it('should object if a field is the wrong type', {
-					Validators.validate(schema, {
+					var errors = Validators.validate(schema, {
 						name: 29,
 						age: "Jason"
-					}, 'test validate()').length.should.be(2);
+					}, 'test validate()');
+					errors.length.should.be(2);
+					errors[0].getErrorPath().should.be('.name');
+					errors[1].getErrorPath().should.be('.age');
 				});
 
 				it('should error if required fields are not present', {
-					Validators.validate(schema, {}, 'test validate()').length.should.be(2);
+					var errors = Validators.validate(schema, {}, 'test validate()');
+					errors.length.should.be(2);
+					errors[0].getErrorPath().should.be('.name');
+					errors[1].getErrorPath().should.be('.age');
 				});
 			});
 
@@ -387,7 +393,30 @@ class EnthralerTest extends buddy.SingleSuite {
 						streetType: "St"
 					}
 				};
-				Validators.validate(schema, invalidName, 'test validate()').length.should.be(1);
+				var errors = Validators.validate(schema, invalidName, 'test validate()');
+				errors.length.should.be(1);
+				errors[0].getErrorPath().should.be('.names');
+				errors[0].childErrors.length.should.be(0);
+
+				var invalidName2 = {
+					names: (["Jason", 0]:Array<Dynamic>),
+					ages: {
+						"Jason": 29,
+						"Anna": 27
+					},
+					city: "Melbourne",
+					favourite: 3,
+					address: {
+						number: 512,
+						streetName: "Morley",
+						streetType: "St"
+					}
+				};
+				var errors = Validators.validate(schema, invalidName2, 'test validate()');
+				errors.length.should.be(1);
+				errors[0].getErrorPath().should.be('.names');
+				errors[0].childErrors.length.should.be(1);
+				errors[0].childErrors[0].getErrorPath().should.be('.names[1]');
 
 				var wrongAges = {
 					names: ["Jason", "Anna"],
@@ -403,7 +432,11 @@ class EnthralerTest extends buddy.SingleSuite {
 						streetType: "St"
 					}
 				};
-				Validators.validate(schema, wrongAges, 'test validate()').length.should.be(1);
+				var errors = Validators.validate(schema, wrongAges, 'test validate()');
+				errors.length.should.be(1);
+				errors[0].getErrorPath().should.be('.ages');
+				errors[0].childErrors.length.should.be(1);
+				errors[0].childErrors[0].getErrorPath().should.be('.ages.Anna');
 
 				var wrongCity = {
 					names: ["Jason", "Anna"],
@@ -419,7 +452,9 @@ class EnthralerTest extends buddy.SingleSuite {
 						streetType: "St"
 					}
 				};
-				Validators.validate(schema, wrongCity, 'test validate()').length.should.be(1);
+				var errors = Validators.validate(schema, wrongCity, 'test validate()');
+				errors.length.should.be(1);
+				errors[0].getErrorPath().should.be('.city');
 
 				var wrongFavourite = {
 					names: ["Jason", "Anna"],
@@ -435,7 +470,9 @@ class EnthralerTest extends buddy.SingleSuite {
 						streetType: "St"
 					}
 				};
-				Validators.validate(schema, wrongFavourite, 'test validate()').length.should.be(1);
+				var errors = Validators.validate(schema, wrongFavourite, 'test validate()');
+				errors.length.should.be(1);
+				errors[0].getErrorPath().should.be('.favourite');
 
 				var addressWrong = {
 					names: ["Jason", "Anna"],
@@ -450,7 +487,12 @@ class EnthralerTest extends buddy.SingleSuite {
 						streetType: []
 					}
 				};
-				Validators.validate(schema, addressWrong, 'test validate()').length.should.be(1);
+				var errors = Validators.validate(schema, addressWrong, 'test validate()');
+				errors.length.should.be(1);
+				errors[0].getErrorPath().should.be('.address');
+				errors[0].childErrors.length.should.be(2);
+				errors[0].childErrors[0].getErrorPath().should.be('.address.number');
+				errors[0].childErrors[1].getErrorPath().should.be('.address.streetType');
 
 				var addressWrong2 = {
 					names: ["Jason", "Anna"],
@@ -463,10 +505,14 @@ class EnthralerTest extends buddy.SingleSuite {
 					address: {
 						number: 512,
 						streetName: "Morley",
-						streetType: []
+						street_type: "Rd"
 					}
 				};
-				Validators.validate(schema, addressWrong2, 'test validate()').length.should.be(1);
+				var errors = Validators.validate(schema, addressWrong2, 'test validate()');
+				errors.length.should.be(1);
+				errors[0].getErrorPath().should.be('.address');
+				errors[0].childErrors.length.should.be(1);
+				errors[0].childErrors[0].getErrorPath().should.be('.address.streetType');
 
 				var fieldMissing = {
 					names: ["Jason", "Anna"],
@@ -477,7 +523,9 @@ class EnthralerTest extends buddy.SingleSuite {
 					city: "Melbourne",
 					favourite: 3
 				};
-				Validators.validate(schema, fieldMissing, 'test validate()').length.should.be(1);
+				var errors = Validators.validate(schema, fieldMissing, 'test validate()');
+				errors.length.should.be(1);
+				errors[0].getErrorPath().should.be('.address');
 			});
 		});
 	}

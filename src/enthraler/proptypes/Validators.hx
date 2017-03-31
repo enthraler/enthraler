@@ -1,7 +1,6 @@
 package enthraler.proptypes;
 
 import enthraler.proptypes.PropTypes;
-import js.Browser;
 import js.Error;
 import Type;
 
@@ -17,9 +16,9 @@ You can then use `PropType.getReactPropType()` to generate a ValidatorFunction.
 @param propName The name of the property this validator should be checking.
 @param descriptiveName The name of the enthraler template being created, to be used in an error message if needed.
 @param location The location of the property being checked eg `property`, to be used in an error message if needed.
-@return Null if the property is valid, or a `js.Error` object otherwise.
+@return Null if the property is valid, or a `ValidationError` object otherwise.
 **/
-typedef ValidatorFunction = Dynamic->String->String->String->Null<Error>;
+typedef ValidatorFunction = Dynamic->String->String->String->Null<ValidationError>;
 
 /**
 A collection of basic `ValidatorFunction`s that match all the common cases for Enthraler PropTypes.
@@ -34,7 +33,7 @@ class Validators {
 	@param descriptiveName The name of the enthraler template you are validating for, to be used in warning messages.
 	@return Returns null if no errors were encountered, or an array of errors otherwise.
 	**/
-	public static function validate(schema:PropTypes, obj:Dynamic, descriptiveName:String):Null<Array<Error>> {
+	public static function validate(schema:PropTypes, obj:Dynamic, descriptiveName:String):Null<Array<ValidationError>> {
 		var errors = [];
 		for (fieldName in schema.keys()) {
 			var propType = schema[fieldName],
@@ -91,11 +90,13 @@ class Validators {
 
 	/** Wrap any other validator with a "required" check to ensure it is present. **/
 	public static function required(check:ValidatorFunction) {
-		return function (props:Dynamic, propName:String, descriptiveName:String, location:String):Null<Error> {
+		return function (props:Dynamic, propName:String, descriptiveName:String, location:String):Null<ValidationError> {
 			var value = Reflect.field(props, propName);
 			if (value == null) {
 				var errorMsg = 'Required $location `$propName` was not specified in `$descriptiveName`';
-				return new Error(errorMsg);
+				var error = new ValidationError(errorMsg);
+				error.errorPath.unshift(AccessProperty(propName));
+				return error;
 			}
 			return check(props, propName, descriptiveName, location);
 		}
@@ -126,11 +127,13 @@ class Validators {
 	This means that when using `oneOf()` in PropTypes that are validating JSON, you should stick to primitive types like Strings, Booleans and Numbers.
 	**/
 	public static function oneOf(allowedValues:Array<Dynamic>):ValidatorFunction {
-		return function (props:Dynamic, propName:String, descriptiveName:String, location:String):Null<Error> {
+		return function (props:Dynamic, propName:String, descriptiveName:String, location:String):Null<ValidationError> {
 			var value = Reflect.field(props, propName);
 			if (value !=null && allowedValues.indexOf(value) == -1) {
 				var errorMsg = 'Invalid $location `$propName` had value `$value` supplied to `$descriptiveName`, but expected one of `$allowedValues`';
-				return new Error(errorMsg);
+				var error = new ValidationError(errorMsg);
+				error.errorPath.unshift(AccessProperty(propName));
+				return error;
 			}
 			return null;
 		}
@@ -149,7 +152,9 @@ class Validators {
 			var value = Reflect.field(props, propName);
 			var actualType = Type.typeof(value);
 			var errorMsg = 'Invalid $location `$propName` of type `${typeName(actualType)}` supplied to `$descriptiveName`';
-			return new Error(errorMsg);
+			var error = new ValidationError(errorMsg);
+			error.errorPath.unshift(AccessProperty(propName));
+			return error;
 		}
 	}
 
@@ -162,14 +167,26 @@ class Validators {
 			}
 
 			var values:Array<Dynamic> = Reflect.field(props, propName),
+				errors = [],
+				propertyPath = AccessProperty(propName),
 				i = 0;
 			for (value in values) {
 				var error = type(values, '$i', descriptiveName, location);
 				if (error != null) {
-					error.message += ' on item [${i}]';
-					return error;
+					// The validator probably assumed a property access, replace it with an array access.
+					error.errorPath.shift();
+					error.errorPath.unshift(AccessArray(i));
+					error.errorPath.unshift(propertyPath);
+					errors.push(error);
 				}
 				i++;
+			}
+			if (errors.length > 0) {
+				var itemOrItems = (errors.length == 1) ? "item" : "items",
+					error = new ValidationError('The array in $location `$propName` contained ${errors.length} invalid $itemOrItems');
+				error.childErrors = errors;
+				error.errorPath.unshift(propertyPath);
+				return error;
 			}
 			return null;
 		}
@@ -184,13 +201,22 @@ class Validators {
 			}
 
 			var valueObj = Reflect.field(props, propName),
+				errors = [],
+				propertyPath = AccessProperty(propName),
 				fields = Reflect.fields(valueObj);
 			for (field in fields) {
 				var error = type(valueObj, field, descriptiveName, location);
 				if (error != null) {
-					error.message += ' on field `$field`';
-					return error;
+					error.errorPath.unshift(propertyPath);
+					errors.push(error);
 				}
+			}
+			if (errors.length > 0) {
+				var fieldOrFields = (errors.length == 1) ? "field" : "fields",
+					error = new ValidationError('The object in $location `$propName` contained ${errors.length} invalid $fieldOrFields');
+				error.childErrors = errors;
+				error.errorPath.unshift(propertyPath);
+				return error;
 			}
 			return null;
 		}
@@ -200,14 +226,23 @@ class Validators {
 	public static function shape(shape:Dynamic<ValidatorFunction>):ValidatorFunction {
 		return function (props:Dynamic, propName:String, descriptiveName:String, location:String) {
 			var valueObj = Reflect.field(props, propName),
+				errors = [],
+				propertyPath = AccessProperty(propName),
 				fields = Reflect.fields(shape);
 			for (field in fields) {
 				var propValidator:ValidatorFunction = Reflect.field(shape, field);
 				var error = propValidator(valueObj, field, descriptiveName, location);
 				if (error != null) {
-					error.message += ' on field `$field`';
-					return error;
+					error.errorPath.unshift(propertyPath);
+					errors.push(error);
 				}
+			}
+			if (errors.length > 0) {
+				var fieldOrFields = (errors.length == 1) ? "field" : "fields",
+					error = new ValidationError('The array in $location `$propName` contained ${errors.length} invalid $fieldOrFields');
+				error.childErrors = errors;
+				error.errorPath.unshift(propertyPath);
+				return error;
 			}
 			return null;
 		}
@@ -215,7 +250,7 @@ class Validators {
 
 	// Private
 
-	static function typeCheck(expectedType:ValueType, props:Dynamic, propName:String, descriptiveName:String, location:String):Null<Error> {
+	static function typeCheck(expectedType:ValueType, props:Dynamic, propName:String, descriptiveName:String, location:String):Null<ValidationError> {
 		var value = Reflect.field(props, propName);
 
 		if (value == null) {
@@ -244,7 +279,9 @@ class Validators {
 
 		// Types are not compatible, return an error.
 		var errorMsg = 'Invalid $location `$propName` of type `${typeName(actualType)}` supplied to `$descriptiveName`, expected `${typeName(expectedType)}`';
-		return new Error(errorMsg);
+		var error = new ValidationError(errorMsg);
+		error.errorPath.unshift(AccessProperty(propName));
+		return error;
 	}
 
 	static function typeName(type:ValueType):String {
@@ -262,4 +299,43 @@ class Validators {
 			case TUnknown: 'Unknown Type';
 		}
 	}
+
+	/**
+	Return a JS error that stores the property name.
+	**/
+	static function newError(propertyName:String, message:String):ValidationError {
+		var err = new ValidationError(message);
+		err.errorPath.unshift(AccessProperty(propertyName));
+		return err;
+	}
+}
+
+/**
+A special error class that we can use.
+**/
+class ValidationError extends js.Error {
+	public var errorPath:Array<ValidationPathPart>;
+	public var childErrors:Array<ValidationError>;
+
+	public function new(message:String) {
+		super(message);
+		name = "ValidationError";
+		errorPath = [];
+		childErrors = [];
+	}
+
+	public function getErrorPath():String {
+		return [for (p in errorPath) switch p {
+			case AccessProperty(name): '.$name';
+			case AccessArray(itemNumber): '[$itemNumber]';
+		}].join('');
+	}
+}
+
+/**
+An enum used by `ValidationError.errorPath` to allow us to "drill down" to any item in a JSON tree.
+**/
+enum ValidationPathPart {
+	AccessProperty(name:String);
+	AccessArray(itemNumber:Int);
 }
