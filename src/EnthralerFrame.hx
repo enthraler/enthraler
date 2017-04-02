@@ -5,9 +5,9 @@ import enthraler.*;
 /**
 The entry point for a JS file that renders a single Enthraler in an `<iframe>` element.
 
-This reads a `script` and `props` value from the iFrame location hash, and loads them using `Enthraler.loadComponent`
+This reads a `template` and `authorData` value from the iFrame location hash, and loads them using `Enthraler.loadComponent`
 
-For example, an Iframe pointing to `frame.html#?script=components/templates/amd/hello.js&props=bin/data/hello-jason.json` will load:
+For example, an Iframe pointing to `frame.html#?template=components/templates/amd/hello.js&authorData=bin/data/hello-jason.json` will load:
 
 - The Enthraler template `components/templates/amd/hello.js`
 - The author data / content `bin/data/hello-jason.json`
@@ -33,6 +33,6 @@ class EnthralerFrame {
 
 	static function loadEnthralerComponent(params:Map<String,String>) {
 		var container = document.getElementById('container');
-		Enthraler.loadComponent(params['script'], params['props'], container);
+		Enthraler.loadComponent(params['template'], params['authorData'], container);
 	}
 }
