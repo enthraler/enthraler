@@ -1,0 +1,5 @@
+-cp src
+-cp src/externs
+-lib codemirror
+-main EnthralerEditor
+-js bin/enthralerEditor.js

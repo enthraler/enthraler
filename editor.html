@@ -1,0 +1,67 @@
+<html>
+<head>
+	<title>EnthralUs Content Creator</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css"></link>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/lint/lint.min.css"></link>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/fold/foldgutter.min.css"></link>
+	<style type="text/css" id="enthraler-css">
+		* {
+			font-family: "Helvetica Neue", Helvetica,Arial, sans-serif;
+		}
+		html, body {
+			font-size: 14px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6">
+				<h3>Author Data</h3>
+				<textarea id="textarea">Loading</textarea>
+			</div>
+			<div class="col-lg-6">
+				<h3>Preview</h3>
+				<ul id="error-list" class="hidden"></ul>
+				<iframe id="preview" class="enthraler-embed" src="about:blank" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/javascript/javascript.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/fold/foldcode.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/fold/brace-fold.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/fold/foldgutter.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/lint/lint.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/lint/javascript-lint.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsonlint/1.6.0/jsonlint.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/lint/json-lint.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.min.js"></script>
+	<script type="text/javascript">
+	(function () {
+		function browserSupportsAllFeatures() {
+			return window.Promise && window.fetch;
+		}
+		function loadScript(src, done) {
+			var js = document.createElement('script');
+			js.src = src;
+			js.onload = function() {if (done) {done();}}
+			js.onerror = function() {throw new js.Error('Failed to load script ' + src);}
+			document.head.appendChild(js);
+		}
+		function main() {
+			loadScript('bin/enthralerEditor.js');
+		}
+		if (browserSupportsAllFeatures()) {
+			// Browsers that support all features run `main()` immediately.
+			main();
+		} else {
+			// All other browsers loads polyfills and then run `main()`.
+			loadScript('bin/polyfills.bundle.js', main);
+		}
+	})();
+	</script>
+</body>
+</html>

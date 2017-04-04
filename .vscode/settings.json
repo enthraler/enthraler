@@ -13,6 +13,7 @@
     "haxe.displayConfigurations": [
         ["enthralerFrame.hxml"],
         ["enthralerHost.hxml"],
+        ["enthralerEditor.hxml"],
         ["apiDocs.hxml"],
         ["test.hxml"]
     ],

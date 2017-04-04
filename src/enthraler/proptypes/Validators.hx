@@ -171,7 +171,7 @@ class Validators {
 				propertyPath = AccessProperty(propName),
 				i = 0;
 			for (value in values) {
-				var error = type(values, '$i', descriptiveName, location);
+				var error = type(values, '$i', descriptiveName, 'array item');
 				if (error != null) {
 					// The validator probably assumed a property access, replace it with an array access.
 					error.errorPath.shift();
@@ -205,8 +205,9 @@ class Validators {
 				propertyPath = AccessProperty(propName),
 				fields = Reflect.fields(valueObj);
 			for (field in fields) {
-				var error = type(valueObj, field, descriptiveName, location);
+				var error = type(valueObj, field, descriptiveName, 'field');
 				if (error != null) {
+					error.errorPath.unshift(AccessProperty(field));
 					error.errorPath.unshift(propertyPath);
 					errors.push(error);
 				}
@@ -231,15 +232,16 @@ class Validators {
 				fields = Reflect.fields(shape);
 			for (field in fields) {
 				var propValidator:ValidatorFunction = Reflect.field(shape, field);
-				var error = propValidator(valueObj, field, descriptiveName, location);
+				var error = propValidator(valueObj, field, descriptiveName, 'field');
 				if (error != null) {
+					error.errorPath.unshift(AccessProperty(field));
 					error.errorPath.unshift(propertyPath);
 					errors.push(error);
 				}
 			}
 			if (errors.length > 0) {
 				var fieldOrFields = (errors.length == 1) ? "field" : "fields",
-					error = new ValidationError('The array in $location `$propName` contained ${errors.length} invalid $fieldOrFields');
+					error = new ValidationError('The object in $location `$propName` contained ${errors.length} invalid $fieldOrFields');
 				error.childErrors = errors;
 				error.errorPath.unshift(propertyPath);
 				return error;
@@ -319,9 +321,10 @@ class ValidationError extends js.Error {
 
 	public function new(message:String) {
 		super(message);
-		name = "ValidationError";
-		errorPath = [];
-		childErrors = [];
+		this.name = "ValidationError";
+		this.message = message;
+		this.errorPath = [];
+		this.childErrors = [];
 	}
 
 	public function getErrorPath():String {
@@ -329,6 +332,10 @@ class ValidationError extends js.Error {
 			case AccessProperty(name): '.$name';
 			case AccessArray(itemNumber): '[$itemNumber]';
 		}].join('');
+	}
+
+	public function toString():String {
+		return getErrorPath() + ": " + message;
 	}
 }
 
