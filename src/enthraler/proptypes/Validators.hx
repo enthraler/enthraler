@@ -94,9 +94,7 @@ class Validators {
 			var value = Reflect.field(props, propName);
 			if (value == null) {
 				var errorMsg = 'Required $location `$propName` was not specified in `$descriptiveName`';
-				var error = new ValidationError(errorMsg);
-				error.errorPath.unshift(AccessProperty(propName));
-				return error;
+				return new ValidationError(errorMsg, AccessProperty(propName));
 			}
 			return check(props, propName, descriptiveName, location);
 		}
@@ -131,9 +129,7 @@ class Validators {
 			var value = Reflect.field(props, propName);
 			if (value !=null && allowedValues.indexOf(value) == -1) {
 				var errorMsg = 'Invalid $location `$propName` had value `$value` supplied to `$descriptiveName`, but expected one of `$allowedValues`';
-				var error = new ValidationError(errorMsg);
-				error.errorPath.unshift(AccessProperty(propName));
-				return error;
+				return new ValidationError(errorMsg, AccessProperty(propName));
 			}
 			return null;
 		}
@@ -152,9 +148,7 @@ class Validators {
 			var value = Reflect.field(props, propName);
 			var actualType = Type.typeof(value);
 			var errorMsg = 'Invalid $location `$propName` of type `${typeName(actualType)}` supplied to `$descriptiveName`';
-			var error = new ValidationError(errorMsg);
-			error.errorPath.unshift(AccessProperty(propName));
-			return error;
+			return new ValidationError(errorMsg, AccessProperty(propName));
 		}
 	}
 
@@ -168,25 +162,20 @@ class Validators {
 
 			var values:Array<Dynamic> = Reflect.field(props, propName),
 				errors = [],
-				propertyPath = AccessProperty(propName),
 				i = 0;
 			for (value in values) {
 				var error = type(values, '$i', descriptiveName, 'array item');
 				if (error != null) {
 					// The validator probably assumed a property access, replace it with an array access.
-					error.errorPath.shift();
-					error.errorPath.unshift(AccessArray(i));
-					error.errorPath.unshift(propertyPath);
+					error.path = AccessArray(i);
 					errors.push(error);
 				}
 				i++;
 			}
 			if (errors.length > 0) {
 				var itemOrItems = (errors.length == 1) ? "item" : "items",
-					error = new ValidationError('The array in $location `$propName` contained ${errors.length} invalid $itemOrItems');
-				error.childErrors = errors;
-				error.errorPath.unshift(propertyPath);
-				return error;
+					message = 'The array in $location `$propName` contained ${errors.length} invalid $itemOrItems';
+				return new ValidationError(message, AccessProperty(propName), errors);
 			}
 			return null;
 		}
@@ -202,22 +191,17 @@ class Validators {
 
 			var valueObj = Reflect.field(props, propName),
 				errors = [],
-				propertyPath = AccessProperty(propName),
 				fields = Reflect.fields(valueObj);
 			for (field in fields) {
 				var error = type(valueObj, field, descriptiveName, 'field');
 				if (error != null) {
-					error.errorPath.unshift(AccessProperty(field));
-					error.errorPath.unshift(propertyPath);
 					errors.push(error);
 				}
 			}
 			if (errors.length > 0) {
 				var fieldOrFields = (errors.length == 1) ? "field" : "fields",
-					error = new ValidationError('The object in $location `$propName` contained ${errors.length} invalid $fieldOrFields');
-				error.childErrors = errors;
-				error.errorPath.unshift(propertyPath);
-				return error;
+					message = 'The object in $location `$propName` contained ${errors.length} invalid $fieldOrFields';
+				return new ValidationError(message, AccessProperty(propName), errors);
 			}
 			return null;
 		}
@@ -234,17 +218,13 @@ class Validators {
 				var propValidator:ValidatorFunction = Reflect.field(shape, field);
 				var error = propValidator(valueObj, field, descriptiveName, 'field');
 				if (error != null) {
-					error.errorPath.unshift(AccessProperty(field));
-					error.errorPath.unshift(propertyPath);
 					errors.push(error);
 				}
 			}
 			if (errors.length > 0) {
 				var fieldOrFields = (errors.length == 1) ? "field" : "fields",
-					error = new ValidationError('The object in $location `$propName` contained ${errors.length} invalid $fieldOrFields');
-				error.childErrors = errors;
-				error.errorPath.unshift(propertyPath);
-				return error;
+					message = 'The object in $location `$propName` contained ${errors.length} invalid $fieldOrFields';
+				return new ValidationError(message, AccessProperty(propName), errors);
 			}
 			return null;
 		}
@@ -281,9 +261,7 @@ class Validators {
 
 		// Types are not compatible, return an error.
 		var errorMsg = 'Invalid $location `$propName` of type `${typeName(actualType)}` supplied to `$descriptiveName`, expected `${typeName(expectedType)}`';
-		var error = new ValidationError(errorMsg);
-		error.errorPath.unshift(AccessProperty(propName));
-		return error;
+		return new ValidationError(errorMsg, AccessProperty(propName));
 	}
 
 	static function typeName(type:ValueType):String {
@@ -301,37 +279,44 @@ class Validators {
 			case TUnknown: 'Unknown Type';
 		}
 	}
-
-	/**
-	Return a JS error that stores the property name.
-	**/
-	static function newError(propertyName:String, message:String):ValidationError {
-		var err = new ValidationError(message);
-		err.errorPath.unshift(AccessProperty(propertyName));
-		return err;
-	}
 }
 
 /**
 A special error class that we can use.
 **/
 class ValidationError extends js.Error {
-	public var errorPath:Array<ValidationPathPart>;
 	public var childErrors:Array<ValidationError>;
+	public var parent:ValidationError;
+	public var path:ValidationPathPart;
 
-	public function new(message:String) {
+	public function new(message:String, path:ValidationPathPart, ?childErrors:Array<ValidationError>) {
 		super(message);
 		this.name = "ValidationError";
 		this.message = message;
-		this.errorPath = [];
-		this.childErrors = [];
+		this.path = path;
+		if (childErrors != null) {
+			this.setChildErrors(childErrors);
+		} else {
+			this.childErrors = [];
+		}
+	}
+
+	public function setChildErrors(childErrors:Array<ValidationError>) {
+		for (e in childErrors) {
+			e.parent = this;
+		}
+		this.childErrors = childErrors;
 	}
 
 	public function getErrorPath():String {
-		return [for (p in errorPath) switch p {
+		var errorPath = switch this.path {
 			case AccessProperty(name): '.$name';
 			case AccessArray(itemNumber): '[$itemNumber]';
-		}].join('');
+		}
+		if (parent != null) {
+			errorPath = parent.getErrorPath() + errorPath;
+		}
+		return errorPath;
 	}
 
 	public function toString():String {

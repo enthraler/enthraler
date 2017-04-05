@@ -63,7 +63,7 @@ class EnthralerEditor {
 					authorData = Json.parse(newJson);
 					validationResult = Validators.validate(schema, authorData, 'live JSON editor');
 				} catch (e:Dynamic) {
-					validationResult = [new Validators.ValidationError('JSON syntax error: ' + e)];
+					validationResult = [new Validators.ValidationError('JSON syntax error: ' + e, AccessProperty('document'))];
 				}
 
 
