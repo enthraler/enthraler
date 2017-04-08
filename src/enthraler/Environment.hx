@@ -45,7 +45,7 @@ class Environment {
 
 		window.parent.postMessage(Json.stringify({
 			src: '' + window.location,
-			context: 'iframe.resize',
+			context: EnthralerMessages.requestHeightChange,
 			height: requestedHeight
 		}), '*');
 	}

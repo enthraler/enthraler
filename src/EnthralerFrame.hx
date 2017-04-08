@@ -1,5 +1,6 @@
 import js.Browser.document;
 import js.Browser.window;
+import js.html.*;
 import enthraler.*;
 
 /**
@@ -33,6 +34,21 @@ class EnthralerFrame {
 
 	static function loadEnthralerComponent(params:Map<String,String>) {
 		var container = document.getElementById('container');
-		Enthraler.loadComponent(params['template'], params['authorData'], container);
+		Enthraler
+			.loadComponent(params['template'], params['authorData'], container)
+			.then(function (enthralerInstance:Template<Dynamic>) {
+				// If we receive an update with new AuthorData, send it through to the template for rendering.
+				window.addEventListener('message', function (e:MessageEvent) {
+					var message = e.data,
+						data:Dynamic = haxe.Json.parse(message);
+
+					switch data.context {
+						case EnthralerMessages.receiveAuthorData:
+							enthralerInstance.render(data.authorData);
+						default:
+							trace('Received message from host', data);
+					}
+				});
+			});
 	}
 }

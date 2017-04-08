@@ -5,6 +5,7 @@ import js.Promise;
 import js.codemirror.*;
 import haxe.Json;
 import enthraler.proptypes.*;
+import enthraler.EnthralerMessages;
 
 /**
 The entry point for a JS file that renders an editor for an Enthraler.
@@ -54,6 +55,7 @@ class EnthralerEditor {
 		js.Promise.all([editor, schemaObj]).then(function (arr:Array<Dynamic>) {
 			var editor:CodeMirror = arr[0],
 				schema:PropTypes = arr[1];
+
 			editor.on('change', function () {
 				var newJson = editor.getValue(),
 					validationResult,
@@ -70,6 +72,11 @@ class EnthralerEditor {
 				if (validationResult == null) {
 					// The new authorData is valid
 					errorList.classList.add('hidden');
+					preview.contentWindow.postMessage(Json.stringify({
+						src: '' + window.location,
+						context: EnthralerMessages.receiveAuthorData,
+						authorData: authorData
+					}), preview.contentWindow.location.origin);
 				} else {
 					function addError(ve:Validators.ValidationError) {
 						var li = document.createLIElement();

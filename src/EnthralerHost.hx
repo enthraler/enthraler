@@ -1,3 +1,4 @@
+import enthraler.EnthralerMessages;
 import js.Browser.window;
 import js.Browser.document;
 import js.html.*;
@@ -37,7 +38,7 @@ class EnthralerHost {
 			}
 
 			switch data.context {
-				case "iframe.resize":
+				case EnthralerMessages.requestHeightChange:
 					if (currentFrame != null) {
 						currentFrame.style.height = data.height + 'px';
 					}
