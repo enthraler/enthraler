@@ -1,7 +1,14 @@
 {
     "version": "0.1.0",
     "command": "haxe",
-    "args": ["enthralFrame.hxml"],
+    "args": [
+        "enthralerFrame.hxml",
+        "--next", "enthralerFrame.hxml",
+        "--next", "enthralerEditor.hxml",
+        "--next", "enthralerHost.hxml",
+        "--next", "apiDocs.hxml",
+        "--next", "test.hxml"
+    ],
     "problemMatcher": {
         "owner": "haxe",
         "pattern": {
