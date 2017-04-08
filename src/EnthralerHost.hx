@@ -20,10 +20,13 @@ class EnthralerHost {
 	}
 
 	static function init() {
-		addMessageListener();
+		addMessageListeners();
 	}
 
-	static function addMessageListener() {
+	/**
+	Add a message listener to the current window to listen to resize events coming from an Enthraler IFrame.
+	**/
+	public static function addMessageListeners() {
 		window.addEventListener('message', function (e:MessageEvent) {
 			var frameWindow:Window = e.source,
 				message = e.data,

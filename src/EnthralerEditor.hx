@@ -12,6 +12,7 @@ The entry point for a JS file that renders an editor for an Enthraler.
 **/
 class EnthralerEditor {
 	public static function main() {
+		EnthralerHost.addMessageListeners();
 		var params = getParamsFromLocation();
 		loadEnthralerEditor(params);
 	}
