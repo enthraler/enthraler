@@ -50,6 +50,17 @@ class Environment {
 		}), '*');
 	}
 
+	public function broadcastSchemaUrl(schemaUrl:String) {
+		if (window.parent == null) {
+			return;
+		}
+		window.parent.postMessage(Json.stringify({
+			src: '' + window.location,
+			context: EnthralerMessages.broadbastSchemaUrl,
+			schemaUrl: schemaUrl
+		}), '*');
+	}
+
 	#if feature_shared_state
 	/**
 	(Not implemented yet).

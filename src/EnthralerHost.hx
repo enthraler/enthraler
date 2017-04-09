@@ -45,6 +45,10 @@ class EnthralerHost {
 					if (currentFrame != null) {
 						currentFrame.style.height = data.height + 'px';
 					}
+				case EnthralerMessages.broadbastSchemaUrl:
+					if (currentFrame != null) {
+						currentFrame.setAttribute('data-schema-url', data.schemaUrl);
+					}
 				default:
 					trace('Received message from frame', frameWindow, data);
 			}

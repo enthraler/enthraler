@@ -35,6 +35,12 @@ class Enthraler {
 			var componentCls:Module = arr[0],
 				authorData:AuthorData = arr[1];
 
+			// If there is a Schema defined, post a message in case there's an editor that wants to know.
+			// We have this hacky way of loading because loading an AMD module without loading it's dependencies, for the purpose of extracting a single variable, is non-trivial.
+			if (componentCls['enthralerSchema'] != null) {
+				environment.broadcastSchemaUrl(componentCls['enthralerSchema']);
+			}
+
 			#if feature_shared_state
 			var component:Template<AuthorData, UserState, GroupState> = componentCls.instantiate(environment);
 			component.render(authorData, null, null);
