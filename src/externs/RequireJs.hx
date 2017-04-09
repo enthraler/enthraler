@@ -29,17 +29,45 @@ extern class RequireJs {
 
 	public static inline function requireSingleModule(url:String):Promise<Module> {
 		return new Promise(function (resolve, reject) {
-			require([url], resolve, reject);
+			require([url], function (module:Dynamic) {
+				resolve(Module.fromDynamic(module));
+			}, reject);
 		});
 	}
 }
 
-abstract Module(Dynamic) from Dynamic {
-	inline public function new(module:Dynamic) {
-		this = module;
+abstract Module(Any) {
+	/**
+	Turn any dynamic object into a `Module`.
+
+	Please note if the object has a field called `default`, we will use that field instead of the object itself.
+	This is to provide compatibility with CommonJS modules that use `export default class ...`.
+	**/
+	public function new(module:Dynamic) {
+		if (Reflect.hasField(module, 'default')) {
+			this = new Module(Reflect.field(module, 'default'));
+		} else {
+			this = module;
+		}
 	}
 
-	inline public function instantiate(?arg1:Dynamic, ?arg2:Dynamic, ?arg3:Dynamic, ?arg4:Dynamic, ?arg5:Dynamic) {
+	/**
+	Allow automatic casting of a Dynamic object to a Module.
+	**/
+	@:from
+	inline public static function fromDynamic(obj:Any):Module {
+		return new Module(obj);
+	}
+
+	/**
+	Retrieve any static field on the loaded module using it's name.
+	**/
+	@:arrayAccess
+	inline public function getStaticField(key:String):Any {
+		return Reflect.field(this, key);
+	}
+
+	inline public function instantiate(?arg1:Any, ?arg2:Any, ?arg3:Any, ?arg4:Any, ?arg5:Any) {
 		return inst(this, arg1, arg2, arg3, arg4, arg5);
 	}
 
