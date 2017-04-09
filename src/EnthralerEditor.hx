@@ -30,8 +30,7 @@ class EnthralerEditor {
 
 	static function loadEnthralerEditor(params:Map<String,String>) {
 		var templateUrl = params['template'],
-			dataUrl = params['authorData'],
-			schemaUrl = params['schema'];
+			dataUrl = params['authorData'];
 
 		var preview:IFrameElement = cast document.getElementById('preview'),
 			textarea:TextAreaElement = cast document.getElementById('textarea'),
@@ -40,7 +39,7 @@ class EnthralerEditor {
 		preview.src = '/frame.html#?template=' + templateUrl + '&authorData=' + dataUrl;
 
 		var dataText = window.fetch(dataUrl).then(function (r) return r.text()),
-			schemaObj = window.fetch(schemaUrl).then(function (r) return r.json());
+			schemaObj = loadSchemaForIframe(preview);
 
 		var editor = dataText.then(function (data) {
 			textarea.value = data;
@@ -59,12 +58,14 @@ class EnthralerEditor {
 
 			editor.on('change', function () {
 				var newJson = editor.getValue(),
-					validationResult,
+					validationResult = null,
 					authorData = null;
 
 				try {
 					authorData = Json.parse(newJson);
-					validationResult = Validators.validate(schema, authorData, 'live JSON editor');
+					if (schema != null) {
+						validationResult = Validators.validate(schema, authorData, 'live JSON editor');
+					}
 				} catch (e:Dynamic) {
 					validationResult = [new Validators.ValidationError('JSON syntax error: ' + e, AccessProperty('document'))];
 				}
@@ -95,6 +96,34 @@ class EnthralerEditor {
 					}
 				}
 			});
+		});
+	}
+
+	static function loadSchemaForIframe(iframe:IFrameElement):Promise<Dynamic> {
+		return new Promise(function (resolve, reject) {
+			function doLoadWithCurrentAttribute():Void {
+				var schemaUrl = iframe.getAttribute('data-schema-url');
+				if (schemaUrl == null || schemaUrl == "") {
+					// Set the schema object to null, meaning that no validation will occur.
+					resolve(null);
+				} else {
+					window
+						.fetch(schemaUrl)
+						.then(function (r) resolve(r.json()))
+						.catchError(function (e) {
+							trace('Failed to load schema: ', e);
+							resolve(null);
+						});
+				}
+			}
+
+			var token:Int;
+			token = window.setInterval(function () {
+				if (iframe.hasAttribute('data-schema-url')) {
+					doLoadWithCurrentAttribute();
+					window.clearInterval(token);
+				}
+			}, 100);
 		});
 	}
 }
