@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta charset="utf-8"></meta>
-	<title>EnthralUs Content Creator</title>
+	<title>Enthraler Content Creator</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css"></link>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"></link>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.css"></link>
@@ -14,20 +14,57 @@
 		html, body {
 			font-size: 14px;
 		}
+		#container {
+			display: grid;
+			grid-template-columns: 50% 50%;
+			grid-template-rows: 50px 50px auto;
+			position: absolute;
+			left: 0; right: 0; top: 0; bottom: 0;
+		}
+		#header {
+			grid-column: 1 / span 2;
+			grid-row: 1;
+			text-align: center;
+		}
+		#editor-header {
+			grid-column: 1;
+			grid-row: 2;
+		}
+		#preview-header {
+			grid-column: 2;
+			grid-row: 2;
+		}
+		#editor-pane {
+			grid-column: 1;
+			grid-row: 3;
+		}
+		#editor-pane .CodeMirror {
+  			height: auto;
+		}
+		#preview-pane {
+			grid-column: 2;
+			grid-row: 3;
+		}
+
 	</style>
 </head>
 <body>
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-6">
-				<h3>Author Data</h3>
-				<textarea id="textarea">Loading</textarea>
-			</div>
-			<div class="col-lg-6">
-				<h3>Preview</h3>
-				<ul id="error-list" class="hidden"></ul>
-				<iframe id="preview" class="enthraler-embed" src="about:blank" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
-			</div>
+	<div id="container">
+		<div id="header">
+			<h1>Enthraler Editor</h1>
+		</div>
+		<div id="editor-header">
+			<h3>Author Data</h3>
+		</div>
+		<div id="editor-pane">
+			<textarea id="textarea">Loading</textarea>
+		</div>
+		<div id="preview-header">
+			<h3>Preview</h3>
+		</div>
+		<div id="preview-pane">
+			<ul id="error-list" class="hidden"></ul>
+			<iframe id="preview" class="enthraler-embed" src="about:blank" sandbox="allow-same-origin allow-scripts allow-forms" frameborder="0" style="display: block; width: 960px; max-width: 100%; height: 350px;"></iframe>
 		</div>
 	</div>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
