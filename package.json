@@ -7,7 +7,8 @@
   "author": "Jason O'Neil <jason.oneil@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "webpack": "node node_modules/webpack/bin/webpack.js"
+    "webpack": "node node_modules/webpack/bin/webpack.js",
+    "watch": "node node_modules/webpack/bin/webpack.js --watch"
   },
   "dependencies": {
     "promise-polyfill": "^6.0.2",
