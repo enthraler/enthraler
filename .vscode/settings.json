@@ -15,7 +15,9 @@
         ["enthralerHost.hxml"],
         ["enthralerEditor.hxml"],
         ["apiDocs.hxml"],
-        ["test.hxml"]
+        ["test.hxml"],
+        ["server_enthralerdotcom.hxml"],
+        ["client_enthralerdotcom.hxml"]
     ],
 
     // Automatic formatting of Javascript.

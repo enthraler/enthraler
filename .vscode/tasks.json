@@ -7,7 +7,9 @@
         "--next", "enthralerEditor.hxml",
         "--next", "enthralerHost.hxml",
         "--next", "apiDocs.hxml",
-        "--next", "test.hxml"
+        "--next", "test.hxml",
+        "--next", "client_enthralerdotcom.hxml",
+        "--next", "server_enthralerdotcom.hxml"
     ],
     "problemMatcher": {
         "owner": "haxe",

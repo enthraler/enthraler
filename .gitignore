@@ -1,4 +1,7 @@
 .haxelib/
 node_modules/
 bin/*.js
+bin/*.php
+bin/lib
+bin/res
 components/

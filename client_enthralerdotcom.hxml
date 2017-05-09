@@ -1,0 +1,10 @@
+-D client
+-lib react
+-lib tink_core
+-lib tink_macro
+-lib smalluniverse
+# Until 0.6.0 is published to haxelib we need `haxelib git tink_json https://github.com/haxetink/tink_json.git 0.6.0`
+-lib tink_json
+-cp src
+-main enthralerdotcom.Client
+-js bin/enthralerdotcom.haxe.js
