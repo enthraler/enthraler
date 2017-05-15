@@ -6,9 +6,9 @@ import enthralerdotcom.types.*;
 import ufront.ORM;
 import sys.db.Types;
 
+@:index(templateID, major, minor, patch, unique)
 class TemplateVersion extends Object {
 	public var template:BelongsTo<Template>;
-	public var version:SemVer;
 	public var major:Int;
 	public var minor:Int;
 	public var patch:Int;

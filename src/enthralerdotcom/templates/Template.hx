@@ -6,7 +6,10 @@ import enthralerdotcom.types.*;
 import ufront.ORM;
 import sys.db.Types;
 
+@:index(name)
 class Template extends Object {
+	public var name:SString<255>;
+	public var description:SText;
 	public var gitRepo:GitRepo;
 	public var homepage:Url;
 	public var versions:HasMany<TemplateVersion>;
