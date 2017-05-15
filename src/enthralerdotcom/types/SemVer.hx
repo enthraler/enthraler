@@ -1,6 +1,8 @@
 package enthralerdotcom.types;
 
-abstract SemVer(String) to String {
+import sys.db.Types;
+
+abstract SemVer(SString<255>) to String {
 	public function new(version:String) {
 		this = version;
 	}

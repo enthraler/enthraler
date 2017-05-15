@@ -1,6 +1,8 @@
 package enthralerdotcom.types;
 
-abstract UserGuid(String) to String {
+import sys.db.Types;
+
+abstract UserGuid(SString<36>) to String {
 	public function new(guid:String) {
 		this = guid;
 	}

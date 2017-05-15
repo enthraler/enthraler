@@ -1,6 +1,8 @@
 package enthralerdotcom.types;
 
-abstract FilePath(String) to String {
+import sys.db.Types;
+
+abstract FilePath(SString<255>) to String {
 	public function new(filePath:String) {
 		this = filePath;
 	}
