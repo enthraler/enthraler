@@ -7,7 +7,7 @@ import enthralerdotcom.types.*;
 import ufront.ORM;
 import sys.db.Types;
 
-@:index(contentID, publishDate)
+@:index(contentID, published)
 class ContentVersion extends Object {
 	public var content:BelongsTo<Content>;
 	public var templateVersion:BelongsTo<TemplateVersion>;
