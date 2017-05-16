@@ -21,10 +21,7 @@ class M20170514172105_Initial_Schema_Setup extends Migration {
 					{fields:["templateID"], unique:false},
 					{fields:["copiedFromID"], unique:false},
 				],
-				foreignKeys: [
-					{fields: ["copiedFromID"], relatedTableName:"Content", relatedTableFields:["id"], onUpdate:Cascade, onDelete:SetNull},
-					{fields: ["templateID"], relatedTableName:"Template", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Restrict},
-				],
+				foreignKeys: [],
 			}),
 			CreateTable({
 				tableName: "ContentVersion",
@@ -35,15 +32,12 @@ class M20170514172105_Initial_Schema_Setup extends Migration {
 					{name:"contentID", type:DInt, isNullable:false},
 					{name:"templateVersionID", type:DInt, isNullable:false},
 					{name:"jsonContent", type:DText, isNullable:false},
-					{name:"publishDate", type:DDateTime, isNullable:true},
+					{name:"published", type:DDateTime, isNullable:true},
 				],
 				indicies: [
-					{fields:["contentID", "date"], unique:false},
+					{fields:["contentID", "published"], unique:false},
 				],
-				foreignKeys: [
-					{fields: ["contentID"], relatedTableName:"Content", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Cascade},
-					{fields: ["templateVersionID"], relatedTableName:"TemplateVersion", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Restrict},
-				],
+				foreignKeys: [],
 			}),
 			CreateTable({
 				tableName: "ContentResource",
@@ -55,9 +49,7 @@ class M20170514172105_Initial_Schema_Setup extends Migration {
 					{name:"filePath", type:DString(255), isNullable:false},
 				],
 				indicies: [],
-				foreignKeys: [
-					{fields: ["contentVersionID"], relatedTableName:"ContentVersion", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Restrict}
-				],
+				foreignKeys: [],
 			}),
 			CreateJoinTable("enthralerdotcom.content.ContentVersion", "enthralerdotcom.content.ContentResource"),
 			CreateTable({
@@ -90,11 +82,9 @@ class M20170514172105_Initial_Schema_Setup extends Migration {
 					{name:"basePath", type:DString(255), isNullable:false},
 				],
 				indicies: [
-					{fields:["templateID", "major", "minor", "patch", "unique"], unique:true},
+					{fields:["templateID", "major", "minor", "patch"], unique:true},
 				],
-				foreignKeys: [
-					{fields: ["templateID"], relatedTableName:"Template", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Cascade},
-				],
+				foreignKeys: [],
 			}),
 			CreateTable({
 				tableName: "ContentAnalyticsEvent",
@@ -108,13 +98,16 @@ class M20170514172105_Initial_Schema_Setup extends Migration {
 					{name:"templateVersionID", type:DInt, isNullable:false},
 					{name:"eventJson", type:DText, isNullable:false},
 				],
-				indicies: [
-					{fields:["templateID", "major", "minor", "patch", "unique"], unique:true},
-				],
-				foreignKeys: [
-					{fields: ["templateID"], relatedTableName:"Template", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Cascade},
-				],
+				indicies: [],
+				foreignKeys: [],
 			}),
+			AddForeignKey("Content", {fields: ["copiedFromID"], relatedTableName:"Content", relatedTableFields:["id"], onUpdate:Cascade, onDelete:SetNull}),
+			AddForeignKey("Content", {fields: ["templateID"], relatedTableName:"Template", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Restrict}),
+			AddForeignKey("ContentVersion", {fields: ["contentID"], relatedTableName:"Content", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Cascade}),
+			AddForeignKey("ContentVersion", {fields: ["templateVersionID"], relatedTableName:"TemplateVersion", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Restrict}),
+			AddForeignKey("ContentResource", {fields: ["contentVersionID"], relatedTableName:"ContentVersion", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Restrict}),
+			AddForeignKey("TemplateVersion", {fields: ["templateID"], relatedTableName:"Template", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Cascade}),
+			AddForeignKey("ContentAnalyticsEvent", {fields: ["templateID"], relatedTableName:"Template", relatedTableFields:["id"], onUpdate:Cascade, onDelete:Cascade}),
 		]);
 	}
 }
