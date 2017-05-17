@@ -3,8 +3,6 @@ package enthralerdotcom;
 import monsoon.Monsoon;
 import monsoon.middleware.Console;
 import smalluniverse.SmallUniverse;
-import enthralerdotcom.content.Content;
-import db.migrations.M20170514172105_Initial_Schema_Setup;
 import dodrugs.Injector;
 import sys.db.*;
 import ufront.db.migrations.*;
@@ -38,6 +36,7 @@ class Server {
 		var app = new Monsoon();
 
 		var smallUniverse = new SmallUniverse(app);
+		smallUniverse.addPage('/templates', enthralerdotcom.templates.ManageTemplatesPage);
 		smallUniverse.addPage('/', enthralerdotcom.AboutPage);
 		app.listen(3000);
 	}
