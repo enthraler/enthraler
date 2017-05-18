@@ -60,7 +60,6 @@ class M20170514172105_Initial_Schema_Setup extends Migration {
 					{name:"modified", type:DDateTime, isNullable:false},
 					{name:"name", type:DString(255), isNullable:false},
 					{name:"description", type:DText, isNullable:false},
-					{name:"gitRepo", type:DString(255), isNullable:false},
 					{name:"homepage", type:DString(255), isNullable:false},
 				],
 				indicies: [
@@ -78,7 +77,6 @@ class M20170514172105_Initial_Schema_Setup extends Migration {
 					{name:"major", type:DInt, isNullable:false},
 					{name:"minor", type:DInt, isNullable:false},
 					{name:"patch", type:DInt, isNullable:false},
-					{name:"commitHash", type:DString(255), isNullable:false},
 					{name:"basePath", type:DString(255), isNullable:false},
 				],
 				indicies: [

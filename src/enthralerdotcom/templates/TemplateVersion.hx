@@ -12,7 +12,6 @@ class TemplateVersion extends Object {
 	public var major:Int;
 	public var minor:Int;
 	public var patch:Int;
-	public var commitHash:SString<255>;
 	public var basePath:Url; // Rawgit URL.
 	public var analytics:HasMany<ContentAnalyticsEvent>;
 }
