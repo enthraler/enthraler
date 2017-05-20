@@ -60,6 +60,7 @@ class M20170514172105_Initial_Schema_Setup extends Migration {
 					{name:"modified", type:DDateTime, isNullable:false},
 					{name:"name", type:DString(255), isNullable:false},
 					{name:"description", type:DText, isNullable:false},
+					{name:"source", type:DData, isNullable:false},
 					{name:"homepage", type:DString(255), isNullable:false},
 				],
 				indicies: [
