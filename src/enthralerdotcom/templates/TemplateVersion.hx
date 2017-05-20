@@ -12,6 +12,13 @@ class TemplateVersion extends Object {
 	public var major:Int;
 	public var minor:Int;
 	public var patch:Int;
+
+	@:validate(StringTools.endsWith(_, "/"))
 	public var basePath:Url; // Rawgit URL.
+
 	public var analytics:HasMany<ContentAnalyticsEvent>;
+
+	public function getSemver():SemVer {
+		return new SemVer('$major.$minor.$patch');
+	}
 }
