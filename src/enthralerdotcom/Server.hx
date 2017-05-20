@@ -22,7 +22,9 @@ class Server {
 			var _:Connection = Manager.cnx,
 			MigrationConnection,
 			MigrationManager,
-			MigrationApi
+			MigrationApi,
+			enthralerdotcom.templates.ManageTemplatesPage,
+			enthralerdotcom.templates.TemplatesApi,
 		]);
 
 		if (php.Web.isModNeko) {
@@ -32,11 +34,11 @@ class Server {
 		}
 	}
 
-	static function webMain(injector) {
+	static function webMain(injector:Injector<'enthralerdotcom'>) {
 		var app = new Monsoon();
 
 		var smallUniverse = new SmallUniverse(app);
-		smallUniverse.addPage('/templates', enthralerdotcom.templates.ManageTemplatesPage);
+		smallUniverse.addPage('/templates', function () return injector.get(enthralerdotcom.templates.ManageTemplatesPage));
 		smallUniverse.addPage('/', enthralerdotcom.AboutPage);
 		app.listen(3000);
 	}
