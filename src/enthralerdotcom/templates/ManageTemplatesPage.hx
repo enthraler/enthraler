@@ -36,7 +36,7 @@ class ManageTemplatesPage extends UniversalPage<{}, ManageTemplatesPageProps, {}
 				name: tpl.name,
 				homepage: tpl.homepage,
 				versions: [for (v in tpl.versions) {
-					basePath: v.basePath,
+					mainUrl: v.mainUrl,
 					version: v.getSemver()
 				}]
 			});

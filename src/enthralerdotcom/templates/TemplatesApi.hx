@@ -3,6 +3,7 @@ package enthralerdotcom.templates;
 import tink.Json;
 using tink.CoreApi;
 import enthralerdotcom.types.*;
+import enthraler.EnthralerPackageInfo;
 
 class TemplatesApi {
 	#if server
@@ -23,18 +24,12 @@ class TemplatesApi {
 				return getGithubTags(githubUser, githubRepo);
 			})
 			.next(function (tags) {
+				var tagFutures = [];
 				for (tag in tags) {
 					// Create a TemplateVersion
-					var version = new TemplateVersion();
-					version.template = tpl;
-					var parts = tag.split(".");
-					version.major = Std.parseInt(parts[0]);
-					version.minor = Std.parseInt(parts[1]);
-					version.patch = Std.parseInt(parts[2]);
-					version.basePath = new Url('https://cdn.rawgit.com/$githubUser/$githubRepo/$tag/');
-					version.save();
+					tagFutures.push(saveVersionInfo(githubUser, githubRepo, tpl, tag));
 				}
-				return Noise;
+				return Future.ofMany(tagFutures).map(function (_) return Noise);
 			});
 	}
 
@@ -58,6 +53,33 @@ class TemplatesApi {
 			}
 			return tags;
 		});
+	}
+
+	function saveVersionInfo(githubUser:String, githubRepo:String, tpl:Template, tag:String) {
+		var version = new TemplateVersion();
+		var parts = tag.split(".");
+		version.template = tpl;
+		version.major = Std.parseInt(parts[0]);
+		version.minor = Std.parseInt(parts[1]);
+		version.patch = Std.parseInt(parts[2]);
+		version.basePath = new Url('https://cdn.rawgit.com/$githubUser/$githubRepo/$tag/');
+		return
+			loadUrl(version.basePath + 'package.json')
+				.next(function (resp) {
+					var data:{enthraler:EnthralerPackageInfo} = Json.parse(resp);
+					version.mainUrl = new Url(version.basePath + data.enthraler.main);
+					version.schemaUrl = new Url(version.basePath + data.enthraler.schema);
+					return loadUrl(version.basePath + 'README.md')
+						.recover(function (err:Error) return "")
+						.next(function (readmeStr:String):Noise {
+							version.readme = (readmeStr!="") ? readmeStr : null;
+							return Noise;
+						});
+				})
+				.next(function (_):Noise {
+					version.save();
+					return Noise;
+				});
 	}
 
 	function loadUrl(url:String):Promise<String> {

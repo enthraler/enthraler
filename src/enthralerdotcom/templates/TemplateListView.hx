@@ -7,7 +7,7 @@ typedef TemplateList = Array<{
 	name:String,
 	homepage:String,
 	versions:Array<{
-		basePath:String,
+		mainUrl:String,
 		version:String
 	}>,
 }>
@@ -16,7 +16,7 @@ class TemplateListView extends UniversalComponent<{templates:TemplateList}, {}, 
 	override function render() {
 		var templateLIs = this.props.templates.map(function (tpl) {
 			var versionLIs = [for (version in tpl.versions) jsx('<li>
-				<p><a href=${version.basePath+"package.json"}>${version.version}</a></p>
+				<p><a href=${version.mainUrl}>${version.version}</a></p>
 			</li>')];
 			return jsx('<li>
 				<p><a href="${tpl.homepage}">${tpl.name}</a></p>
