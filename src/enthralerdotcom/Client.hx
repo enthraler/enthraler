@@ -5,7 +5,6 @@ import js.Browser.window;
 import js.Browser.document;
 
 // Import the pages we will need. They will be loaded via Reflection (for now).
-import enthralerdotcom.AboutPage;
 import enthralerdotcom.templates.ManageTemplatesPage;
 
 class Client {

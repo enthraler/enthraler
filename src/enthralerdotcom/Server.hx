@@ -39,7 +39,9 @@ class Server {
 
 		var smallUniverse = new SmallUniverse(app);
 		smallUniverse.addPage('/templates', function () return injector.get(enthralerdotcom.templates.ManageTemplatesPage));
-		smallUniverse.addPage('/', enthralerdotcom.AboutPage);
+		smallUniverse.addPage('/templates/:name', function () return injector.get(enthralerdotcom.templates.ViewTemplatePage));
+		// // smallUniverse.addPage('/i/:guid', ItemPage);
+		// // smallUniverse.addPage('/i/:guid/edit', ItemEditorPage);
 		app.listen(3000);
 	}
 
