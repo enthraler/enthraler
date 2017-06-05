@@ -12,38 +12,17 @@ typedef ManageTemplatesPageProps = {
 	templates:TemplateList
 }
 
-class ManageTemplatesPage extends UniversalPage<{}, ManageTemplatesPageProps, {}, {}> {
+enum ManageTemplatesAction {
+	AddGithubRepoAsTemplate(githubUser:String, githubRepo:String);
+}
+
+class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, ManageTemplatesPageProps, {}, {}> {
 
 	@:client var githubUsername:String;
 	@:client var githubRepo:String;
-	@:server var api:TemplatesApi;
 
-	public function new(templatesApi:TemplatesApi) {
-		super();
-		this.api = templatesApi;
-	}
-
-	@:serverAction
-	function addGithubRepoAsTemplate(githubUser:String, githubRepo:String):Promise<Noise> {
-		return api.addNewTemplateFromGithubRepo(githubUser, githubRepo);
-	}
-
-	override function get():Promise<ManageTemplatesPageProps> {
-		var allTemplates = Template.manager.all();
-		var templates = [];
-		for (tpl in allTemplates) {
-			templates.push({
-				name: tpl.name,
-				homepage: tpl.homepage,
-				versions: [for (v in tpl.versions) {
-					mainUrl: v.mainUrl,
-					version: v.getSemver()
-				}]
-			});
-		}
-		return {
-			templates: templates
-		};
+	public function new(backendApi:ManageTemplatesBackendApi) {
+		super(backendApi);
 	}
 
 	override function render() {
@@ -91,6 +70,6 @@ class ManageTemplatesPage extends UniversalPage<{}, ManageTemplatesPageProps, {}
 
 	@:client
 	function addTemplateClick(e:react.ReactEvent) {
-		addGithubRepoAsTemplate(githubUsername, githubRepo);
+		this.trigger(AddGithubRepoAsTemplate(githubUsername, githubRepo));
 	}
 }

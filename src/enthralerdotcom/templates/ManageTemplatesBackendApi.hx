@@ -1,14 +1,40 @@
 package enthralerdotcom.templates;
 
 import tink.Json;
+import enthralerdotcom.templates.ManageTemplatesPage;
 using tink.CoreApi;
 import enthralerdotcom.types.*;
 import enthraler.EnthralerPackageInfo;
 
-class TemplatesApi {
-	#if server
+class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTemplatesAction, {}, ManageTemplatesPageProps> {
 	public function new() {
 
+	}
+
+	public function get(params):Promise<ManageTemplatesPageProps> {
+		var allTemplates = Template.manager.all();
+		var templates = [];
+		for (tpl in allTemplates) {
+			templates.push({
+				name: tpl.name,
+				homepage: tpl.homepage,
+				versions: [for (v in tpl.versions) {
+					mainUrl: v.mainUrl,
+					version: v.getSemver()
+				}]
+			});
+		}
+		return {
+			templates: templates
+		};
+	}
+
+	public function processAction(params, action:ManageTemplatesAction):Promise<Noise> {
+		switch action {
+			case AddGithubRepoAsTemplate(githubUser, githubRepo):
+				addNewTemplateFromGithubRepo(githubUser, githubRepo);
+				return Noise;
+		}
 	}
 
 	public function addNewTemplateFromGithubRepo(githubUser:String, githubRepo:String):Promise<Noise> {
@@ -106,5 +132,4 @@ class TemplatesApi {
 			untyped __call__("curl_close", curl);
 		});
 	}
-	#end
 }

@@ -24,7 +24,9 @@ class Server {
 			MigrationManager,
 			MigrationApi,
 			enthralerdotcom.templates.ManageTemplatesPage,
-			enthralerdotcom.templates.TemplatesApi,
+			enthralerdotcom.templates.ManageTemplatesBackendApi,
+			enthralerdotcom.templates.ViewTemplatePage,
+			enthralerdotcom.templates.ViewTemplateBackendApi,
 		]);
 
 		if (php.Web.isModNeko) {
