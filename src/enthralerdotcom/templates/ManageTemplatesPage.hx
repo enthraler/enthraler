@@ -26,7 +26,7 @@ class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, Manag
 	}
 
 	override function render() {
-		this.head.addScript('enthralerdotcom.bundle.js');
+		this.head.addScript('/assets/enthralerdotcom.bundle.js');
 		this.head.addStylesheet('https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.1/css/bulma.min.css');
 		this.head.setTitle('Manage templates!');
 		return jsx('<div>

@@ -3,14 +3,18 @@ var path = require('path');
 module.exports = {
     entry: {
         polyfills: "./polyfills/polyfills.js",
-        enthralerdotcom: "./bin/enthralerdotcom.haxe.js"
+        enthralerdotcom: "./client_enthralerdotcom.hxml"
     },
     output: {
-        path: __dirname + "/bin",
+        path: __dirname + "/bin/assets",
         filename: "[name].bundle.js"
     },
     module: {
         rules: [
+            {
+                test: /\.hxml$/,
+                loader: 'haxe-loader',
+            },
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
@@ -28,5 +32,16 @@ module.exports = {
                 ]
             }
         ]
-    }
+    },
+    devServer: {
+        contentBase: "./bin",
+        overlay: true,
+        proxy: {
+            "/": {
+                changeOrigin: true,
+                target: "http://localhost:80"
+            }
+        },
+        publicPath: "/assets/"
+    },
 };

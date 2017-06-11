@@ -7,15 +7,18 @@
   "author": "Jason O'Neil <jason.oneil@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "webpack-dev-server --open",
     "webpack": "node node_modules/webpack/bin/webpack.js",
     "watch": "node node_modules/webpack/bin/webpack.js --watch"
   },
   "dependencies": {
-    "promise-polyfill": "^6.0.2",
-    "whatwg-fetch": "^2.0.1",
     "babel-polyfill": "^6.22.0",
+    "haxe-loader": "^0.1.2",
+    "promise-polyfill": "^6.0.2",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "webpack-dev-server": "^2.4.5",
+    "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
