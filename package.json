@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.22.0",
-    "haxe-loader": "^0.1.2",
+    "haxe-loader": "^0.1.4",
     "promise-polyfill": "^6.0.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",

@@ -3,7 +3,10 @@ var path = require('path');
 module.exports = {
     entry: {
         polyfills: "./polyfills/polyfills.js",
-        enthralerdotcom: "./client_enthralerdotcom.hxml"
+        enthralerdotcom: "./client_enthralerdotcom.hxml",
+        // The following do not actually generate JS.
+        // We just use webpack to monitor them and build.
+        serverBuild: "./server_enthralerdotcom.hxml",
     },
     output: {
         path: __dirname + "/bin/assets",
