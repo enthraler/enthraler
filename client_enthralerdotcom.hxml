@@ -1,4 +1,5 @@
 -D client
+-cp node_modules/haxe-loader/macro
 -lib react
 -lib tink_core
 -lib tink_macro

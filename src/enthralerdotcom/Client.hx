@@ -10,6 +10,7 @@ import enthralerdotcom.templates.ViewTemplatePage;
 
 class Client {
 	static function main() {
+		Webpack.require('./EnthralerStyles.scss');
 		onReady(function () {
 			UniversalPage.startClientRendering();
 		});

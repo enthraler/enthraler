@@ -2,6 +2,7 @@
 # At the time of writing it is unreleased, so we have to use the latest git version, but whatever version comes after 0.7.0 should include it.
 # haxelib git tink_http https://github.com/haxetink/tink_http.git
 -D server
+-cp node_modules/haxe-loader/macro
 -lib monsoon
 -lib react
 -lib tink_core

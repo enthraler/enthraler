@@ -1,5 +1,7 @@
 var path = require('path');
 
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 module.exports = {
     entry: {
         polyfills: "./polyfills/polyfills.js",
@@ -27,15 +29,17 @@ module.exports = {
                 }
             },
             {
-                test: /\.less$/,
-                use: [
-                    'style-loader',
-                    { loader: 'css-loader', options: { importLoaders: 1 } },
-                    { loader: 'less-loader', options: { strictMath: true, noIeCompat: true } }
-                ]
-            }
+                test: /\.scss$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: ["css-loader", "sass-loader"]
+                })
+            },
         ]
     },
+    plugins: [
+        new ExtractTextPlugin("styles.css"),
+    ],
     devServer: {
         contentBase: "./bin",
         overlay: true,

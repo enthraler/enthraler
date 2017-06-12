@@ -24,8 +24,8 @@ class ViewTemplatePage extends UniversalPage<ViewTemplateAction, ViewTemplatePar
 	}
 
 	override function render() {
-		this.head.addScript('enthralerdotcom.bundle.js');
-		this.head.addStylesheet('https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.1/css/bulma.min.css');
+		this.head.addScript('/assets/enthralerdotcom.bundle.js');
+		this.head.addStylesheet('/assets/styles.css');
 		this.head.setTitle('Manage templates!');
 		return jsx('<div>
 			<h1 className="title">View a template</h1>
