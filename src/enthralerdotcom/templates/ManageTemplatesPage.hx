@@ -2,18 +2,29 @@ package enthralerdotcom.templates;
 
 import smalluniverse.UniversalPage;
 import smalluniverse.SUMacro.jsx;
+import enthralerdotcom.components.Button;
 #if client
 	import js.html.*;
 #end
-import enthralerdotcom.templates.TemplateListView;
 using tink.CoreApi;
 
 typedef ManageTemplatesPageProps = {
 	templates:TemplateList
 }
 
+typedef TemplateList = Array<{
+	id:Int,
+	name:String,
+	homepage:String,
+	versions:Array<{
+		mainUrl:String,
+		version:String
+	}>,
+}>
+
 enum ManageTemplatesAction {
 	AddGithubRepoAsTemplate(githubUser:String, githubRepo:String);
+	ReloadTemplate(id:Int);
 }
 
 class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, ManageTemplatesPageProps, {}, {}> {
@@ -29,7 +40,7 @@ class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, Manag
 		this.head.addScript('/assets/enthralerdotcom.bundle.js');
 		this.head.addStylesheet('/assets/styles.css');
 		this.head.setTitle('Manage templates!');
-		return jsx('<div>
+		return jsx('<div className="container">
 			<h1 className="title">Manage Templates</h1>
 			<h2 className="subtitle">Add a template from Github</h2>
 			<div className="field is-grouped">
@@ -41,19 +52,48 @@ class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, Manag
 					</span>
 				</div>
 				<div className="control">
-					<input className="input" placeholder="Github Username" type="text" onKeyUp={userNameKeyUp} />
+					<input className="input" placeholder="Github Username" type="text" onKeyUp=${userNameKeyUp} />
 				</div>
 				<div className="control">
-					<input className="input" placeholder="Github Repo Name" type="text" onKeyUp={repoNameKeyUp} />
+					<input className="input" placeholder="Github Repo Name" type="text" onKeyUp=${repoNameKeyUp} />
 				</div>
 				<div className="control">
-					<a className="button is-primary" onClick={addTemplateClick}>Add Template</a>
+					<a className="button is-primary" onClick=${addTemplateClick}>Add Template</a>
 				</div>
 			</div>
 			<h2 className="subtitle">Existing Templates</h2>
-			<TemplateListView templates={this.props.templates} />
+			${renderTempmlateList()}
 			<a href="/">Link to home</a>
 		</div>');
+	}
+
+	function renderTempmlateList() {
+		var templateLIs = this.props.templates.map(function (tpl) {
+			var versionLIs = [for (version in tpl.versions) jsx('<li>
+				<p><a href=${version.mainUrl}>${version.version}</a></p>
+			</li>')];
+			return jsx('<article className="tile is-child">
+				<div>
+					<h3><a href="${tpl.homepage}">${tpl.name}</a></h3>
+					<div className="field">
+						<Button label="Reload" icon="refresh" onClick=${reloadTemplate.bind(${tpl.id})}></Button>
+					</div>
+				</div>
+				<ul>
+					$versionLIs
+				</ul>
+			</article>');
+		});
+		return jsx('<div className="tile is-ancestor">
+			<div className="tile is-parent">
+				$templateLIs
+			</div>
+		</div>');
+	}
+
+	@:client
+	function reloadTemplate(id:Int) {
+		this.trigger(ReloadTemplate(id));
 	}
 
 	@:client

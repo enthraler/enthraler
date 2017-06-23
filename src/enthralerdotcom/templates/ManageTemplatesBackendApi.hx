@@ -16,6 +16,7 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 		var templates = [];
 		for (tpl in allTemplates) {
 			templates.push({
+				id: tpl.id,
 				name: tpl.name,
 				homepage: tpl.homepage,
 				versions: [for (v in tpl.versions) {
@@ -32,16 +33,18 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 	public function processAction(params, action:ManageTemplatesAction):Promise<Noise> {
 		switch action {
 			case AddGithubRepoAsTemplate(githubUser, githubRepo):
-				addNewTemplateFromGithubRepo(githubUser, githubRepo);
-				return Noise;
+				return pullTemplateFromGithubRepo(githubUser, githubRepo);
+			case ReloadTemplate(id):
+				return reloadTemplate(id);
 		}
 	}
 
-	public function addNewTemplateFromGithubRepo(githubUser:String, githubRepo:String):Promise<Noise> {
-		var tpl:Template = null;
+	public function pullTemplateFromGithubRepo(githubUser:String, githubRepo:String, ?tpl:Template):Promise<Noise> {
+		if (tpl == null) {
+			tpl = new Template();
+		}
 		return getGithubInfo(githubUser, githubRepo)
 			.next(function (data) {
-				tpl = new Template();
 				tpl.name = data.name;
 				tpl.description = data.description;
 				tpl.homepage = new Url(data.html_url);
@@ -82,13 +85,24 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 	}
 
 	function saveVersionInfo(githubUser:String, githubRepo:String, tpl:Template, tag:String) {
-		var version = new TemplateVersion();
-		var parts = tag.split(".");
-		version.template = tpl;
-		version.major = Std.parseInt(parts[0]);
-		version.minor = Std.parseInt(parts[1]);
-		version.patch = Std.parseInt(parts[2]);
-		version.basePath = new Url('https://cdn.rawgit.com/$githubUser/$githubRepo/$tag/');
+		var parts = tag.split("."),
+			major = Std.parseInt(parts[0]),
+			minor = Std.parseInt(parts[1]),
+			patch = Std.parseInt(parts[2]),
+			version = TemplateVersion.manager.select(
+				$templateID == tpl.id
+				&& $major==major
+				&& $minor==minor
+				&& $patch==patch
+			);
+		if (version == null) {
+			version = new TemplateVersion();
+			version.major = major;
+			version.minor = minor;
+			version.patch = patch;
+			version.template = tpl;
+			version.basePath = new Url('https://cdn.rawgit.com/$githubUser/$githubRepo/$tag/');
+		}
 		return
 			loadUrl(version.basePath + 'package.json')
 				.next(function (resp) {
@@ -131,5 +145,13 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 
 			untyped __call__("curl_close", curl);
 		});
+	}
+
+	public function reloadTemplate(id:Int):Promise<Noise> {
+		var tpl = Template.manager.get(id);
+		switch tpl.source {
+			case Github(username, repo):
+				return pullTemplateFromGithubRepo(username, repo, tpl);
+		}
 	}
 }
