@@ -68,27 +68,39 @@ class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, Manag
 	}
 
 	function renderTempmlateList() {
-		var templateLIs = this.props.templates.map(function (tpl) {
-			var versionLIs = [for (version in tpl.versions) jsx('<li>
-				<p><a href=${version.mainUrl}>${version.version}</a></p>
-			</li>')];
-			return jsx('<article className="tile is-child">
-				<div>
-					<h3><a href="${tpl.homepage}">${tpl.name}</a></h3>
-					<div className="field">
-						<Button label="Reload" icon="refresh" onClick=${reloadTemplate.bind(${tpl.id})}></Button>
-					</div>
-				</div>
-				<ul>
-					$versionLIs
-				</ul>
-			</article>');
+		var templateRows = this.props.templates.map(function (tpl) {
+			var numVersions = tpl.versions.length,
+				latestVersion = (numVersions > 0) ? tpl.versions[numVersions-1].version : "";
+			return jsx('<tr>
+				<th>
+					<a href="${tpl.homepage}">${tpl.name}</a>
+				</th>
+				<td>
+					<a href="${tpl.homepage}">${tpl.homepage}</a>
+				</td>
+				<td>
+					$latestVersion
+				</td>
+				<td>
+					${""+numVersions}
+				</td>
+				<td>
+					<Button label="Reload" icon="refresh" onClick=${reloadTemplate.bind(${tpl.id})}></Button>
+				</td>
+			</tr>');
 		});
-		return jsx('<div className="tile is-ancestor">
-			<div className="tile is-parent">
-				$templateLIs
-			</div>
-		</div>');
+		return jsx('<table className="table">
+			<thead>
+				<th>Template</th>
+				<th>Homepage</th>
+				<th>Latest release</th>
+				<th># of releases</th>
+				<th>Actions</th>
+			</thead>
+			<tbody>
+				${templateRows}
+			</tbody>
+		</table>');
 	}
 
 	@:client
