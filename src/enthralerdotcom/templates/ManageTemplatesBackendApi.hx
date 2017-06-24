@@ -45,7 +45,7 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 		}
 		return getGithubInfo(githubUser, githubRepo)
 			.next(function (data) {
-				tpl.name = data.name;
+				tpl.name = '$githubUser/$githubRepo';
 				tpl.description = data.description;
 				tpl.homepage = new Url(data.html_url);
 				tpl.source = TemplateSource.Github(githubUser, githubRepo);

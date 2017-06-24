@@ -29,8 +29,7 @@ enum ManageTemplatesAction {
 
 class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, ManageTemplatesPageProps, {}, {}> {
 
-	@:client var githubUsername:String;
-	@:client var githubRepo:String;
+	@:client var repoUrl:String;
 
 	public function new(backendApi:ManageTemplatesBackendApi) {
 		super(backendApi);
@@ -52,10 +51,7 @@ class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, Manag
 					</span>
 				</div>
 				<div className="control">
-					<input className="input" placeholder="Github Username" type="text" onKeyUp=${userNameKeyUp} />
-				</div>
-				<div className="control">
-					<input className="input" placeholder="Github Repo Name" type="text" onKeyUp=${repoNameKeyUp} />
+					<input className="input" placeholder="https://github.com/enthraler/enthraler-hello-amd" type="text" onKeyUp=${repoUrlKeyup} />
 				</div>
 				<div className="control">
 					<a className="button is-primary" onClick=${addTemplateClick}>Add Template</a>
@@ -109,19 +105,21 @@ class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, Manag
 	}
 
 	@:client
-	function repoNameKeyUp(e:react.ReactEvent) {
+	function repoUrlKeyup(e:react.ReactEvent) {
 		var target = cast (e.target, InputElement);
-		this.githubRepo = target.value;
-	}
-
-	@:client
-	function userNameKeyUp(e:react.ReactEvent) {
-		var target = cast (e.target, InputElement);
-		this.githubUsername = target.value;
+		this.repoUrl = target.value;
 	}
 
 	@:client
 	function addTemplateClick(e:react.ReactEvent) {
-		this.trigger(AddGithubRepoAsTemplate(githubUsername, githubRepo));
+		trace(repoUrl);
+		var urlRegex = ~/github\.com\/([^\/]+)\/([^\/]+)/i;
+		if (urlRegex.match(repoUrl)) {
+			var githubUsername = urlRegex.matched(1),
+				githubRepo = urlRegex.matched(2);
+			this.trigger(AddGithubRepoAsTemplate(githubUsername, githubRepo));
+		} else {
+			js.Browser.alert('The URL format did not match our regex...');
+		}
 	}
 }
