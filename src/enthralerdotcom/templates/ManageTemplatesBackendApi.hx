@@ -5,8 +5,9 @@ import enthralerdotcom.templates.ManageTemplatesPage;
 using tink.CoreApi;
 import enthralerdotcom.types.*;
 import enthraler.EnthralerPackageInfo;
+import smalluniverse.BackendApi;
 
-class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTemplatesAction, {}, ManageTemplatesPageProps> {
+class ManageTemplatesBackendApi implements BackendApi<ManageTemplatesAction, {}, ManageTemplatesPageProps> {
 	public function new() {
 
 	}
@@ -30,7 +31,7 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 		};
 	}
 
-	public function processAction(params, action:ManageTemplatesAction):Promise<Noise> {
+	public function processAction(params, action:ManageTemplatesAction):Promise<BackendApiResult> {
 		switch action {
 			case AddGithubRepoAsTemplate(githubUser, githubRepo):
 				return pullTemplateFromGithubRepo(githubUser, githubRepo);
@@ -39,7 +40,7 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 		}
 	}
 
-	public function pullTemplateFromGithubRepo(githubUser:String, githubRepo:String, ?tpl:Template):Promise<Noise> {
+	public function pullTemplateFromGithubRepo(githubUser:String, githubRepo:String, ?tpl:Template):Promise<BackendApiResult> {
 		if (tpl == null) {
 			tpl = new Template();
 		}
@@ -58,7 +59,7 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 					// Create a TemplateVersion
 					tagFutures.push(saveVersionInfo(githubUser, githubRepo, tpl, tag));
 				}
-				return Future.ofMany(tagFutures).map(function (_) return Noise);
+				return Future.ofMany(tagFutures).map(function (_) return Done);
 			});
 	}
 
@@ -116,9 +117,9 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 							return Noise;
 						});
 				})
-				.next(function (_):Noise {
+				.next(function (_):BackendApiResult {
 					version.save();
-					return Noise;
+					return Done;
 				});
 	}
 
@@ -147,7 +148,7 @@ class ManageTemplatesBackendApi implements smalluniverse.BackendApi<ManageTempla
 		});
 	}
 
-	public function reloadTemplate(id:Int):Promise<Noise> {
+	public function reloadTemplate(id:Int):Promise<BackendApiResult> {
 		var tpl = Template.manager.get(id);
 		switch tpl.source {
 			case Github(username, repo):
