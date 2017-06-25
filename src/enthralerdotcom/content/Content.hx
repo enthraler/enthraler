@@ -1,7 +1,6 @@
 package enthralerdotcom.content;
 
 import enthralerdotcom.templates.Template;
-import enthralerdotcom.templates.TemplateVersion;
 import enthralerdotcom.contentanalytics.ContentAnalyticsEvent;
 import enthralerdotcom.types.*;
 import ufront.ORM;
@@ -18,4 +17,9 @@ class Content extends Object {
 	public var copiedFrom:Null<BelongsTo<Content>>;
 	public var versions:HasMany<ContentVersion>;
 	public var analytics:HasMany<ContentAnalyticsEvent>;
+
+	public function new() {
+		super();
+		this.guid = ContentGuid.generate();
+	}
 }
