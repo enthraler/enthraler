@@ -9,7 +9,7 @@ import enthralerdotcom.components.*;
 using tink.CoreApi;
 
 enum ViewTemplateAction {
-	None;
+	CreateNewContent;
 }
 typedef ViewTemplateParams = {user:String, repo:String};
 typedef ViewTemplateProps = {
@@ -44,6 +44,9 @@ class ViewTemplatePage extends UniversalPage<ViewTemplateAction, ViewTemplatePar
 			<HeaderNav></HeaderNav>
 			<h1 className="title">${tpl.name}</h1>
 			<h2 className="subtitle">${tpl.description}</h2>
+			<a onClick=${createNewContent} className="button is-primary is-large">
+				Make your own
+			</a>
 			<h3 className="subtitle"><a href=${tpl.homepage} target="_BLANK">${tpl.homepage}</a></h3>
 			<article className="message is-info">
 				<div className="message-header">
@@ -58,5 +61,10 @@ class ViewTemplatePage extends UniversalPage<ViewTemplateAction, ViewTemplatePar
 				</ul>
 			</div>
 		</div>');
+	}
+
+	@:client
+	function createNewContent() {
+		this.trigger(CreateNewContent);
 	}
 }
