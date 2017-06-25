@@ -2,11 +2,10 @@ package enthralerdotcom.templates;
 
 import smalluniverse.UniversalPage;
 import smalluniverse.SUMacro.jsx;
-import enthralerdotcom.components.Button;
+import enthralerdotcom.components.*;
 #if client
 	import js.html.*;
 #end
-using tink.CoreApi;
 
 typedef ManageTemplatesPageProps = {
 	templates:TemplateList
@@ -40,6 +39,7 @@ class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, Manag
 		this.head.addStylesheet('/assets/styles.css');
 		this.head.setTitle('Manage templates!');
 		return jsx('<div className="container">
+			<HeaderNav></HeaderNav>
 			<h1 className="title">Manage Templates</h1>
 			<h2 className="subtitle">Add a template from Github</h2>
 			<div className="field is-grouped">

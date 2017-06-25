@@ -6,4 +6,4 @@ bin/assets/*.css
 bin/*.php
 bin/lib
 bin/res
-components/
+/components/
