@@ -34,7 +34,7 @@ class HeaderNav extends UniversalComponent<{}, {open:Bool}, {}> {
 			</span>
 			<div className=${"nav-right nav-menu" + isActiveClass}>
 				<div className="nav-item">
-					<a href="/create" className="button">
+					<a href="/create" className="button is-primary">
 						Create
 					</a>
 				</div>

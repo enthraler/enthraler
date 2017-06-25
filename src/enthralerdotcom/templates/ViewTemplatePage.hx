@@ -45,7 +45,7 @@ class ViewTemplatePage extends UniversalPage<ViewTemplateAction, ViewTemplatePar
 			<h1 className="title">${tpl.name}</h1>
 			<h2 className="subtitle">${tpl.description}</h2>
 			<h3 className="subtitle"><a href=${tpl.homepage} target="_BLANK">${tpl.homepage}</a></h3>
-			<article className="message is-primary">
+			<article className="message is-info">
 				<div className="message-header">
 					<p>README</p>
 				</div>
