@@ -27,6 +27,8 @@ class Server {
 			enthralerdotcom.templates.ManageTemplatesBackendApi,
 			enthralerdotcom.templates.ViewTemplatePage,
 			enthralerdotcom.templates.ViewTemplateBackendApi,
+			enthralerdotcom.content.ContentEditorPage,
+			enthralerdotcom.content.ContentEditorBackendApi,
 		]);
 
 		if (php.Web.isModNeko) {
@@ -37,13 +39,14 @@ class Server {
 	}
 
 	static function webMain(injector:Injector<'enthralerdotcom'>) {
+		Webpack.require('./EnthralerStyles.scss');
+
 		var app = new Monsoon();
 
 		var smallUniverse = new SmallUniverse(app);
 		smallUniverse.addPage('/templates/:user/:repo', function () return injector.get(enthralerdotcom.templates.ViewTemplatePage));
 		smallUniverse.addPage('/templates', function () return injector.get(enthralerdotcom.templates.ManageTemplatesPage));
-		// // smallUniverse.addPage('/i/:guid', ItemPage);
-		// // smallUniverse.addPage('/i/:guid/edit', ItemEditorPage);
+		smallUniverse.addPage('/i/:guid/edit', function () return injector.get(enthralerdotcom.content.ContentEditorPage));
 		app.listen(3000);
 	}
 

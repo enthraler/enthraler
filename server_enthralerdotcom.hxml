@@ -16,5 +16,6 @@
 -lib markdown
 -lib objectinit
 -cp src
+-cp node_modules/haxe-loader/haxelib
 -main enthralerdotcom.Server
 -php bin/

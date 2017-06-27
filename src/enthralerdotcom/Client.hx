@@ -7,6 +7,7 @@ import js.Browser.document;
 // Import the pages we will need. They will be loaded via Reflection (for now).
 import enthralerdotcom.templates.ManageTemplatesPage;
 import enthralerdotcom.templates.ViewTemplatePage;
+import enthralerdotcom.content.ContentEditorPage;
 
 class Client {
 	static function main() {
