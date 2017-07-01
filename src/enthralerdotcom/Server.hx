@@ -9,6 +9,9 @@ import ufront.db.migrations.*;
 using tink.core.Outcome;
 
 class Server {
+
+	public static var jsLibBase = '/jslib/0.1.1';
+
 	static function main() {
 
 		Manager.cnx = Mysql.connect({
@@ -42,6 +45,10 @@ class Server {
 		Webpack.require('./EnthralerStyles.scss');
 
 		var app = new Monsoon();
+		app.use('$jsLibBase/enthraler.js',  function (req,res) res.send(CompileTime.readFile('bin/enthraler.js')));
+		app.use('$jsLibBase/enthralerHost.js', function (req,res) res.send(CompileTime.readFile('bin/enthralerHost.js')));
+		app.use('$jsLibBase/frame.html', function (req,res) res.send(CompileTime.readFile('bin/frame.html')));
+		app.use('/i/:guid/data/:id?', enthralerdotcom.content.ContentJsonApi.getDataJson);
 
 		var smallUniverse = new SmallUniverse(app);
 		smallUniverse.addPage('/templates/:user/:repo', function () return injector.get(enthralerdotcom.templates.ViewTemplatePage));

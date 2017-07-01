@@ -32,9 +32,6 @@ typedef ContentEditorProps = {
 
 class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditorParams, ContentEditorProps, {}, {}> {
 
-	@:client var githubUsername:String;
-	@:client var githubRepo:String;
-
 	public function new(api:ContentEditorBackendApi) {
 		super(api);
 	}
@@ -43,8 +40,9 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 		this.head.addScript('/assets/enthralerdotcom.bundle.js');
 		this.head.addStylesheet('/assets/styles.css');
 		this.head.setTitle('Content Editor');
-		var baseUrl = 'http://localhost:2000'; // TODO: use rawgit or static asset
-		var iframeSrc = '$baseUrl/frame.html#?template=${props.template.mainUrl}&authorData=bin/data/hello-jason.json';
+		var baseUrl = '/jslib/0.1.1';
+		var contentUrl = '/i/${props.content.guid}/data/${props.currentVersion.versionId}';
+		var iframeSrc = '$baseUrl/frame.html#?template=${props.template.mainUrl}&authorData=${contentUrl}';
 		var iframeStyle = {
 			display: 'block',
 			width: '960px',
