@@ -29,14 +29,23 @@ class CodeMirrorEditor extends UniversalComponent<CodeMirrorEditorProps, {}, {}>
 		// CodeMirror externs don't haxe a `@:jsRequire()` metadata, so we need to assign this directly for the externs to work.
 		js.Lib.global.CodeMirror = Webpack.require('codemirror');
 		Webpack.require('codemirror/mode/javascript/javascript.js');
+		Webpack.require('./CodeMirrorEditor.scss');
 		Webpack.require('codemirror/addon/fold/foldcode.js');
 		Webpack.require('codemirror/addon/fold/brace-fold.js');
 		Webpack.require('codemirror/addon/fold/foldgutter.js');
 		Webpack.require('codemirror/addon/lint/lint.js');
 		Webpack.require('codemirror/addon/lint/javascript-lint.js');
+		js.Lib.global.jsonlint = Webpack.require('jsonlint/web/jsonlint.js');
+		Webpack.require('codemirror/addon/lint/json-lint.js');
 		Webpack.require('codemirror/lib/codemirror.css');
 		Webpack.require('codemirror/addon/lint/lint.css');
 		Webpack.require('codemirror/addon/fold/foldgutter.css');
-		CodeMirror.fromTextArea(this.textarea, {});
+		CodeMirror.fromTextArea(this.textarea, cast {
+			mode: 'application/json',
+			lineNumbers: true,
+			foldGutter: true,
+			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
+			lint: true
+		});
 	}
 }

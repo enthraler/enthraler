@@ -1,4 +1,9 @@
+// Import Bulma
+// TODO: import only the base and then import what we need in components.
 @import "~bulma/sass/utilities/initial-variables";
 $blue: #72d0eb;
 @import "~bulma/bulma";
-@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+
+// Import Font-Awesome
+$fa-font-path:        "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
+@import "~font-awesome/scss/font-awesome.scss";
