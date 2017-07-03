@@ -1,7 +1,9 @@
 package enthraler.proptypes;
 
 import enthraler.proptypes.PropTypes;
+#if !server
 import js.Error;
+#end
 import Type;
 
 /**
@@ -284,13 +286,19 @@ class Validators {
 /**
 A special error class that we can use.
 **/
-class ValidationError extends js.Error {
+class ValidationError #if !server extends js.Error #end {
+	#if server
+	public var name:String;
+	public var message:String;
+	#end
 	public var childErrors:Array<ValidationError>;
 	public var parent:ValidationError;
 	public var path:ValidationPathPart;
 
 	public function new(message:String, path:ValidationPathPart, ?childErrors:Array<ValidationError>) {
+		#if !server
 		super(message);
+		#end
 		this.name = "ValidationError";
 		this.message = message;
 		this.path = path;
