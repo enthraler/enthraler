@@ -6,6 +6,7 @@ import enthralerdotcom.components.*;
 using tink.CoreApi;
 import enthraler.proptypes.Validators;
 import enthraler.proptypes.PropTypes;
+import enthraler.EnthralerMessages;
 import haxe.Json;
 import haxe.Http;
 
@@ -61,12 +62,14 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 		});
 	}
 
+	@:client
 	override public function componentDidMount() {
 		this.setState({
 			contentData: this.props.currentVersion.jsonContent,
 			validationResult: null,
 			schema: null
 		});
+		EnthralerHost.addMessageListeners();
 		loadFromUrl(this.props.template.schemaUrl)
 			.next(function (schemaJson) {
 				var schema = PropTypes.fromObject(Json.parse(schemaJson));
@@ -160,7 +163,7 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 	override function componentDidUpdate(_, _) {
 		preview.contentWindow.postMessage(Json.stringify({
 			src: '' + js.Browser.window.location,
-			context: enthraler.EnthralerMessages.receiveAuthorData,
+			context: EnthralerMessages.receiveAuthorData,
 			authorData: this.state.contentData
 		}), preview.contentWindow.location.origin);
 	}
