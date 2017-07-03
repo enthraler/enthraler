@@ -4,6 +4,8 @@ import smalluniverse.UniversalPage;
 import smalluniverse.SUMacro.jsx;
 import enthralerdotcom.components.*;
 using tink.CoreApi;
+import enthraler.proptypes.Validators;
+import haxe.Json;
 
 enum ContentEditorAction {
 	None;
@@ -11,7 +13,7 @@ enum ContentEditorAction {
 
 typedef ContentEditorParams = {
 	guid:String
-};
+}
 
 typedef ContentEditorProps = {
 	template:{
@@ -28,12 +30,24 @@ typedef ContentEditorProps = {
 		jsonContent:String,
 		published:Null<Date>
 	}
-};
+}
 
-class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditorParams, ContentEditorProps, {}, {}> {
+typedef ContentEditorState = {
+	jsonContent:String,
+	validationResult:Null<Array<ValidationError>>
+}
+
+class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditorParams, ContentEditorProps, ContentEditorState, {}> {
 
 	public function new(api:ContentEditorBackendApi) {
 		super(api);
+	}
+
+	override public function componentWillMount() {
+		this.setState({
+			jsonContent: this.props.currentVersion.jsonContent,
+			validationResult: (this.state!=null) ? this.state.validationResult : null
+		});
 	}
 
 	override function render() {
@@ -55,7 +69,7 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 			<h2 className="subtitle">Using template <a href=${"/templates/"+props.template.name}><em>${props.template.name}</em></a></h2>
 			<div className="columns">
 				<div className="column">
-					<CodeMirrorEditor content=${props.currentVersion.jsonContent}></CodeMirrorEditor>
+					<CodeMirrorEditor content=${this.props.currentVersion.jsonContent} onChange=${onEditorChange}></CodeMirrorEditor>
 				</div>
 				<div className="column">
 					<ul className="hidden"></ul>
@@ -63,5 +77,43 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 				</div>
 			</div>
 		</div>');
+	}
+
+	@:client
+	function onEditorChange(newJson:String) {
+		var validationResult,
+			authorData = null;
+
+		try {
+			authorData = Json.parse(newJson);
+			// if (schema != null) {
+			// 	validationResult = Validators.validate(schema, authorData, 'live JSON editor');
+			// }
+			validationResult = null;
+			trace('new content:', authorData);
+		} catch (e:Dynamic) {
+			validationResult = [new ValidationError('JSON syntax error: ' + e, AccessProperty('document'))];
+		}
+		this.setState({
+			jsonContent: newJson,
+			validationResult: validationResult
+		});
+	}
+
+	override function componentDidUpdate(_, _) {
+		if (this.state.validationResult == null) {
+			trace('update the preview');
+		} else {
+			function addError(ve:ValidationError) {
+				trace(ve.getErrorPath(), ve.message);
+				for (childError in ve.childErrors) {
+					addError(childError);
+				}
+			}1
+			// Show a validation error
+			for (e in this.state.validationResult) {
+				addError(e);
+			}
+		}
 	}
 }

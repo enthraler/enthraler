@@ -9,10 +9,12 @@ import smalluniverse.SUMacro.jsx;
 
 typedef CodeMirrorEditorProps = {
 	content:String,
+	?onChange:String->Void
 }
 
 class CodeMirrorEditor extends UniversalComponent<CodeMirrorEditorProps, {}, {}> {
 	@:client var textarea:TextAreaElement;
+	@:client var editor:CodeMirror;
 
 	override public function render() {
 		return jsx('<div>
@@ -40,12 +42,17 @@ class CodeMirrorEditor extends UniversalComponent<CodeMirrorEditorProps, {}, {}>
 		Webpack.require('codemirror/lib/codemirror.css');
 		Webpack.require('codemirror/addon/lint/lint.css');
 		Webpack.require('codemirror/addon/fold/foldgutter.css');
-		CodeMirror.fromTextArea(this.textarea, cast {
+		editor = CodeMirror.fromTextArea(textarea, cast {
 			mode: 'application/json',
 			lineNumbers: true,
 			foldGutter: true,
 			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
 			lint: true
+		});
+		editor.on('change', function () {
+			if (this.props.onChange != null) {
+				this.props.onChange(this.editor.getValue());
+			}
 		});
 	}
 }
