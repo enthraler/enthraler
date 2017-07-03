@@ -5,7 +5,9 @@ import smalluniverse.SUMacro.jsx;
 import enthralerdotcom.components.*;
 using tink.CoreApi;
 import enthraler.proptypes.Validators;
+import enthraler.proptypes.PropTypes;
 import haxe.Json;
+import haxe.Http;
 
 enum ContentEditorAction {
 	None;
@@ -19,7 +21,8 @@ typedef ContentEditorProps = {
 	template:{
 		name:String,
 		version:String,
-		mainUrl:String
+		mainUrl:String,
+		schemaUrl:String
 	},
 	content:{
 		title:String,
@@ -33,21 +36,52 @@ typedef ContentEditorProps = {
 }
 
 typedef ContentEditorState = {
-	jsonContent:String,
-	validationResult:Null<Array<ValidationError>>
+	contentData:Any,
+	validationResult:Null<Array<ValidationError>>,
+	schema:PropTypes
 }
 
 class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditorParams, ContentEditorProps, ContentEditorState, {}> {
+
+	@:client var preview:js.html.IFrameElement;
+	@:client function setIframe(iframe) this.preview = iframe;
 
 	public function new(api:ContentEditorBackendApi) {
 		super(api);
 	}
 
-	override public function componentWillMount() {
-		this.setState({
-			jsonContent: this.props.currentVersion.jsonContent,
-			validationResult: (this.state!=null) ? this.state.validationResult : null
+	static function loadFromUrl(url:String):Promise<String> {
+		return Future.async(function (handler:Outcome<String,Error>->Void) {
+			var h = new haxe.Http(url);
+			var status = null;
+			h.onStatus = function (s) status = s;
+			h.onData = function (result) handler(Success(result));
+			h.onError = function (errMessage) handler(Failure(new Error(status, errMessage)));
+			h.request(false);
 		});
+	}
+
+	override public function componentDidMount() {
+		this.setState({
+			contentData: this.props.currentVersion.jsonContent,
+			validationResult: null,
+			schema: null
+		});
+		loadFromUrl(this.props.template.schemaUrl)
+			.next(function (schemaJson) {
+				var schema = PropTypes.fromObject(Json.parse(schemaJson));
+				this.setState({
+					contentData: this.state.contentData,
+					validationResult: this.state.validationResult,
+					schema: schema
+				});
+				return schema;
+			})
+			.recover(function (err:Error):PropTypes {
+				trace('Failed to load schema from URL', err);
+				return null;
+			})
+			.handle(function () {});
 	}
 
 	override function render() {
@@ -72,11 +106,32 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 					<CodeMirrorEditor content=${this.props.currentVersion.jsonContent} onChange=${onEditorChange}></CodeMirrorEditor>
 				</div>
 				<div className="column">
-					<ul className="hidden"></ul>
-					<iframe src=${iframeSrc} id="preview" className="enthraler-embed" sandbox="allow-same-origin allow-scripts allow-forms" frameBorder="0" style=${iframeStyle}></iframe>
+					${renderErrorList()}
+					<iframe src=${iframeSrc} ref=${setIframe} id="preview" className="enthraler-embed" sandbox="allow-same-origin allow-scripts allow-forms" frameBorder="0" style=${iframeStyle}></iframe>
 				</div>
 			</div>
 		</div>');
+	}
+
+	function renderErrorList() {
+		if (state == null || state.validationResult == null) {
+			return null;
+		}
+
+		var errors = [];
+		function addError(err:ValidationError) {
+			errors.push(jsx('<li>
+				<strong>${err.getErrorPath()}</strong>: ${err.message}
+			</li>'));
+			for (childError in err.childErrors) {
+				addError(childError);
+			}
+		}
+		for (err in state.validationResult) {
+			addError(err);
+		}
+
+		return jsx('<ul>${errors}</ul>');
 	}
 
 	@:client
@@ -86,34 +141,27 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 
 		try {
 			authorData = Json.parse(newJson);
-			// if (schema != null) {
-			// 	validationResult = Validators.validate(schema, authorData, 'live JSON editor');
-			// }
-			validationResult = null;
-			trace('new content:', authorData);
+			if (this.state.schema != null) {
+				validationResult = Validators.validate(this.state.schema, authorData, 'live JSON editor');
+			} else {
+				validationResult = null;
+			}
 		} catch (e:Dynamic) {
 			validationResult = [new ValidationError('JSON syntax error: ' + e, AccessProperty('document'))];
 		}
 		this.setState({
-			jsonContent: newJson,
-			validationResult: validationResult
+			contentData: authorData,
+			validationResult: validationResult,
+			schema: this.state.schema
 		});
 	}
 
+	@:client
 	override function componentDidUpdate(_, _) {
-		if (this.state.validationResult == null) {
-			trace('update the preview');
-		} else {
-			function addError(ve:ValidationError) {
-				trace(ve.getErrorPath(), ve.message);
-				for (childError in ve.childErrors) {
-					addError(childError);
-				}
-			}1
-			// Show a validation error
-			for (e in this.state.validationResult) {
-				addError(e);
-			}
-		}
+		preview.contentWindow.postMessage(Json.stringify({
+			src: '' + js.Browser.window.location,
+			context: enthraler.EnthralerMessages.receiveAuthorData,
+			authorData: this.state.contentData
+		}), preview.contentWindow.location.origin);
 	}
 }

@@ -34,7 +34,8 @@ class ContentEditorBackendApi implements BackendApi<ContentEditorAction, Content
 			template:{
 				name: template.name,
 				version: templateVersion.getSemver(),
-				mainUrl: templateVersion.mainUrl
+				mainUrl: templateVersion.mainUrl,
+				schemaUrl: templateVersion.schemaUrl
 			},
 			content:{
 				title: content.title,
