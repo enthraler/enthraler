@@ -9,6 +9,6 @@ abstract UserGuid(SString<36>) to String {
 	}
 
 	public static function generate() {
-		return new ContentGuid(Uuid.generate());
+		return new UserGuid(Uuid.generate());
 	}
 }

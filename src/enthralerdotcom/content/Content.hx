@@ -14,6 +14,7 @@ class Content extends Object {
 	public var title:SString<255>;
 	public var template:BelongsTo<Template>;
 	public var guid:ContentGuid;
+	public var anonymousAuthor:HasOne<AnonymousContentAuthor>;
 	public var copiedFrom:Null<BelongsTo<Content>>;
 	public var versions:HasMany<ContentVersion>;
 	public var analytics:HasMany<ContentAnalyticsEvent>;

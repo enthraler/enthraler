@@ -3,6 +3,7 @@ package enthralerdotcom.content;
 import smalluniverse.UniversalPage;
 import smalluniverse.SUMacro.jsx;
 import enthralerdotcom.components.*;
+import enthralerdotcom.types.*;
 using tink.CoreApi;
 import enthraler.proptypes.Validators;
 import enthraler.proptypes.PropTypes;
@@ -11,7 +12,7 @@ import haxe.Json;
 import haxe.Http;
 
 enum ContentEditorAction {
-	None;
+	SaveAnonymousVersion(contentId:Int, authorGuid:String, authorIp:String, newContent:String, templateVersionId:Int, draft:Bool);
 }
 
 typedef ContentEditorParams = {
@@ -21,6 +22,7 @@ typedef ContentEditorParams = {
 typedef ContentEditorProps = {
 	template:{
 		name:String,
+		versionId:Int,
 		version:String,
 		mainUrl:String,
 		schemaUrl:String
