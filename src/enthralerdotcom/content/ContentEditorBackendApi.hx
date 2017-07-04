@@ -39,6 +39,7 @@ class ContentEditorBackendApi implements BackendApi<ContentEditorAction, Content
 				schemaUrl: templateVersion.schemaUrl
 			},
 			content:{
+				id: content.id,
 				title: content.title,
 				guid: content.guid,
 			},
@@ -53,8 +54,9 @@ class ContentEditorBackendApi implements BackendApi<ContentEditorAction, Content
 
 	public function processAction(params:ContentEditorParams, action:ContentEditorAction):Promise<BackendApiResult> {
 		switch action {
-			case SaveAnonymousVersion(contentId, authorGuid, authorIp, newContent, templateVersionId, draft):
-				return saveAnonymousContentVersion(contentId, new UserGuid(authorGuid), new IpAddress(authorIp), newContent, templateVersionId, draft);
+			case SaveAnonymousVersion(contentId, authorGuid, newContent, templateVersionId, draft):
+				var ipAddress = new IpAddress(php.Web.getClientIP());
+				return saveAnonymousContentVersion(contentId, new UserGuid(authorGuid), ipAddress, newContent, templateVersionId, draft);
 		}
 	}
 

@@ -12,7 +12,7 @@ import haxe.Json;
 import haxe.Http;
 
 enum ContentEditorAction {
-	SaveAnonymousVersion(contentId:Int, authorGuid:String, authorIp:String, newContent:String, templateVersionId:Int, draft:Bool);
+	SaveAnonymousVersion(contentId:Int, authorGuid:String, newContent:String, templateVersionId:Int, draft:Bool);
 }
 
 typedef ContentEditorParams = {
@@ -28,6 +28,7 @@ typedef ContentEditorProps = {
 		schemaUrl:String
 	},
 	content:{
+		id:Int,
 		title:String,
 		guid:String,
 	},
@@ -39,6 +40,7 @@ typedef ContentEditorProps = {
 }
 
 typedef ContentEditorState = {
+	contentJson:String,
 	contentData:Any,
 	validationResult:Null<Array<ValidationError>>,
 	schema:PropTypes
@@ -67,7 +69,8 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 	@:client
 	override public function componentDidMount() {
 		this.setState({
-			contentData: this.props.currentVersion.jsonContent,
+			contentJson: this.props.currentVersion.jsonContent,
+			contentData: null,
 			validationResult: null,
 			schema: null
 		});
@@ -76,6 +79,7 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 			.next(function (schemaJson) {
 				var schema = PropTypes.fromObject(Json.parse(schemaJson));
 				this.setState({
+					contentJson: this.state.contentJson,
 					contentData: this.state.contentData,
 					validationResult: this.state.validationResult,
 					schema: schema
@@ -106,6 +110,10 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 			<HeaderNav></HeaderNav>
 			<h1 className="title">${props.content.title}</h1>
 			<h2 className="subtitle">Using template <a href=${"/templates/"+props.template.name}><em>${props.template.name}</em></a></h2>
+			<div className="block">
+				<a className="button is-primary" onClick=${onSave.bind(false)}>Save</a>
+				&nbsp;<a className="button" onClick=${onSave.bind(true)}>Save Draft</a>
+			</div>
 			<div className="columns">
 				<div className="column">
 					<CodeMirrorEditor content=${this.props.currentVersion.jsonContent} onChange=${onEditorChange}></CodeMirrorEditor>
@@ -140,6 +148,27 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 	}
 
 	@:client
+	function getUserGuid():UserGuid {
+		var guidString = js.Browser.window.localStorage.getItem('enthraler_anonymous_guid');
+		if (guidString != null) {
+			return new UserGuid(guidString);
+		} else {
+			var guid = UserGuid.generate();
+			js.Browser.window.localStorage.setItem('enthraler_anonymous_guid', guid);
+			return guid;
+		}
+	}
+
+	@:client
+	function onSave(draft:Bool) {
+		if (state.validationResult != null) {
+			js.Lib.alert("We can't save while you have validation errors, please fix them first");
+			return;
+		}
+		this.trigger(SaveAnonymousVersion(props.content.id, getUserGuid(), state.contentJson, props.template.versionId, draft));
+	}
+
+	@:client
 	function onEditorChange(newJson:String) {
 		var validationResult,
 			authorData = null;
@@ -155,6 +184,7 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 			validationResult = [new ValidationError('JSON syntax error: ' + e, AccessProperty('document'))];
 		}
 		this.setState({
+			contentJson: newJson,
 			contentData: authorData,
 			validationResult: validationResult,
 			schema: this.state.schema
