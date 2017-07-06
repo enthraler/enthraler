@@ -30,7 +30,6 @@ class EnthralerHost {
 		window.addEventListener('message', function (e:MessageEvent) {
 			var frameWindow:Window = e.source,
 				message = e.data,
-				data = haxe.Json.parse(message),
 				allFrames = document.querySelectorAll('iframe.enthraler-embed'),
 				currentFrame:IFrameElement = null;
 			for (elm in allFrames) {
@@ -40,6 +39,18 @@ class EnthralerHost {
 				}
 			}
 
+			if (currentFrame == null) {
+				// Message came from something that wasn't an enthraler iframe.  Let's bail.
+				return;
+			}
+
+			var data;
+			try {
+				data = haxe.Json.parse(message);
+			} catch (e:Dynamic) {
+				trace('Failed to parse JSON from window message:', e, message);
+				return;
+			}
 			switch data.context {
 				case EnthralerMessages.requestHeightChange:
 					if (currentFrame != null) {

@@ -10,6 +10,9 @@ import enthraler.proptypes.PropTypes;
 import enthraler.EnthralerMessages;
 import haxe.Json;
 import haxe.Http;
+#if client
+import enthralerdotcom.services.client.ErrorNotificationService;
+#end
 
 enum ContentEditorAction {
 	SaveAnonymousVersion(contentId:Int, authorGuid:String, newContent:String, templateVersionId:Int, draft:Bool);
@@ -99,7 +102,9 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 		this.head.setTitle('Content Editor');
 		var baseUrl = '/jslib/0.1.1';
 		var contentUrl = '/i/${props.content.guid}/data/${props.currentVersion.versionId}';
-		var iframeSrc = '$baseUrl/frame.html#?template=${props.template.mainUrl}&authorData=${contentUrl}';
+		var iframeSrc = (props.currentVersion.versionId != null)
+			? '$baseUrl/frame.html#?template=${props.template.mainUrl}&authorData=${contentUrl}'
+			: 'about:blank';
 		var iframeStyle = {
 			display: 'block',
 			width: '960px',
@@ -162,10 +167,15 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 	@:client
 	function onSave(draft:Bool) {
 		if (state.validationResult != null) {
-			js.Lib.alert("We can't save while you have validation errors, please fix them first");
+			ErrorNotificationService.inst.logMessage("We can't save while you have validation errors, please fix them first");
 			return;
 		}
-		this.trigger(SaveAnonymousVersion(props.content.id, getUserGuid(), state.contentJson, props.template.versionId, draft));
+		var action = SaveAnonymousVersion(props.content.id, getUserGuid(), state.contentJson, props.template.versionId, draft);
+		this.trigger(action).handle(function (outcome) switch outcome {
+			case Failure(err):
+				ErrorNotificationService.inst.logError(err, onSave.bind(draft), 'Try Again');
+			case _:
+		});
 	}
 
 	@:client
@@ -193,6 +203,12 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 
 	@:client
 	override function componentDidUpdate(_, _) {
+		if (state.validationResult != null) {
+			return;
+		}
+		if (preview.contentWindow.location.origin == null || preview.contentWindow.location.origin == "null") {
+			return;
+		}
 		preview.contentWindow.postMessage(Json.stringify({
 			src: '' + js.Browser.window.location,
 			context: EnthralerMessages.receiveAuthorData,
