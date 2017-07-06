@@ -32,6 +32,8 @@ class Server {
 			enthralerdotcom.templates.ViewTemplateBackendApi,
 			enthralerdotcom.content.ContentEditorPage,
 			enthralerdotcom.content.ContentEditorBackendApi,
+			enthralerdotcom.content.ContentViewerPage,
+			enthralerdotcom.content.ContentViewerBackendApi,
 		]);
 
 		if (php.Web.isModNeko) {
@@ -54,6 +56,7 @@ class Server {
 		smallUniverse.addPage('/templates/:user/:repo', function () return injector.get(enthralerdotcom.templates.ViewTemplatePage));
 		smallUniverse.addPage('/templates', function () return injector.get(enthralerdotcom.templates.ManageTemplatesPage));
 		smallUniverse.addPage('/i/:guid/edit', function () return injector.get(enthralerdotcom.content.ContentEditorPage));
+		smallUniverse.addPage('/i/:guid', function () return injector.get(enthralerdotcom.content.ContentViewerPage));
 		app.listen(3000);
 	}
 
