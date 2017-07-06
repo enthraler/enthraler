@@ -115,9 +115,13 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 			<HeaderNav></HeaderNav>
 			<h1 className="title">${props.content.title}</h1>
 			<h2 className="subtitle">Using template <a href=${"/templates/"+props.template.name}><em>${props.template.name}</em></a></h2>
-			<div className="block">
-				<a className="button is-primary" onClick=${onSave.bind(false)}>Save</a>
-				&nbsp;<a className="button" onClick=${onSave.bind(true)}>Save Draft</a>
+			<div className="field is-grouped">
+				<div className="control">
+					<a className="button is-primary" onClick=${onSave.bind(false)}>Save</a>
+				</div>
+				<div className="control">
+					<a className="button" onClick=${onSave.bind(true)}>Save Draft</a>
+				</div>
 			</div>
 			<div className="columns">
 				<div className="column">
