@@ -127,7 +127,7 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 				</div>
 				<div className="column">
 					${renderErrorList()}
-					<iframe src=${iframeSrc} ref=${setIframe} id="preview" className="enthraler-embed" sandbox="allow-same-origin allow-scripts allow-forms" frameBorder="0" style=${iframeStyle}></iframe>
+					<iframe src=${iframeSrc} ref=${setIframe} id="preview" className="enthraler-embed" frameBorder="0" style=${iframeStyle}></iframe>
 				</div>
 			</div>
 		</div>');
@@ -208,13 +208,10 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 		if (state.validationResult != null) {
 			return;
 		}
-		if (preview.contentWindow.location.origin == null || preview.contentWindow.location.origin == "null") {
-			return;
-		}
 		preview.contentWindow.postMessage(Json.stringify({
 			src: '' + js.Browser.window.location,
 			context: EnthralerMessages.receiveAuthorData,
 			authorData: this.state.contentData
-		}), preview.contentWindow.location.origin);
+		}), js.Browser.window.location.origin);
 	}
 }

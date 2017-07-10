@@ -30,6 +30,7 @@ typedef ContentViewerProps = {
 	title:String,
 	published:Date,
 	guid:String,
+	embedCode:String,
 }
 
 typedef ContentViewerState = {}
@@ -63,7 +64,11 @@ class ContentViewerPage extends UniversalPage<ContentViewerAction, ContentViewer
 			<h1 className="title">${props.title}</h1>
 			<h2 className="subtitle">Published ${props.published.toString()} using the <a href=${"/templates/"+props.templateName}><em>${props.templateName} template.</em></a></h2>
 			<h2 className="subtitle"></h2>
-			<iframe src=${iframeSrc} id="preview" className="enthraler-embed" sandbox="allow-same-origin allow-scripts allow-forms" frameBorder="0" style=${iframeStyle}></iframe>
-		</div>');
+			<iframe src=${iframeSrc} id="preview" className="enthraler-embed" frameBorder="0" style=${iframeStyle}></iframe>
+			<div class="field">
+				<p class="control has-icons-left">
+					<textarea class="textarea" placeholder="Loading textarea">${props.embedCode}</textarea>
+				</p>
+			</div>');
 	}
 }

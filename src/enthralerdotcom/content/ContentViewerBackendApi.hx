@@ -17,6 +17,8 @@ class ContentViewerBackendApi implements BackendApi<ContentViewerAction, Content
 		}
 		var templateVersion = latestVersion.templateVersion;
 		var template = templateVersion.template;
+		var embedUrl = 'https://enthraler.com/i/${params.guid}/embed';
+		var embedCode = '<iframe src="${embedUrl}" className="enthraler-embed" frameBorder="0"></iframe>';
 		var props:ContentViewerProps = {
 			contentVersionId: latestVersion.id,
 			templateName: template.name,
@@ -25,6 +27,7 @@ class ContentViewerBackendApi implements BackendApi<ContentViewerAction, Content
 			title: content.title,
 			published: latestVersion.published,
 			guid: content.guid,
+			embedCode: embedCode
 		};
 		return props;
 	}
