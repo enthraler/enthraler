@@ -100,10 +100,8 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 		this.head.addScript('/assets/enthralerdotcom.bundle.js');
 		this.head.addStylesheet('/assets/styles.css');
 		this.head.setTitle('Content Editor');
-		var baseUrl = '/jslib/0.1.1';
-		var contentUrl = '/i/${props.content.guid}/data/${props.currentVersion.versionId}';
 		var iframeSrc = (props.currentVersion.versionId != null)
-			? '$baseUrl/frame.html#?template=${props.template.mainUrl}&authorData=${contentUrl}'
+			? '/i/${props.content.guid}/embed/${props.currentVersion.versionId}'
 			: 'about:blank';
 		var iframeStyle = {
 			display: 'block',

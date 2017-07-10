@@ -50,7 +50,8 @@ class Server {
 		app.use('$jsLibBase/enthraler.js',  function (req,res) res.send(CompileTime.readFile('bin/enthraler.js')));
 		app.use('$jsLibBase/enthralerHost.js', function (req,res) res.send(CompileTime.readFile('bin/enthralerHost.js')));
 		app.use('$jsLibBase/frame.html', function (req,res) res.send(CompileTime.readFile('bin/frame.html')));
-		app.use('/i/:guid/data/:id?', enthralerdotcom.content.ContentJsonApi.getDataJson);
+		app.use('/i/:guid/data/:id?', enthralerdotcom.content.ContentServerRoutes.getDataJson);
+		app.use('/i/:guid/embed/:id?', enthralerdotcom.content.ContentServerRoutes.redirectToEmbedFrame);
 
 		var smallUniverse = new SmallUniverse(app);
 		smallUniverse.addPage('/templates/:user/:repo', function () return injector.get(enthralerdotcom.templates.ViewTemplatePage));

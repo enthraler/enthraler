@@ -49,10 +49,8 @@ class ContentViewerPage extends UniversalPage<ContentViewerAction, ContentViewer
 		this.head.addScript('/assets/enthralerdotcom.bundle.js');
 		this.head.addStylesheet('/assets/styles.css');
 		this.head.setTitle('Content Editor');
-		var baseUrl = '/jslib/0.1.1';
-		var contentUrl = '/i/${props.guid}/data/${props.contentVersionId}';
 		var iframeSrc = (props.contentVersionId != null)
-			? '$baseUrl/frame.html#?template=${props.templateUrl}&authorData=${contentUrl}'
+			? '/i/${props.guid}/embed/'
 			: 'about:blank';
 		var iframeStyle = {
 			display: 'block',
