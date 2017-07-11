@@ -69,6 +69,7 @@ class ContentViewerPage extends UniversalPage<ContentViewerAction, ContentViewer
 				<p class="control has-icons-left">
 					<textarea class="textarea" placeholder="Loading textarea">${props.embedCode}</textarea>
 				</p>
-			</div>');
+			</div>
+		</div>');
 	}
 }
