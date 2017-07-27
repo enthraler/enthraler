@@ -1,0 +1,68 @@
+{
+  "dependencies": [
+    {
+      "name": "codemirror",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "compiletime",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "dodrugs",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "markdown",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "monsoon",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "objectinit",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "react",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "smalluniverse",
+      "type": "git",
+      "dir": "src",
+      "ref": "master",
+      "url": "git@gitlab.com:jasononeil/smalluniverse.git"
+    },
+    {
+      "name": "tink_core",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "tink_json",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "tink_macro",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "ufront-orm",
+      "type": "git",
+      "dir": null,
+      "ref": "migrations",
+      "url": "git@github.com:ufront/ufront-orm.git"
+    }
+  ]
+}

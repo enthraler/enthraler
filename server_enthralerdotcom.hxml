@@ -10,7 +10,6 @@
 -lib smalluniverse
 -lib ufront-orm
 -lib compiletime
-# Until 0.6.0 is published to haxelib we need `haxelib git tink_json https://github.com/haxetink/tink_json.git 0.6.0`
 -lib tink_json
 -lib dodrugs
 -lib markdown
