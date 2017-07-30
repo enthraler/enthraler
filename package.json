@@ -16,12 +16,10 @@
     "bulma": "^0.4.2",
     "codemirror": "^5.27.2",
     "font-awesome": "^4.7.0",
-    "haxe-loader": "^0.2.1",
     "jsonlint": "^1.6.2",
     "promise-polyfill": "^6.0.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "webpack-dev-server": "^2.4.5",
     "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
@@ -31,9 +29,12 @@
     "babel-preset-react": "^6.22.0",
     "css-loader": "^0.26.1",
     "extract-text-webpack-plugin": "^2.1.2",
+    "haxe-loader": "^0.3.1",
+    "haxe-modular": "^0.2.0",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.13.1",
-    "webpack": "^2.2.1"
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
   }
 }

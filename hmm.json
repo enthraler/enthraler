@@ -16,6 +16,11 @@
       "version": null
     },
     {
+      "name": "haxe-loader",
+      "type": "haxelib",
+      "version": null
+    },
+    {
       "name": "markdown",
       "type": "haxelib",
       "version": null
@@ -38,12 +43,24 @@
     {
       "name": "smalluniverse",
       "type": "git",
-      "dir": "src",
+      "dir": null,
       "ref": "master",
       "url": "git@gitlab.com:jasononeil/smalluniverse.git"
     },
     {
       "name": "tink_core",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "tink_http",
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/haxetink/tink_http.git"
+    },
+    {
+      "name": "tink_io",
       "type": "haxelib",
       "version": null
     },

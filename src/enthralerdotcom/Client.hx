@@ -10,10 +10,25 @@ import enthralerdotcom.templates.ViewTemplatePage;
 import enthralerdotcom.content.ContentEditorPage;
 
 class Client {
-	static function main() {
+	public static function main() {
 		Webpack.require('./EnthralerStyles.scss');
 		onReady(function () {
-			UniversalPage.startClientRendering();
+			var propsElem = document.getElementById('small-universe-props');
+			switch propsElem.getAttribute('data-page') {
+				case 'enthralerdotcom.templates.ManageTemplatesPage':
+					Webpack.async(ManageTemplatesPage).then(function () {
+						UniversalPage.startClientRendering(ManageTemplatesPage, propsElem.innerText);
+					});
+				case 'enthralerdotcom.templates.ViewTemplatePage':
+					Webpack.async(ViewTemplatePage).then(function () {
+						UniversalPage.startClientRendering(ViewTemplatePage, propsElem.innerText);
+					});
+				case 'enthralerdotcom.content.ContentEditorPage':
+					Webpack.async(ContentEditorPage).then(function () {
+						UniversalPage.startClientRendering(ContentEditorPage, propsElem.innerText);
+					});
+				default: null;
+			}
 		});
 	}
 

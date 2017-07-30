@@ -1,5 +1,4 @@
 -D client
--cp node_modules/haxe-loader/macro
 -lib react
 -lib tink_core
 -lib tink_macro
@@ -7,7 +6,7 @@
 -lib tink_json
 -lib objectinit
 -lib codemirror
+-lib haxe-loader
 -cp src
--cp node_modules/haxe-loader/haxelib
--main enthralerdotcom.Client
+-main Main
 -js bin/enthralerdotcom.haxe.js
