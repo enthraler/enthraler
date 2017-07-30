@@ -87,11 +87,13 @@ class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, Manag
 		});
 		return jsx('<table className="table">
 			<thead>
-				<th>Template</th>
-				<th>Homepage</th>
-				<th>Latest release</th>
-				<th># of releases</th>
-				<th>Actions</th>
+				<tr>
+					<th>Template</th>
+					<th>Homepage</th>
+					<th>Latest release</th>
+					<th># of releases</th>
+					<th>Actions</th>
+				</tr>
 			</thead>
 			<tbody>
 				${templateRows}
