@@ -1,6 +1,7 @@
 package enthralerdotcom.content;
 
 import smalluniverse.BackendApi;
+import smalluniverse.BackendApi.Request;
 import enthralerdotcom.content.ContentViewerPage;
 using tink.CoreApi;
 import enthralerdotcom.content.Content;
@@ -9,7 +10,8 @@ class ContentViewerBackendApi implements BackendApi<ContentViewerAction, Content
 	public function new() {
 	}
 
-	public function get(params:ContentViewerParams):Promise<ContentViewerProps> {
+	public function get(req:Request<ContentViewerParams>):Promise<ContentViewerProps> {
+		var params = req.params;
 		var content = Content.manager.select($guid == params.guid);
 		var latestVersion = ContentVersion.manager.select($contentID == content.id && $published != null, {orderBy: -published});
 		if (latestVersion == null) {
@@ -32,7 +34,8 @@ class ContentViewerBackendApi implements BackendApi<ContentViewerAction, Content
 		return props;
 	}
 
-	public function processAction(params:ContentViewerParams, action:ContentViewerAction):Promise<BackendApiResult> {
+	public function processAction(req:Request<ContentViewerParams>, action:ContentViewerAction):Promise<BackendApiResult> {
+		var params = req.params;
 		switch action {
 			case _:
 				return Done;

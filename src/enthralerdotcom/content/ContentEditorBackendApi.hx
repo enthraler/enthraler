@@ -1,6 +1,7 @@
 package enthralerdotcom.content;
 
 import smalluniverse.BackendApi;
+import smalluniverse.BackendApi.Request;
 import enthralerdotcom.content.ContentEditorPage;
 using tink.CoreApi;
 #if server
@@ -15,7 +16,8 @@ class ContentEditorBackendApi implements BackendApi<ContentEditorAction, Content
 
 	}
 
-	public function get(params:ContentEditorParams):Promise<ContentEditorProps> {
+	public function get(req:Request<ContentEditorParams>):Promise<ContentEditorProps> {
+		var params = req.params;
 		var content = Content.manager.select($guid == params.guid);
 		var template = content.template;
 		var latestVersion = content.versions.last();
@@ -52,10 +54,10 @@ class ContentEditorBackendApi implements BackendApi<ContentEditorAction, Content
 		return props;
 	}
 
-	public function processAction(params:ContentEditorParams, action:ContentEditorAction):Promise<BackendApiResult> {
+	public function processAction(req:Request<ContentEditorParams>, action:ContentEditorAction):Promise<BackendApiResult> {
 		switch action {
 			case SaveAnonymousVersion(contentId, authorGuid, newContent, templateVersionId, draft):
-				var ipAddress = new IpAddress(php.Web.getClientIP());
+				var ipAddress = new IpAddress(req.clientIp);
 				return saveAnonymousContentVersion(contentId, new UserGuid(authorGuid), ipAddress, newContent, templateVersionId, draft);
 		}
 	}

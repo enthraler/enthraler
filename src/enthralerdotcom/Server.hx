@@ -38,7 +38,7 @@ class Server {
 			enthralerdotcom.homepage.HomeBackendApi,
 		]);
 
-		if (php.Web.isModNeko) {
+		if (#if hxnodejs true #else php.Web.isModNeko #end) {
 			webMain(injector);
 		} else {
 			cliMain(injector);

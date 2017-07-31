@@ -1,6 +1,7 @@
 package enthralerdotcom.templates;
 
 import smalluniverse.BackendApi;
+import smalluniverse.BackendApi.Request;
 import enthralerdotcom.templates.ViewTemplatePage;
 using tink.CoreApi;
 #if server
@@ -22,7 +23,8 @@ class ViewTemplateBackendApi implements BackendApi<ViewTemplateAction, ViewTempl
 		return Template.manager.select($name == name);
 	}
 
-	public function get(params:ViewTemplateParams):Promise<ViewTemplateProps> {
+	public function get(req:Request<ViewTemplateParams>):Promise<ViewTemplateProps> {
+		var params = req.params;
 		var tpl = getTemplate(params);
 		var versions = TemplateVersion.manager.search($templateID==tpl.id, {
 			orderBy: [-major, -minor, -patch]
@@ -43,7 +45,8 @@ class ViewTemplateBackendApi implements BackendApi<ViewTemplateAction, ViewTempl
 		return props;
 	}
 
-	public function processAction(params:ViewTemplateParams, action:ViewTemplateAction):Promise<BackendApiResult> {
+	public function processAction(req:Request<ViewTemplateParams>, action:ViewTemplateAction):Promise<BackendApiResult> {
+		var params = req.params;
 		switch action {
 			case CreateNewContent:
 				var tpl = getTemplate(params);
