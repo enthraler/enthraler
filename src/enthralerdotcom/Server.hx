@@ -5,10 +5,7 @@ import monsoon.middleware.Static;
 import monsoon.middleware.Console;
 import smalluniverse.SmallUniverse;
 import dodrugs.Injector;
-import sys.db.Connection;
-import sys.db.Manager;
-import sys.db.AsyncConnection;
-import sys.db.MysqlJs;
+import sys.db.*;
 import ufront.db.migrations.*;
 using tink.core.Outcome;
 
@@ -34,17 +31,16 @@ class Server {
 				}
 			});
 		#else
-			var cnx = Mysql.connect({
+			Manager.cnx = Mysql.connect({
 				host: Sys.getEnv('DB_HOST'),
 				database: Sys.getEnv('DB_DATABASE'),
 				user: Sys.getEnv('DB_USERNAME'),
 				pass: Sys.getEnv('DB_PASSWORD'),
-			}, function (err, cnx) {
 			});
 			if (php.Web.isModNeko) {
-				webMain(cnx);
+				webMain(Manager.cnx);
 			} else {
-				cliMain(cnx);
+				cliMain(Manager.cnx);
 			}
 		#end
 
