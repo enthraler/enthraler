@@ -1,6 +1,3 @@
-# Please note we need a version of tink_http that has this commit: https://github.com/haxetink/tink_http/commit/8c77b979e16df44c43b5a88fb9ce6dfe3e7f40b2
-# At the time of writing it is unreleased, so we have to use the latest git version, but whatever version comes after 0.7.0 should include it.
-# haxelib git tink_http https://github.com/haxetink/tink_http.git
 -D server
 -cp node_modules/haxe-loader/macro
 -lib monsoon
