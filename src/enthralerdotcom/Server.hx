@@ -1,10 +1,14 @@
 package enthralerdotcom;
 
 import monsoon.Monsoon;
+import monsoon.middleware.Static;
 import monsoon.middleware.Console;
 import smalluniverse.SmallUniverse;
 import dodrugs.Injector;
-import sys.db.*;
+import sys.db.Connection;
+import sys.db.Manager;
+import sys.db.AsyncConnection;
+import sys.db.MysqlJs;
 import ufront.db.migrations.*;
 using tink.core.Outcome;
 
@@ -13,16 +17,43 @@ class Server {
 	public static var jsLibBase = '/jslib/0.1.1';
 
 	static function main() {
+		#if nodejs
+			MysqlJs.connect({
+				host: Sys.getEnv('DB_HOST'),
+				database: Sys.getEnv('DB_DATABASE'),
+				user: Sys.getEnv('DB_USERNAME'),
+				pass: Sys.getEnv('DB_PASSWORD'),
+			}, function (err, cnx) {
+				if (err != null) {
+					throw err;
+				}
+				if (#if hxnodejs true #else php.Web.isModNeko #end) {
+					webMain(cnx);
+				} else {
+					cliMain(cnx);
+				}
+			});
+		#else
+			var cnx = Mysql.connect({
+				host: Sys.getEnv('DB_HOST'),
+				database: Sys.getEnv('DB_DATABASE'),
+				user: Sys.getEnv('DB_USERNAME'),
+				pass: Sys.getEnv('DB_PASSWORD'),
+			}, function (err, cnx) {
+			});
+			if (php.Web.isModNeko) {
+				webMain(cnx);
+			} else {
+				cliMain(cnx);
+			}
+		#end
 
-		Manager.cnx = Mysql.connect({
-			host: Sys.getEnv('DB_HOST'),
-			database: Sys.getEnv('DB_DATABASE'),
-			user: Sys.getEnv('DB_USERNAME'),
-			pass: Sys.getEnv('DB_PASSWORD'),
-		});
+	}
 
-		var injector = Injector.create('enthralerdotcom', [
-			var _:Connection = Manager.cnx,
+	static function getInjector(cnx) {
+		return Injector.create('enthralerdotcom', [
+			var _:AsyncConnection = cnx,
+			var _:Connection = null, // Still needed for MigrationAPI, even though this is null.
 			MigrationConnection,
 			MigrationManager,
 			MigrationApi,
@@ -37,18 +68,15 @@ class Server {
 			enthralerdotcom.homepage.HomePage,
 			enthralerdotcom.homepage.HomeBackendApi,
 		]);
-
-		if (#if hxnodejs true #else php.Web.isModNeko #end) {
-			webMain(injector);
-		} else {
-			cliMain(injector);
-		}
 	}
 
-	static function webMain(injector:Injector<'enthralerdotcom'>) {
+	static function webMain(cnx) {
+		#if client
 		Webpack.require('./EnthralerStyles.scss');
+		#end
 
 		var app = new Monsoon();
+		app.use('/assets/', Static.serve('assets'));
 		app.use('$jsLibBase/enthraler.js',  function (req,res) res.send(CompileTime.readFile('bin/enthraler.js')));
 		app.use('$jsLibBase/enthralerHost.js', function (req,res) res.send(CompileTime.readFile('bin/enthralerHost.js')));
 		app.use('$jsLibBase/frame.html', function (req,res) res.send(CompileTime.readFile('bin/frame.html')));
@@ -56,15 +84,16 @@ class Server {
 		app.use('/i/:guid/embed/:id?', enthralerdotcom.content.ContentServerRoutes.redirectToEmbedFrame);
 
 		var smallUniverse = new SmallUniverse(app);
-		smallUniverse.addPage('/templates/:user/:repo', function () return injector.get(enthralerdotcom.templates.ViewTemplatePage));
-		smallUniverse.addPage('/templates', function () return injector.get(enthralerdotcom.templates.ManageTemplatesPage));
-		smallUniverse.addPage('/i/:guid/edit', function () return injector.get(enthralerdotcom.content.ContentEditorPage));
-		smallUniverse.addPage('/i/:guid', function () return injector.get(enthralerdotcom.content.ContentViewerPage));
-		smallUniverse.addPage('/', function () return injector.get(enthralerdotcom.homepage.HomePage));
+		smallUniverse.addPage('/templates/:user/:repo', function () return getInjector(cnx).get(enthralerdotcom.templates.ViewTemplatePage));
+		smallUniverse.addPage('/templates', function () return getInjector(cnx).get(enthralerdotcom.templates.ManageTemplatesPage));
+		smallUniverse.addPage('/i/:guid/edit', function () return getInjector(cnx).get(enthralerdotcom.content.ContentEditorPage));
+		smallUniverse.addPage('/i/:guid', function () return getInjector(cnx).get(enthralerdotcom.content.ContentViewerPage));
+		smallUniverse.addPage('/', function () return getInjector(cnx).get(enthralerdotcom.homepage.HomePage));
 		app.listen(3000);
 	}
 
-	static function cliMain(injector:Injector<'enthralerdotcom'>) {
+	static function cliMain(cnx) {
+		var injector = getInjector(cnx);
 		var migrationApi = injector.get(MigrationApi);
 		migrationApi.ensureMigrationsTableExists();
 		migrationApi.syncMigrationsUp().sure();

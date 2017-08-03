@@ -21,6 +21,11 @@
       "version": null
     },
     {
+      "name": "hxnodejs",
+      "type": "haxelib",
+      "version": null
+    },
+    {
       "name": "markdown",
       "type": "haxelib",
       "version": null
@@ -39,6 +44,13 @@
       "name": "react",
       "type": "haxelib",
       "version": null
+    },
+    {
+      "name": "record-macros",
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "git@github.com:jasononeil/record-macros.git"
     },
     {
       "name": "smalluniverse",
