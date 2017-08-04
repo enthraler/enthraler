@@ -8,5 +8,5 @@
 -lib codemirror
 -lib haxe-loader
 -cp src
--main Main
+-main enthralerdotcom.Client
 -js bin/enthralerdotcom.haxe.js
