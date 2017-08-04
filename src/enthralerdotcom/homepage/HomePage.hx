@@ -17,8 +17,7 @@ class HomePage extends UniversalPage<HomeAction, {}, {}, {}, {}> {
 	}
 
 	override function render() {
-		this.head.addScript('/assets/enthralerdotcom.bundle.js');
-		this.head.addStylesheet('/assets/styles.css');
+		Head.prepareHead(this.head);
 		this.head.setTitle('Enthraler');
 		return jsx('<div>
 			<div className="container is-fluid">

@@ -35,8 +35,7 @@ class ManageTemplatesPage extends UniversalPage<ManageTemplatesAction, {}, Manag
 	}
 
 	override function render() {
-		this.head.addScript('/assets/enthralerdotcom.bundle.js');
-		this.head.addStylesheet('/assets/styles.css');
+		Head.prepareHead(this.head);
 		this.head.setTitle('Manage templates!');
 		return jsx('<div className="container">
 			<HeaderNav></HeaderNav>

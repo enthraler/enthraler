@@ -97,8 +97,7 @@ class ContentEditorPage extends UniversalPage<ContentEditorAction, ContentEditor
 	}
 
 	override function render() {
-		this.head.addScript('/assets/enthralerdotcom.bundle.js');
-		this.head.addStylesheet('/assets/styles.css');
+		Head.prepareHead(this.head);
 		this.head.setTitle('Content Editor');
 		var iframeSrc = (props.currentVersion.versionId != null)
 			? '/i/${props.content.guid}/embed/${props.currentVersion.versionId}'

@@ -35,8 +35,7 @@ class ViewTemplatePage extends UniversalPage<ViewTemplateAction, ViewTemplatePar
 	}
 
 	override function render() {
-		this.head.addScript('/assets/enthralerdotcom.bundle.js');
-		this.head.addStylesheet('/assets/styles.css');
+		Head.prepareHead(this.head);
 		this.head.setTitle('Manage templates!');
 		var tpl = this.props.template;
 		var versionListItems = [for (v in tpl.versions) jsx('<li>${v.version}</li>')];
