@@ -6,6 +6,8 @@ import monsoon.middleware.Console;
 import smalluniverse.SmallUniverse;
 import dodrugs.Injector;
 import sys.db.*;
+import sys.FileSystem;
+import sys.io.File;
 import ufront.db.migrations.*;
 using tink.core.Outcome;
 
@@ -14,13 +16,17 @@ class Server {
 	public static var jsLibBase = '/jslib/0.1.1';
 
 	static function main() {
+		var cnxSettings = {
+			host: Sys.getEnv('DB_HOST'),
+			database: Sys.getEnv('DB_DATABASE'),
+			user: Sys.getEnv('DB_USERNAME'),
+			pass: Sys.getEnv('DB_PASSWORD'),
+		};
+		if (FileSystem.exists('conf/db.json')) {
+			cnxSettings = tink.Json.parse(File.getContent('conf/db.json'));
+		}
 		#if nodejs
-			MysqlJs.connect({
-				host: Sys.getEnv('DB_HOST'),
-				database: Sys.getEnv('DB_DATABASE'),
-				user: Sys.getEnv('DB_USERNAME'),
-				pass: Sys.getEnv('DB_PASSWORD'),
-			}, function (err, cnx) {
+			MysqlJs.connect(cnxSettings, function (err, cnx) {
 				if (err != null) {
 					throw err;
 				}
@@ -31,12 +37,7 @@ class Server {
 				}
 			});
 		#else
-			Manager.cnx = Mysql.connect({
-				host: Sys.getEnv('DB_HOST'),
-				database: Sys.getEnv('DB_DATABASE'),
-				user: Sys.getEnv('DB_USERNAME'),
-				pass: Sys.getEnv('DB_PASSWORD'),
-			});
+			Manager.cnx = Mysql.connect(cnxSettings);
 			if (php.Web.isModNeko) {
 				webMain(Manager.cnx);
 			} else {
@@ -49,7 +50,7 @@ class Server {
 	static function getInjector(cnx) {
 		return Injector.create('enthralerdotcom', [
 			var _:AsyncConnection = cnx,
-			var _:Connection = null, // Still needed for MigrationAPI, even though this is null.
+			var _:Connection = Manager.cnx,
 			MigrationConnection,
 			MigrationManager,
 			MigrationApi,
