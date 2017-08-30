@@ -36,7 +36,7 @@ class EnthralerEditor {
 			textarea:TextAreaElement = cast document.getElementById('textarea'),
 			errorList:UListElement = cast document.getElementById('error-list');
 
-		preview.src = '/frame.html#?template=' + templateUrl + '&authorData=' + dataUrl;
+		preview.src = '/bin/frame.html#?template=' + templateUrl + '&authorData=' + dataUrl;
 
 		var dataText = window.fetch(dataUrl).then(function (r) return r.text()),
 			schemaObj = loadSchemaForIframe(preview);
