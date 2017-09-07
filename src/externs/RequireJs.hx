@@ -7,6 +7,7 @@ import js.Promise;
 **/
 typedef RequireJsConfig = {
 	@:optional var baseUrl:String;
+	@:optional var enforceDefine:Bool;
 	@:optional var paths:Dynamic<String>;
 	@:optional var map:Dynamic<Dynamic<String>>;
 }
