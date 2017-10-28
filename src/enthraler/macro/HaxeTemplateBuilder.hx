@@ -49,9 +49,28 @@ class HaxeTemplateBuilder {
 			default:
 		}
 
+		// Some modules might expect dependencies under a certain name.
+		// If so, we need to call `requirejs.config({map: ...})` so that the names are mapped correctly.
+		var configExpr = macro null;
+		if (Lambda.count(deps.mappings) > 0) {
+			var mappingFields = [for (name in deps.mappings.keys())
+				{'field': name, 'expr': deps.mappings[name]}
+			];
+			var mappingExpr = {
+				expr: EObjectDecl(mappingFields),
+				pos: cb.target.pos
+			};
+			configExpr = macro js.Lib.global.requirejs.config({
+				map: {
+					'*': $mappingExpr
+				}
+			});
+		}
+
 		// Add the __init__ function
 		var initField = (macro class Tmp {
 			static function __init__() {
+				$configExpr;
 				js.Lib.global.define($depsArray, $amdCallback);
 			}
 		}).fields[0];
@@ -66,32 +85,45 @@ class HaxeTemplateBuilder {
 		var deps = {
 			list: [],
 			identifiers: [],
-			setters: []
+			setters: [],
+			mappings: new Map()
 		};
 		var i = 0;
 		for (meta in cb.target.meta.extract(':enthralerDependency')) {
 			if (meta.params == null || meta.params.length < 1) {
-				Context.warning('@:enthralerDependency metadata should have 1 or 2 parameters, for example: @:enthralerDependency("jquery", js.jquery.JQuery)', meta.pos);
+				Context.warning('@:enthralerDependency metadata should have at least 1 parameter, for example: @:enthralerDependency("jquery", js.jquery.JQuery, "$")', meta.pos);
 				continue;
 			}
-			deps.list.push(meta.params[0]);
+			var dependencyString = meta.params[0];
+			deps.list.push(dependencyString);
 
 			if (meta.params.length == 1) {
 				// We are loading the dependency, but do not need to link it to an extern.
 				deps.identifiers.push(macro _);
-			} else {
-				// We need to link the dependency to an extern.
-				var externPath = meta.params[1],
-					externTypeName = getFullTypeNameFromExternPath(externPath),
-					externIdentName = externTypeName.replace('.', '_'),
-					depIdent = macro $i{externIdentName};
+				continue;
+			}
 
-				changeNativeNameForExtern(externTypeName, externIdentName, externPath.pos);
+			// We need to link the dependency to an extern.
+			var externPath = meta.params[1],
+				externTypeName = getFullTypeNameFromExternPath(externPath),
+				externIdentName = externTypeName.replace('.', '_'),
+				depIdent = macro $i{externIdentName};
 
-				deps.identifiers.push(depIdent);
-				deps.setters.push(
-					macro js.Lib.global.$externIdentName = $depIdent
-				);
+			changeNativeNameForExtern(externTypeName, externIdentName, externPath.pos);
+
+			deps.identifiers.push(depIdent);
+			deps.setters.push(
+				macro js.Lib.global.$externIdentName = $depIdent
+			);
+
+			if (meta.params.length > 2) {
+				var exposeExpr = meta.params[2];
+				switch exposeExpr.expr {
+					case EConst(CString(exposeName)):
+						deps.mappings[exposeName] = dependencyString;
+					case other:
+						Context.error('Expected 3rd parameter to be a String, but was ${exposeExpr.toString()}', exposeExpr.pos);
+				}
 			}
 		}
 		return deps;

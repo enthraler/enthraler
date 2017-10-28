@@ -10,6 +10,7 @@ typedef RequireJsConfig = {
 	@:optional var enforceDefine:Bool;
 	@:optional var paths:Dynamic<String>;
 	@:optional var map:Dynamic<Dynamic<String>>;
+	@:optional var bundles:Dynamic<Array<String>>;
 }
 
 @:native('requirejs')
