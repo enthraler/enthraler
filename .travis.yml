@@ -70,8 +70,10 @@ script:
   - haxe test.hxml
   #           && haxe phantomjs/run.hxml bin/HelloWorld.js
   - haxe apiDocs.hxml
+  - haxe enthralerLib.hxml
   - haxe enthralerFrame.hxml
   - haxe enthralerHost.hxml
+  - haxe enthralerEditor.hxml
   #- haxe build-neko.hxml         && neko bin/HelloWorld.n
   #- haxe build-java.hxml         && java -jar bin/HelloWorld.jar
   #- haxe build-php.hxml          && php bin/index.php
