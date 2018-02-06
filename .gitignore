@@ -1,6 +1,5 @@
 .haxelib/
 node_modules/
-bin/*.js
 bin/assets/*.js
 bin/assets/*.css
 bin/*.php
