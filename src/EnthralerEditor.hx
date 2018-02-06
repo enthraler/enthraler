@@ -103,10 +103,10 @@ class EnthralerEditor {
 	static function loadSchema(schemaUrl: String): Promise<Dynamic> {
 		return window
 			.fetch(schemaUrl)
-			.then(function (r) resolve(r.json()))
+			.then(function (r) return r.json())
 			.catchError(function (e) {
 				trace('Failed to load schema: ', e);
-				resolve(null);
+				return null;
 			});
 	}
 }
