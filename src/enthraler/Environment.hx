@@ -49,33 +49,4 @@ class Environment {
 			height: requestedHeight
 		}), '*');
 	}
-
-	public function broadcastSchemaUrl(schemaUrl:String) {
-		if (window.parent == null) {
-			return;
-		}
-		window.parent.postMessage(Json.stringify({
-			src: '' + window.location,
-			context: EnthralerMessages.broadbastSchemaUrl,
-			schemaUrl: schemaUrl
-		}), '*');
-	}
-
-	#if feature_shared_state
-	/**
-	(Not implemented yet).
-	Dispatch an action that is relevant to the specific user viewing this Enthraler.
-
-	TODO: implement this function.
-	**/
-	public function dispatchUserAction(action:Action):Void {}
-
-	/**
-	(Not implemented yet).
-	Dispatch an action that is relevant to the whole group of users viewing this Enthraler.
-
-	TODO: implement this function.
-	**/
-	public function dispatchGroupAction(action:Action):Void {}
-	#end
 }

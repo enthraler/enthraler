@@ -31,11 +31,3 @@ typedef Publisher = {
 	publisherUrl:Url
 };
 
-#if feature_shared_state
-/** A `Group` of users who have interacted with the Enthraler.  This is only made avaialable to publishers. **/
-typedef Group = {
-	name:String,
-	publishers:Array<Publisher>,
-	audience:Array<User>
-}
-#end

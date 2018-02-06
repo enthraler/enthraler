@@ -18,11 +18,7 @@ class Enthraler {
 	Load an Enthraler component based on the given `Template` (`templateUrl`) and author data `dataUrl`.
 	Render the new Enthraler component into the specified `container` element.
 	**/
-	#if feature_shared_state
-	public static function loadComponent<AuthorData,UserState,GroupState>(templateUrl:String, dataUrl:String, container:Element):Promise<Template<AuthorData,UserState,GroupState>> {
-	#else
 	public static function loadComponent<AuthorData>(templateUrl:String, dataUrl:String, container:Element):Promise<Template<AuthorData>> {
-	#end
 		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl),
 			environment = new Environment(container, componentMeta);
 
@@ -35,18 +31,8 @@ class Enthraler {
 			var componentCls:Module = arr[0],
 				authorData:AuthorData = arr[1];
 
-			// If there is a Schema defined, post a message in case there's an editor that wants to know.
-			// We have this hacky way of loading because loading an AMD module without loading it's dependencies, for the purpose of extracting a single variable, is non-trivial.
-			var schemaUrl:String = (componentCls['enthralerSchema'] != null) ? componentCls['enthralerSchema'] : "";
-			environment.broadcastSchemaUrl(schemaUrl);
-
-			#if feature_shared_state
-			var component:Template<AuthorData, UserState, GroupState> = componentCls.instantiate(environment);
-			component.render(authorData, null, null);
-			#else
 			var component:Template<AuthorData> = componentCls.instantiate(environment);
 			component.render(authorData);
-			#end
 			return component;
 		});
 	}

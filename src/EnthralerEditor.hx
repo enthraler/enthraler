@@ -30,6 +30,7 @@ class EnthralerEditor {
 
 	static function loadEnthralerEditor(params:Map<String,String>) {
 		var templateUrl = params['template'],
+			schemaUrl = params['schema'],
 			dataUrl = params['authorData'];
 
 		var preview:IFrameElement = cast document.getElementById('preview'),
@@ -39,7 +40,7 @@ class EnthralerEditor {
 		preview.src = '/bin/frame.html#?template=' + templateUrl + '&authorData=' + dataUrl;
 
 		var dataText = window.fetch(dataUrl).then(function (r) return r.text()),
-			schemaObj = loadSchemaForIframe(preview);
+			schemaObj = loadSchema(schemaUrl);
 
 		var editor = dataText.then(function (data) {
 			textarea.value = data;
@@ -99,31 +100,13 @@ class EnthralerEditor {
 		});
 	}
 
-	static function loadSchemaForIframe(iframe:IFrameElement):Promise<Dynamic> {
-		return new Promise(function (resolve, reject) {
-			function doLoadWithCurrentAttribute():Void {
-				var schemaUrl = iframe.getAttribute('data-schema-url');
-				if (schemaUrl == null || schemaUrl == "") {
-					// Set the schema object to null, meaning that no validation will occur.
-					resolve(null);
-				} else {
-					window
-						.fetch(schemaUrl)
-						.then(function (r) resolve(r.json()))
-						.catchError(function (e) {
-							trace('Failed to load schema: ', e);
-							resolve(null);
-						});
-				}
-			}
-
-			var token:Int;
-			token = window.setInterval(function () {
-				if (iframe.hasAttribute('data-schema-url')) {
-					doLoadWithCurrentAttribute();
-					window.clearInterval(token);
-				}
-			}, 100);
-		});
+	static function loadSchema(schemaUrl: String): Promise<Dynamic> {
+		return window
+			.fetch(schemaUrl)
+			.then(function (r) resolve(r.json()))
+			.catchError(function (e) {
+				trace('Failed to load schema: ', e);
+				resolve(null);
+			});
 	}
 }

@@ -4,15 +4,8 @@ package enthraler;
 The type specification for an Enthraler Template.
 
 A template should have a `new()` function (constructor) and a `render()` method.
-
-(For feature_shared_state): If using persistant state, it should have `processUserAction()` and `processGroupAction()` functions as required.
 **/
-#if feature_shared_state
-typedef Template<AuthorData, UserState, GroupState> = {
-#else
 typedef Template<AuthorData> = {
-#end
-
 	#if xml
 		/**
 		The constructor (or `new()` function) for your Enthraler Template.
