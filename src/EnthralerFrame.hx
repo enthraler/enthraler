@@ -2,6 +2,7 @@ import js.Browser.document;
 import js.Browser.window;
 import js.html.*;
 import enthraler.*;
+import enthraler.Enthraler;
 
 /**
 The entry point for a JS file that renders a single Enthraler in an `<iframe>` element.
@@ -41,7 +42,7 @@ class EnthralerFrame {
 		var container = document.getElementById('container');
 		Enthraler
 			.loadComponent(params['template'], params['authorData'], container)
-			.then(function (enthralerInstance:Template<Dynamic>) {
+			.then(function (enthralerInstance:EnthralerInstance<Dynamic>) {
 				// If we receive an update with new AuthorData, send it through to the template for rendering.
 				window.addEventListener('message', function (e:MessageEvent) {
 					var message = e.data,
@@ -49,7 +50,7 @@ class EnthralerFrame {
 
 					switch data.context {
 						case EnthralerMessages.receiveAuthorData:
-							enthralerInstance.render(data.authorData);
+							enthralerInstance.enthraler.render(data.authorData);
 						default:
 							trace('Received message from host', data);
 					}

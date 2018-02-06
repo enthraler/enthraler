@@ -7,7 +7,15 @@ import enthraler.Template;
 import enthraler.Environment;
 import enthraler.Meta;
 import RequireJs;
+import haxe.extern.EitherType;
+// import haxe.ds.Either;
 using haxe.io.Path;
+
+typedef EnthralerInstance<AuthorData> = {
+	container: Element,
+	authorData: AuthorData,
+	enthraler: Template<AuthorData>
+}
 
 /**
 This class allows you to load a new Enthraler component.
@@ -17,15 +25,28 @@ class Enthraler {
 	/**
 	Load an Enthraler component based on the given `Template` (`templateUrl`) and author data `dataUrl`.
 	Render the new Enthraler component into the specified `container` element.
+
+	@param templateUrl The URL pointing to the JS file for the template we are loading.
+	@param data Either a String with the URL of our JSON data, or the JSON data itself.
+	@param container The node to render in. If null, a new DIV will be created, which you can then attach to the document as you please.
+	@return A promise of the rendered EnthralerInstance, including it's container and the loaded author data.
 	**/
-	public static function loadComponent<AuthorData>(templateUrl:String, dataUrl:String, container:Element):Promise<Template<AuthorData>> {
-		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl),
-			environment = new Environment(container, componentMeta);
+	public static function loadComponent<AuthorData>(templateUrl:String, data:EitherType<String,Dynamic>, container:Element):Promise<EnthralerInstance<AuthorData>> {
+		if (container == null) {
+			container = Browser.document.createDivElement();
+		}
+		var dataUrl: String = Std.is(data, String) ? data : 'local-data';
+		var componentMeta = buildEnthralerMeta(templateUrl, dataUrl);
+		var environment = new Environment(container, componentMeta);
 
 		requireJsInit(componentMeta.template.path);
 
-		var componentClassPromise = RequireJs.requireSingleModule(templateUrl),
-			dataPromise = Browser.window.fetch(dataUrl).then(function (r) return r.json());
+		var componentClassPromise = RequireJs.requireSingleModule(templateUrl);
+		var dataPromise = if (Std.is(data, String)) {
+			Browser.window.fetch(dataUrl).then(function (r) return r.json());
+		} else {
+			new Promise(function (resolve, reject) resolve(data));
+		}
 
 		return Promise.all([componentClassPromise, dataPromise]).then(function (arr:Array<Dynamic>) {
 			var componentCls:Module = arr[0],
@@ -33,7 +54,11 @@ class Enthraler {
 
 			var component:Template<AuthorData> = componentCls.instantiate(environment);
 			component.render(authorData);
-			return component;
+			return {
+				container: container,
+				authorData: authorData,
+				enthraler: component
+			};
 		});
 	}
 
