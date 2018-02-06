@@ -1,0 +1,3 @@
+# @install: lix --silent download "haxelib:codemirror#1.1.1" into codemirror/1.1.1/haxelib
+-D codemirror=1.1.1
+-cp ${HAXESHIM_LIBCACHE}/codemirror/1.1.1/haxelib/

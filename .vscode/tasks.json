@@ -2,12 +2,10 @@
     "version": "0.1.0",
     "command": "haxe",
     "args": [
-        "enthralerFrame.hxml",
+        "enthralerLib.hxml",
         "--next", "enthralerFrame.hxml",
         "--next", "enthralerEditor.hxml",
         "--next", "enthralerHost.hxml",
-        "--next", "server_enthralerdotcom.hxml",
-        "--next", "client_enthralerdotcom.hxml",
         "--next", "test.hxml",
         "--next", "apiDocs.hxml"
     ],
