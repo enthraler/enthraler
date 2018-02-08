@@ -20,6 +20,7 @@ typedef EnthralerInstance<AuthorData> = {
 /**
 This class allows you to load a new Enthraler component.
 **/
+@:build(enthraler.UmdBuilder.exposeUmd('enthraler'))
 class Enthraler {
 
 	/**
