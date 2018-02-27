@@ -20,11 +20,6 @@ class EnthralerFrame {
 	public static function main() {
 		var params = getParamsFromLocation();
 		loadEnthralerComponent(params);
-
-		// Update the editor link.
-		var forkLink:AnchorElement = cast document.getElementById('enthraler-fork-link'),
-			hash = window.location.hash;
-		forkLink.href = '/editor.html' + hash;
 	}
 
 	static function getParamsFromLocation() {
