@@ -1,4 +1,5 @@
 -cp src
 -cp src/externs
 -js bin/enthraler.js
+-D expose_lib
 enthraler.Enthraler

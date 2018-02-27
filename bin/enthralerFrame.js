@@ -1010,16 +1010,6 @@ js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
 String.prototype.__class__ = String;
 String.__name__ = ["String"];
 Array.__name__ = ["Array"];
-var root = $global;
-if(typeof(define) == "function" && define.amd) {
-	define([],function() {
-		return enthraler_Enthraler;
-	});
-} else if(typeof(module) == "object" && module.exports) {
-	module.exports = enthraler_Enthraler;
-} else {
-	$global.enthraler = enthraler_Enthraler;
-}
 var __map_reserved = {};
 enthraler_proptypes__$PropTypes_SimplePropTypeName_$Impl_$.array = "array";
 enthraler_proptypes__$PropTypes_SimplePropTypeName_$Impl_$.bool = "bool";
